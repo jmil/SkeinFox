@@ -8,13 +8,14 @@
     NSMutableArray *gitBranches;
     NSUInteger currentBranch;
     IBOutlet NSPopUpButton *popUpButton;
+    IBOutlet NSButton *launchButton;
     IBOutlet NSWindow *window;
     IBOutlet NSArrayController *myArrayController;
     NSNotificationCenter *notificationCenter;
 }
 
 @property (readwrite, retain) NSMutableArray *gitBranches;
-@property (nonatomic, retain) IBOutlet NSPopUpButton *popUpButton;
+//@property (nonatomic, retain) IBOutlet NSPopUpButton *popUpButton;
 @property (nonatomic, retain) IBOutlet NSArrayController *myArrayController;
 @property (nonatomic, retain) NSNotificationCenter *notificationCenter;
 
@@ -24,5 +25,12 @@
 
 // Launch Skeinforge
 - (IBAction) launchSkeinforge:(id)sender;
+
+// Drag and Drop!!
+- (BOOL)dragIsFile:(id <NSDraggingInfo>)sender;
+- (NSString *)getFileForDrag:(id <NSDraggingInfo>)sender;
+
+- (void)processFile:(NSString *)filename;
+
 
 @end

@@ -21,7 +21,7 @@
 
 @synthesize gitBranches, myArrayController;
 @synthesize notificationCenter;
-@synthesize popUpButton;
+//@synthesize popUpButton;
 
 - (void)awakeFromNib {
     
@@ -33,7 +33,7 @@
 //    NSArray *dragTypes = [NSArray arrayWithObjects:<#(id)firstObj#>];
 //    [self.window registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType,NSFilenamesPboardType, nil]];    
 
-    NSArray *dragTypes = [NSArray arrayWithObjects:NSFilenamesPboardType, NSFilesPromisePboardType, nil];
+    NSArray *dragTypes = [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
     
     [window registerForDraggedTypes:dragTypes];
     
@@ -104,32 +104,99 @@
 }
 
 
+- (void)processFile:(NSString *)filename {
+    [popUpButton setEnabled:NO];
+    //[openFile setEnabled:NO];
+}
+
+
+
+
+
+
 // Drag and drop .stl files!
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     NSLog(@"dragging entered and started!!");
-    return NSDragOperationAll;
+    
+    NSView *view = [window contentView];
+    
+    if (![self dragIsFile:sender]) {
+        return NSDragOperationNone;
+    }
+    
+    [view lockFocus];
+    
+    [[NSColor selectedControlColor] set];
+    [NSBezierPath setDefaultLineWidth:5];
+    [NSBezierPath strokeRect:[view bounds]];
+    
+    [view unlockFocus];
+    
+    [window flushWindow];    
+    
+    return NSDragOperationGeneric;
 }
-- (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
-    NSLog(@"dragging updated!!");
-    return NSDragOperationAll;
-}
+
+//- (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
+//    NSLog(@"dragging updated!!");
+//    return NSDragOperationAll;
+//}
 
 - (NSDragOperation)draggingExited:(id <NSDraggingInfo>)sender {
     NSLog(@"dragging exited!!");
+
+    // Remove Border Highlighting when dragging exited
+    [[window contentView] setNeedsDisplay:YES];
+
     return NSDragOperationAll;
 }
 
 - (NSDragOperation)prepareForDragOperation:(id <NSDraggingInfo>)sender {
     NSLog(@"preparing for drag operation!!");
+    
+    // Remove Window View Border Highlighting when dragging released
+    [[window contentView] setNeedsDisplay:YES];
+
     return NSDragOperationAll;
 }
 
 - (NSDragOperation)performDragOperation:(id <NSDraggingInfo>)sender {
     NSLog(@"perform drag operation!!");
+    
+    NSString *filename = [self getFileForDrag:sender];
+    NSLog(@"my filename is '%@'", filename);
+
+    
     return NSDragOperationAll;
 }
 
 
+- (BOOL)dragIsFile:(id <NSDraggingInfo>)sender
+{
+    BOOL isDirectory;
+    
+    NSString *dragFilename = [self getFileForDrag:sender];
+    
+    [[NSFileManager defaultManager] fileExistsAtPath:dragFilename isDirectory:&isDirectory];
+    
+    //NSLog(@"I am not a directory '%@'", isDirectory);
+    
+    return !isDirectory;
+}
+
+
+
+- (NSString *)getFileForDrag:(id <NSDraggingInfo>)sender
+{
+    NSPasteboard *pb = [sender draggingPasteboard];
+    NSString *availableType = [pb availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+    NSString *dragFilename;
+    NSArray *props;
+    
+    props = [pb propertyListForType:availableType];
+    dragFilename = [props objectAtIndex:0];
+    return dragFilename;	
+}
 
 
 
