@@ -3,7 +3,7 @@
 //  NSPopUpButtonBindings
 //
 //  Created by Kevin Wojniak on 1/27/08.
-//  Copyright __MyCompanyName__ 2008. All rights reserved.
+//  Copyright Jordan Miller, Hive76 2009. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
