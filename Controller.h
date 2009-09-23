@@ -13,9 +13,11 @@
     NSMutableArray *gitBranches;
     NSUInteger currentBranch;
     IBOutlet NSPopUpButton *popUpButton;
+    IBOutlet NSArrayController *myArrayController;
 }
 
 @property (readwrite, retain) NSMutableArray *gitBranches;
 @property (nonatomic, retain) IBOutlet NSPopUpButton *popUpButton;
+@property (nonatomic, retain) IBOutlet NSArrayController *myArrayController;
 
 @end

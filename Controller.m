@@ -23,7 +23,7 @@
 
 @implementation Controller
 
-@synthesize gitBranches, popUpButton;
+@synthesize gitBranches, popUpButton, myArrayController;
 
 - (void)awakeFromNib {
     
@@ -87,11 +87,8 @@
     self.gitBranches = gitBranches;
     
     NSLog(@"my currentBranch is %i", currentBranch);
-}
-
-- (void) viewDidLoad {
-    [popUpButton selectItemAtIndex:currentBranch];
-    NSLog(@"my View did Load!");
+    
+    [myArrayController setSelectionIndex:currentBranch];
 }
 
 @end
