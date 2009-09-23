@@ -100,6 +100,17 @@
 
 - (void) didUpdateGitBranchSelection:(id)sender {
     NSLog(@"I was selected!!");
+    
+    // Get the title of the currently selected item
+    NSLog(@"I was selected and my name is %@", popUpButton.selectedItem.title);
+    NSString *selectedItemName = popUpButton.selectedItem.title;
+    
+    NSString *prefix = @"cd ~/.skeinforge; git checkout ";
+    NSString *commandToExecute = [prefix stringByAppendingString:selectedItemName];
+    NSLog(@"'%@'", commandToExecute);
+    NSString *checkoutResult = [ShellTask executeShellCommandSynchronously:[prefix stringByAppendingString:selectedItemName]];
+    NSLog(checkoutResult);
+
 }    
 
 @end
