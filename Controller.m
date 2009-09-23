@@ -25,8 +25,7 @@
 
 @synthesize gitBranches, popUpButton;
 
-- (void)awakeFromNib
-{
+- (void)awakeFromNib {
     
     // Check if git is installed!
     
@@ -87,6 +86,12 @@
     
     self.gitBranches = gitBranches;
     
+    NSLog(@"my currentBranch is %i", currentBranch);
+}
+
+- (void) viewDidLoad {
+    [popUpButton selectItemAtIndex:currentBranch];
+    NSLog(@"my View did Load!");
 }
 
 @end
