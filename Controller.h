@@ -12,8 +12,10 @@
 @interface Controller : NSObject {
     NSMutableArray *gitBranches;
     NSUInteger currentBranch;
+    IBOutlet NSPopUpButton *popUpButton;
 }
 
 @property (readwrite, retain) NSMutableArray *gitBranches;
+@property (nonatomic, retain) IBOutlet NSPopUpButton *popUpButton;
 
 @end

@@ -23,16 +23,16 @@
 
 @implementation Controller
 
-@synthesize gitBranches;
+@synthesize gitBranches, popUpButton;
 
 - (void)awakeFromNib
 {
     
     // Check if git is installed!
-
+    
     
     // Populate pop-up with Git branches for .skeinforge directory!
-        
+    
     NSString *branchesRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge; git branch"];
     NSLog(branchesRaw);
     
@@ -75,17 +75,17 @@
     
     
     
-	//NSArray *names = [NSArray arrayWithObjects:@"Bird", @"Chair", @"Song", @"Computer", nil];
-	NSMutableArray *gitBranches = [NSMutableArray array];
-	for (NSString *name in names)
-	{
-		gitBranch *branch = [[[gitBranch alloc] init] autorelease];
-		branch.name = name;
-            branch.lastModified = @"last modified on XXXXX";
-		[gitBranches addObject:branch];
-	}
-	
-	self.gitBranches = gitBranches;
+    //NSArray *names = [NSArray arrayWithObjects:@"Bird", @"Chair", @"Song", @"Computer", nil];
+    gitBranches = [NSMutableArray array];
+    for (NSString *name in names)
+    {
+        gitBranch *branch = [[[gitBranch alloc] init] autorelease];
+        branch.name = name;
+        branch.lastModified = @"last modified on XXXXX";
+        [gitBranches addObject:branch];
+    }
+    
+    self.gitBranches = gitBranches;
     
 }
 
