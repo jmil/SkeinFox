@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2DA2BBD9106AB8A80004156F /* skeinforge-0005 in Resources */ = {isa = PBXBuildFile; fileRef = 2DA2BB0D106AB8A80004156F /* skeinforge-0005 */; };
 		2DDC41B01069FD32000BCA31 /* ShellTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DDC41AE1069FD32000BCA31 /* ShellTask.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -25,6 +26,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		2D5310221069F71300B4687D /* SkeinFox_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SkeinFox_Prefix.pch; sourceTree = "<group>"; };
+		2DA2BB0D106AB8A80004156F /* skeinforge-0005 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "skeinforge-0005"; sourceTree = "<group>"; };
 		2DDC41AE1069FD32000BCA31 /* ShellTask.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ShellTask.m; sourceTree = "<group>"; };
 		2DDC41AF1069FD32000BCA31 /* ShellTask.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShellTask.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2DA2BB0D106AB8A80004156F /* skeinforge-0005 */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
@@ -171,6 +174,7 @@
 			files = (
 				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				2DA2BBD9106AB8A80004156F /* skeinforge-0005 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
