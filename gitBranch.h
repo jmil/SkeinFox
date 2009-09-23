@@ -10,9 +10,11 @@
 
 
 @interface gitBranch : NSObject {
-	NSString *_name;
+    NSString *name;
+    NSString *lastModified;
 }
 
 @property (readwrite, retain) NSString *name;
+@property (readwrite, retain) NSString *lastModified;
 
 @end

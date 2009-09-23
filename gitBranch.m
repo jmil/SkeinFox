@@ -11,6 +11,6 @@
 
 @implementation gitBranch
 
-@synthesize name = _name;
+@synthesize name, lastModified;
 
 @end

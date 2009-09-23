@@ -23,7 +23,7 @@
 
 @implementation Controller
 
-@synthesize gitBranches = _gitBranches;
+@synthesize gitBranches;
 
 - (void)awakeFromNib
 {
@@ -81,6 +81,7 @@
 	{
 		gitBranch *branch = [[[gitBranch alloc] init] autorelease];
 		branch.name = name;
+            branch.lastModified = @"last modified on XXXXX";
 		[gitBranches addObject:branch];
 	}
 	
