@@ -23,7 +23,9 @@
 
 @implementation Controller
 
-@synthesize gitBranches, popUpButton, myArrayController;
+@synthesize gitBranches, myArrayController;
+@synthesize notificationCenter;
+@synthesize popUpButton;
 
 - (void)awakeFromNib {
     
@@ -89,6 +91,15 @@
     NSLog(@"my currentBranch is %i", currentBranch);
     
     [myArrayController setSelectionIndex:currentBranch];
+    
+    
+    
 }
+
+// Send a notification to self that the user did update the git branch selection
+
+- (void) didUpdateGitBranchSelection:(id)sender {
+    NSLog(@"I was selected!!");
+}    
 
 @end
