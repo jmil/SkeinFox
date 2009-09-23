@@ -19,9 +19,9 @@
 
 
 // Send a notification to self that the user did update the git branch selection
-- (void) didUpdateGitBranchSelection:(id)sender;
+- (IBAction) didUpdateGitBranchSelection:(id)sender;
 
 // Launch Skeinforge
-- (void) launchSkeinforge:(id)sender;
+- (IBAction) launchSkeinforge:(id)sender;
 
 @end

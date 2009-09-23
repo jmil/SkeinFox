@@ -94,7 +94,7 @@
 
 // Send a notification to self that the user did update the git branch selection
 
-- (void) didUpdateGitBranchSelection:(id)sender {
+- (IBAction) didUpdateGitBranchSelection:(id)sender {
     NSLog(@"I was selected!!");
     
     // Get the title of the currently selected item
@@ -110,18 +110,24 @@
 }    
 
 
-- (void) launchSkeinforge:(id)sender {
+- (IBAction) launchSkeinforge:(id)sender {
     NSLog(@"A request to launch SkeinForge was received");
     
     // Use the Skeinforge that is contained within this application package!!
     NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
     NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
     NSString *skeinforgePy = @"/skeinforge.py";
-    //NSString *prefix = @" ";
+    NSString *prefix = @"\"";
+    NSString *suffix = prefix;
+    NSLog(@"'%@'", prefix);
+    NSLog(@"'%@'", suffix);
     
-    NSString *commandToExecute = [pathToSkeinforge stringByAppendingString:skeinforgePy];
-    NSLog(@"'%@'", commandToExecute);
-    [ShellTask executeShellCommandAsynchronously:commandToExecute];
+    
+    // EXECUTE WITH QUOTES SO THAT SPACES (AND SPECIAL CHARACTERS LIKE 'µ') IN POSIX PATHS WILL BE HONORED
+    NSString *commandToExecuteWithoutQuotes = [pathToSkeinforge stringByAppendingString:skeinforgePy];
+    NSString *commandToExecuteWithQuotes = [[prefix stringByAppendingString:commandToExecuteWithoutQuotes] stringByAppendingString:suffix];
+    NSLog(@"'%@'", commandToExecuteWithQuotes);
+    [ShellTask executeShellCommandAsynchronously:commandToExecuteWithQuotes];
     NSLog(@"yep, skeinforge was launched asynchronously");
     
     

@@ -10,6 +10,7 @@
 		2DA2BBD9106AB8A80004156F /* skeinforge-0005 in Resources */ = {isa = PBXBuildFile; fileRef = 2DA2BB0D106AB8A80004156F /* skeinforge-0005 */; };
 		2DA2BCD3106AB95C0004156F /* .skeinforge in Resources */ = {isa = PBXBuildFile; fileRef = 2DA2BBE0106AB95C0004156F /* .skeinforge */; };
 		2DDC41B01069FD32000BCA31 /* ShellTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DDC41AE1069FD32000BCA31 /* ShellTask.m */; };
+		2DE5E2E9106AC77C00027B8C /* mainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DE5E2E8106AC77C00027B8C /* mainWindowController.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -31,6 +32,8 @@
 		2DA2BBE0106AB95C0004156F /* .skeinforge */ = {isa = PBXFileReference; lastKnownFileType = folder; path = .skeinforge; sourceTree = "<group>"; };
 		2DDC41AE1069FD32000BCA31 /* ShellTask.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ShellTask.m; sourceTree = "<group>"; };
 		2DDC41AF1069FD32000BCA31 /* ShellTask.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShellTask.h; sourceTree = "<group>"; };
+		2DE5E2E7106AC77C00027B8C /* mainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mainWindowController.h; sourceTree = "<group>"; };
+		2DE5E2E8106AC77C00027B8C /* mainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mainWindowController.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* SkeinFox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkeinFox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5C6979D0D4C49D1008DF2C0 /* Controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Controller.h; sourceTree = "<group>"; };
@@ -56,6 +59,8 @@
 			children = (
 				A5C6979D0D4C49D1008DF2C0 /* Controller.h */,
 				A5C6979E0D4C49D1008DF2C0 /* Controller.m */,
+				2DE5E2E7106AC77C00027B8C /* mainWindowController.h */,
+				2DE5E2E8106AC77C00027B8C /* mainWindowController.m */,
 				A5C697A20D4C49DF008DF2C0 /* gitBranch.h */,
 				A5C697A30D4C49DF008DF2C0 /* gitBranch.m */,
 				2DDC41AE1069FD32000BCA31 /* ShellTask.m */,
@@ -193,6 +198,7 @@
 				A5C6979F0D4C49D1008DF2C0 /* Controller.m in Sources */,
 				A5C697A40D4C49DF008DF2C0 /* gitBranch.m in Sources */,
 				2DDC41B01069FD32000BCA31 /* ShellTask.m in Sources */,
+				2DE5E2E9106AC77C00027B8C /* mainWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
