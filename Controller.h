@@ -10,7 +10,8 @@
 
 
 @interface Controller : NSObject {
-	NSMutableArray *_gitBranches;
+    NSMutableArray *_gitBranches;
+    NSUInteger currentBranch;
 }
 
 @property (readwrite, retain) NSMutableArray *gitBranches;
