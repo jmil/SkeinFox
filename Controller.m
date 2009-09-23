@@ -28,6 +28,17 @@
     // Check if git is installed!
     
     
+    
+    // Register for Dragtypes so that we can accept drag-and-dropped .stl files!
+//    NSArray *dragTypes = [NSArray arrayWithObjects:<#(id)firstObj#>];
+//    [self.window registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType,NSFilenamesPboardType, nil]];    
+
+    NSArray *dragTypes = [NSArray arrayWithObjects:NSFilenamesPboardType, NSFilesPromisePboardType, nil];
+    
+    [window registerForDraggedTypes:dragTypes];
+    
+    
+    
     // Populate pop-up with Git branches for .skeinforge directory!
     
     NSString *branchesRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge; git branch"];
@@ -91,6 +102,37 @@
     
     
 }
+
+
+// Drag and drop .stl files!
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
+    NSLog(@"dragging entered and started!!");
+    return NSDragOperationAll;
+}
+- (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
+    NSLog(@"dragging updated!!");
+    return NSDragOperationAll;
+}
+
+- (NSDragOperation)draggingExited:(id <NSDraggingInfo>)sender {
+    NSLog(@"dragging exited!!");
+    return NSDragOperationAll;
+}
+
+- (NSDragOperation)prepareForDragOperation:(id <NSDraggingInfo>)sender {
+    NSLog(@"preparing for drag operation!!");
+    return NSDragOperationAll;
+}
+
+- (NSDragOperation)performDragOperation:(id <NSDraggingInfo>)sender {
+    NSLog(@"perform drag operation!!");
+    return NSDragOperationAll;
+}
+
+
+
+
+
 
 // Send a notification to self that the user did update the git branch selection
 

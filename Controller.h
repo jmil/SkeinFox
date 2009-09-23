@@ -8,6 +8,7 @@
     NSMutableArray *gitBranches;
     NSUInteger currentBranch;
     IBOutlet NSPopUpButton *popUpButton;
+    IBOutlet NSWindow *window;
     IBOutlet NSArrayController *myArrayController;
     NSNotificationCenter *notificationCenter;
 }

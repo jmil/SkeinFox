@@ -1628,6 +1628,22 @@
 					</object>
 					<int key="connectionID">498</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">window</string>
+						<reference key="source" ref="210633948"/>
+						<reference key="destination" ref="972006081"/>
+					</object>
+					<int key="connectionID">500</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="972006081"/>
+						<reference key="destination" ref="210633948"/>
+					</object>
+					<int key="connectionID">501</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -2869,7 +2885,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">498</int>
+			<int key="maxID">501</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2896,11 +2912,13 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>myArrayController</string>
 							<string>popUpButton</string>
+							<string>window</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSArrayController</string>
 							<string>NSPopUpButton</string>
+							<string>NSWindow</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -2910,6 +2928,7 @@
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NSPopUpButton</string>
+					<string key="superclassName">NSButton</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBUserSource</string>
 						<string key="minorKey"/>
