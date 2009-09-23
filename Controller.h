@@ -10,9 +10,9 @@
 
 
 @interface Controller : NSObject {
-	NSMutableArray *_things;
+	NSMutableArray *_gitBranches;
 }
 
-@property (readwrite, retain) NSMutableArray *things;
+@property (readwrite, retain) NSMutableArray *gitBranches;
 
 @end

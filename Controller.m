@@ -22,20 +22,20 @@
 
 @implementation Controller
 
-@synthesize things = _things;
+@synthesize gitBranches = _gitBranches;
 
 - (void)awakeFromNib
 {
 	NSArray *names = [NSArray arrayWithObjects:@"Bird", @"Chair", @"Song", @"Computer", nil];
-	NSMutableArray *things = [NSMutableArray array];
+	NSMutableArray *gitBranches = [NSMutableArray array];
 	for (NSString *name in names)
 	{
-		gitBranch *thing = [[[gitBranch alloc] init] autorelease];
-		thing.name = name;
-		[things addObject:thing];
+		gitBranch *branch = [[[gitBranch alloc] init] autorelease];
+		branch.name = name;
+		[gitBranches addObject:branch];
 	}
 	
-	self.things = things;
+	self.gitBranches = gitBranches;
 }
 
 @end
