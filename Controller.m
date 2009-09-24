@@ -213,7 +213,8 @@
     NSLog(@"I was selected and my name is %@", popUpButton.selectedItem.title);
     NSString *selectedItemName = popUpButton.selectedItem.title;
     
-    NSString *prefix = @"cd ~/.skeinforge; git checkout ";
+    // Force Git Checkout; this is what the user will expect, that we will switch branches. any modifications to skeinforge will be thrown away. later we can give another option to not throw away changes and notify user that there were changes and let them fix things...
+    NSString *prefix = @"cd ~/.skeinforge; git checkout -f ";
     NSString *commandToExecute = [prefix stringByAppendingString:selectedItemName];
     NSLog(@"'%@'", commandToExecute);
     NSString *checkoutResult = [ShellTask executeShellCommandSynchronously:[prefix stringByAppendingString:selectedItemName]];
@@ -268,6 +269,7 @@
         NSString *completeStringToExecute = [[commandToExecuteWithQuotes stringByAppendingString:@" "] stringByAppendingString:quotedSTLFileToGcode];
         NSLog(@"'%@'", completeStringToExecute);
         
+        [indicator startAnimation:nil];
         
         [self processFile:[self stlFileToGCode]];
         [ShellTask executeShellCommandAsynchronously:completeStringToExecute];
