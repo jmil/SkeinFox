@@ -20,7 +20,8 @@
 @implementation Controller
 
 @synthesize gitBranches, myArrayController;
-@synthesize notificationCenter;
+@synthesize stlFileToGCode;
+//@synthesize notificationCenter;
 //@synthesize popUpButton;
 
 - (void)awakeFromNib {
@@ -106,6 +107,8 @@
 
 - (void)processFile:(NSString *)filename {
     [popUpButton setEnabled:NO];
+    [gCodeMeButton setEnabled:NO];
+    [launchButton setEnabled:NO];
     //[openFile setEnabled:NO];
 }
 
@@ -165,7 +168,7 @@
     
     NSString *filename = [self getFileForDrag:sender];
     NSLog(@"my filename is '%@'", filename);
-
+    self.stlFileToGCode = filename;
     
     return NSDragOperationAll;
 }
@@ -238,6 +241,38 @@
     NSLog(@"'%@'", commandToExecuteWithQuotes);
     [ShellTask executeShellCommandAsynchronously:commandToExecuteWithQuotes];
     NSLog(@"yep, skeinforge was launched asynchronously");
+    
+    
+}
+
+
+- (IBAction) gCodeMe:(id)sender {
+    
+    if (nil != self.stlFileToGCode) {
+        // Use the Skeinforge that is contained within this application package!!
+        NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
+        NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
+        NSString *skeinforgePy = @"/skeinforge.py";
+        NSString *prefix = @"\"";
+        NSString *suffix = prefix;
+        NSLog(@"'%@'", prefix);
+        NSLog(@"'%@'", suffix);
+        
+        // EXECUTE WITH QUOTES SO THAT SPACES (AND SPECIAL CHARACTERS LIKE 'µ') IN POSIX PATHS WILL BE HONORED
+        NSString *commandToExecuteWithoutQuotes = [pathToSkeinforge stringByAppendingString:skeinforgePy];
+        NSString *commandToExecuteWithQuotes = [[prefix stringByAppendingString:commandToExecuteWithoutQuotes] stringByAppendingString:suffix];
+        NSLog(@"'%@'", commandToExecuteWithQuotes);
+        
+        NSString *quotedSTLFileToGcode = [[prefix stringByAppendingString:stlFileToGCode] stringByAppendingString:suffix];
+        
+        NSString *completeStringToExecute = [[commandToExecuteWithQuotes stringByAppendingString:@" "] stringByAppendingString:quotedSTLFileToGcode];
+        NSLog(@"'%@'", completeStringToExecute);
+        
+        
+        [self processFile:[self stlFileToGCode]];
+        [ShellTask executeShellCommandAsynchronously:completeStringToExecute];
+        NSLog(@"yep, skeinforge was launched asynchronously");
+    }
     
     
 }

@@ -9,15 +9,16 @@
     NSUInteger currentBranch;
     IBOutlet NSPopUpButton *popUpButton;
     IBOutlet NSButton *launchButton;
+    IBOutlet NSButton *gCodeMeButton;
     IBOutlet NSWindow *window;
     IBOutlet NSArrayController *myArrayController;
-    NSNotificationCenter *notificationCenter;
+    NSString *stlFileToGCode;
 }
 
 @property (readwrite, retain) NSMutableArray *gitBranches;
 //@property (nonatomic, retain) IBOutlet NSPopUpButton *popUpButton;
 @property (nonatomic, retain) IBOutlet NSArrayController *myArrayController;
-@property (nonatomic, retain) NSNotificationCenter *notificationCenter;
+@property (nonatomic, retain) IBOutlet NSString *stlFileToGCode;
 
 
 // Send a notification to self that the user did update the git branch selection
@@ -25,6 +26,8 @@
 
 // Launch Skeinforge
 - (IBAction) launchSkeinforge:(id)sender;
+- (IBAction) gCodeMe:(id)sender;
+
 
 // Drag and Drop!!
 - (BOOL)dragIsFile:(id <NSDraggingInfo>)sender;
