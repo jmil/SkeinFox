@@ -67,6 +67,16 @@
     
     // Do something with your text
     // ...
+    NSAttributedString *string = [[NSAttributedString alloc] initWithString:text];
+    NSTextStorage *storage = [progressLogConsole textStorage];
+    
+    [storage beginEditing];
+    [storage appendAttributedString:string];
+    [storage endEditing];
+    
+    
+    
+    
     NSLog(text);
     
     [text release];

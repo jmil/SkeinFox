@@ -12,6 +12,7 @@
     IBOutlet NSButton *launchButton;
     IBOutlet NSButton *gCodeMeButton;
     IBOutlet NSTextField *stlFileNameDisplay;
+    IBOutlet NSTextView *progressLogConsole;
     IBOutlet NSProgressIndicator *indicator;
     IBOutlet NSWindow *window;
     IBOutlet NSArrayController *myArrayController;
