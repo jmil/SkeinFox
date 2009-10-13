@@ -359,8 +359,8 @@
     
     // assume that the scrollview is an existing variable
     if ([[progressLogConsoleScrollView documentView] isFlipped]) {
-        newScrollOrigin=NSMakePoint(0.0,NSMaxY([[progressLogConsoleScrollView documentView] frame])
-                                    -NSHeight([[progressLogConsoleScrollView contentView] bounds]));
+    //    newScrollOrigin=NSMakePoint(0.0,NSMaxY([[progressLogConsoleScrollView documentView] frame]) - NSHeight([[progressLogConsoleScrollView contentView] bounds]));
+        newScrollOrigin=NSMakePoint(0.0,NSMaxY([[progressLogConsoleScrollView documentView] frame]));
     } else {
         newScrollOrigin=NSMakePoint(0.0,0.0);
     }
