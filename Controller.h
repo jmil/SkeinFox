@@ -13,6 +13,9 @@
     IBOutlet NSButton *gCodeMeButton;
     IBOutlet NSTextField *stlFileNameDisplay;
     IBOutlet NSTextView *progressLogConsole;
+    IBOutlet NSDrawer *consoleDrawer;
+    IBOutlet NSButton *consoleToggleButton;
+    IBOutlet NSMenuItem *consoleToggleMenuItem;
     IBOutlet NSProgressIndicator *indicator;
     IBOutlet NSWindow *window;
     IBOutlet NSArrayController *myArrayController;
@@ -42,5 +45,6 @@
 - (void)finishedGCodeMe:(NSNotification *)aNotification;
 - (void)readPipe:(NSNotification *)aNotification;
 
+- (IBAction)consoleToggle:(id)sender;
 
 @end

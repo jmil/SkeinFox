@@ -75,9 +75,9 @@
     [storage endEditing];
     
     
+    [string release];
     
-    
-    NSLog(text);
+    //NSLog(text);
     
     [text release];
     
@@ -176,8 +176,21 @@
     [myArrayController setSelectionIndex:currentBranch];
     
     
-    
+        
 }
+
+- (void)consoleToggle:(id)sender {
+    //NSLog(@"Console toggled");
+    if ([consoleDrawer state] == NSDrawerOpenState) {
+        [consoleToggleMenuItem setTitle:@"Show Console"];
+    } else {
+        [consoleToggleMenuItem setTitle:@"Hide Console"];
+    }
+    
+    [consoleDrawer toggle:self];
+}
+
+
 
 
 - (void)processFile {
