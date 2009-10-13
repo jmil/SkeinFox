@@ -47,6 +47,7 @@
 - (void)readPipe:(NSNotification *)aNotification;
 
 - (IBAction)consoleToggle:(id)sender;
+- (IBAction)clearConsole:(id)sender;
 
 - (void)scrollToBottom:(id)sender;
 

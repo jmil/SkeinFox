@@ -105,6 +105,7 @@
     [launchButton setEnabled:NO];
     [consoleToggleMenuItem setTitle:@"Show Console"];
     [consoleToggleButton setState:NSOffState];
+    [stlFileNameDisplay setStringValue:@""];
 
     
     
@@ -199,6 +200,20 @@
     [consoleDrawer toggle:self];
 }
 
+- (void)clearConsole:(id)sender {
+    NSAttributedString *string = [[NSAttributedString alloc] initWithString:@""];
+    NSTextStorage *storage = [progressLogConsoleTextView textStorage];
+    
+    [storage beginEditing];
+    [storage setAttributedString:string];
+    [storage endEditing];
+    
+    
+    [string release];
+    
+    [self scrollToBottom:self];
+    
+}
 
 
 
