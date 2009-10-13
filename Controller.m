@@ -330,10 +330,13 @@
 - (IBAction) didUpdateGitBranchSelection:(id)sender {
     NSLog(@"I was selected!!");
     
-    NSLog(@"my current selection index is: %i", [myArrayController selectionIndex]);
+    NSLog(@"my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
     
     NSLog(@"therefore my selection must be %@", [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name]);
     
+    NSLog(@"but actually the row selected is: %i", [myTableView selectedRow]);
+    
+    //NSLog(@"therefore my selection must be %@", [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name]);
     
     // Get the title of the currently selected item
 //    NSLog(@"I was selected and my name is %@", popUpButton.selectedItem.title);
