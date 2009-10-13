@@ -176,6 +176,7 @@
     NSLog(@"my filename is '%@'", filename);
     self.stlFileToGCode = filename;
     
+    [stlFileNameDisplay setStringValue:[self stlFileToGCode]];
     [gCodeMeButton setEnabled:YES];
 
     
