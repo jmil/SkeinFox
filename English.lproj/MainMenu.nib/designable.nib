@@ -932,7 +932,7 @@
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="1071436959"/>
 									<string key="NSAction">_doScroller:</string>
-									<double key="NSPercent">5.714286e-01</double>
+									<double key="NSPercent">8.632653e-01</double>
 								</object>
 								<object class="NSClipView" id="820905787">
 									<reference key="NSNextResponder" ref="1071436959"/>
@@ -1609,6 +1609,14 @@
 						<reference key="destination" ref="41971772"/>
 					</object>
 					<int key="connectionID">520</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">myTableView</string>
+						<reference key="source" ref="210633948"/>
+						<reference key="destination" ref="96822512"/>
+					</object>
+					<int key="connectionID">532</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2860,7 +2868,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">531</int>
+			<int key="maxID">556</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2891,6 +2899,7 @@
 							<string>indicator</string>
 							<string>launchButton</string>
 							<string>myArrayController</string>
+							<string>myTableView</string>
 							<string>popUpButton</string>
 							<string>stlFileNameDisplay</string>
 							<string>stlFileToGCode</string>
@@ -2902,6 +2911,7 @@
 							<string>NSProgressIndicator</string>
 							<string>NSButton</string>
 							<string>NSArrayController</string>
+							<string>NSTableView</string>
 							<string>NSPopUpButton</string>
 							<string>NSTextField</string>
 							<string>NSString</string>

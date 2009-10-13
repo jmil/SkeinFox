@@ -289,9 +289,12 @@
     
     
     // Get the title of the currently selected item
-    NSLog(@"I was selected and my name is %@", popUpButton.selectedItem.title);
-    NSString *selectedItemName = popUpButton.selectedItem.title;
+//    NSLog(@"I was selected and my name is %@", popUpButton.selectedItem.title);
+//    NSString *selectedItemName = popUpButton.selectedItem.title;
     
+    NSLog(@"I was selected and my name is %@", [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name]);
+    NSString *selectedItemName = [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name];
+
     // Force Git Checkout; this is what the user will expect, that we will switch branches. any modifications to skeinforge will be thrown away. later we can give another option to not throw away changes and notify user that there were changes and let them fix things...
     NSString *prefix = @"cd ~/.skeinforge; git checkout -f ";
     NSString *commandToExecute = [prefix stringByAppendingString:selectedItemName];

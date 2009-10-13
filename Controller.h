@@ -8,6 +8,7 @@
     NSMutableArray *gitBranches;
     NSUInteger currentBranch;
     IBOutlet NSPopUpButton *popUpButton;
+    IBOutlet NSTableView *myTableView;
     IBOutlet NSButton *launchButton;
     IBOutlet NSButton *gCodeMeButton;
     IBOutlet NSTextField *stlFileNameDisplay;
