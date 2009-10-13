@@ -68,7 +68,7 @@
     // Do something with your text
     // ...
     NSAttributedString *string = [[NSAttributedString alloc] initWithString:text];
-    NSTextStorage *storage = [progressLogConsole textStorage];
+    NSTextStorage *storage = [progressLogConsoleTextView textStorage];
     
     [storage beginEditing];
     [storage appendAttributedString:string];
@@ -76,7 +76,8 @@
     
     
     [string release];
-    
+    [self scrollToBottom:self];
+
     //NSLog(text);
     
     [text release];
@@ -102,7 +103,9 @@
     [gCodeMeButton setTitle:@"Create GCode"];
     [gCodeMeButton setEnabled:NO];
     [launchButton setEnabled:NO];
-    
+    [consoleToggleMenuItem setTitle:@"Show Console"];
+    [consoleToggleButton setState:NSOffState];
+
     
     
     // Register for Dragtypes so that we can accept drag-and-dropped .stl files!
@@ -182,11 +185,17 @@
 - (void)consoleToggle:(id)sender {
     //NSLog(@"Console toggled");
     if ([consoleDrawer state] == NSDrawerOpenState) {
+        // About to close...
         [consoleToggleMenuItem setTitle:@"Show Console"];
+        [consoleToggleButton setState:NSOffState];
+        
     } else {
+        // About to open...
         [consoleToggleMenuItem setTitle:@"Hide Console"];
+        [consoleToggleButton setState:NSOnState];        
     }
     
+    // Perform the toggle
     [consoleDrawer toggle:self];
 }
 
@@ -321,11 +330,45 @@
     // Force Git Checkout; this is what the user will expect, that we will switch branches. any modifications to skeinforge will be thrown away. later we can give another option to not throw away changes and notify user that there were changes and let them fix things...
     NSString *prefix = @"cd ~/.skeinforge; git checkout -f ";
     NSString *commandToExecute = [prefix stringByAppendingString:selectedItemName];
-    NSLog(@"'%@'", commandToExecute);
-    NSString *checkoutResult = [ShellTask executeShellCommandSynchronously:[prefix stringByAppendingString:selectedItemName]];
-    NSLog(checkoutResult);
+//    NSLog(@"'%@'", commandToExecute);
+//    NSString *checkoutResult = [ShellTask executeShellCommandSynchronously:commandToExecute];
+//    NSLog(checkoutResult);
 
+    // Perform the shelltask and print it immediately to the console
+    NSAttributedString *string = [[NSAttributedString alloc] initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
+    NSTextStorage *storage = [progressLogConsoleTextView textStorage];
+    
+    [storage beginEditing];
+    [storage appendAttributedString:string];
+    [storage endEditing];
+    
+    
+    [string release];
+    
+    [self scrollToBottom:self];
+    
 }    
+
+
+- (void)scrollToBottom:(id)sender {
+    // Scroll to the bottom!!!
+    // get the current scroll position of the document view
+    //NSPoint currentScrollPosition=[[progressLogConsoleScrollView contentView] bounds].origin;
+    
+    NSPoint newScrollOrigin;
+    
+    // assume that the scrollview is an existing variable
+    if ([[progressLogConsoleScrollView documentView] isFlipped]) {
+        newScrollOrigin=NSMakePoint(0.0,NSMaxY([[progressLogConsoleScrollView documentView] frame])
+                                    -NSHeight([[progressLogConsoleScrollView contentView] bounds]));
+    } else {
+        newScrollOrigin=NSMakePoint(0.0,0.0);
+    }
+    
+    [[progressLogConsoleScrollView documentView] scrollPoint:newScrollOrigin];
+    
+}
+
 
 
 - (IBAction) launchSkeinforge:(id)sender {

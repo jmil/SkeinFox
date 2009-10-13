@@ -8,9 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="372"/>
 			<integer value="563"/>
-			<integer value="570"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -783,7 +781,7 @@
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{480, 360}</string>
 				<object class="NSView" key="NSWindowView" id="439893737">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1153,7 +1151,6 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{480, 375}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1280, 778}}</string>
 				<string key="NSMinSize">{480, 382}</string>
@@ -1344,7 +1341,7 @@
 						<object class="NSTextFieldCell" key="NSCell" id="1022541594">
 							<int key="NSCellFlags">68288064</int>
 							<int key="NSCellFlags2">272630784</int>
-							<string key="NSContents">This console logs the output from skeinforge.</string>
+							<string key="NSContents">Console</string>
 							<reference key="NSSupport" ref="331036165"/>
 							<reference key="NSControlView" ref="543006125"/>
 							<reference key="NSBackgroundColor" ref="256668538"/>
@@ -1837,14 +1834,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">progressLogConsole</string>
-						<reference key="source" ref="210633948"/>
-						<reference key="destination" ref="138275845"/>
-					</object>
-					<int key="connectionID">582</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">consoleDrawer</string>
 						<reference key="source" ref="210633948"/>
 						<reference key="destination" ref="67859705"/>
@@ -1882,6 +1871,22 @@
 						<reference key="destination" ref="556164358"/>
 					</object>
 					<int key="connectionID">607</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">progressLogConsoleTextView</string>
+						<reference key="source" ref="210633948"/>
+						<reference key="destination" ref="138275845"/>
+					</object>
+					<int key="connectionID">608</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">progressLogConsoleScrollView</string>
+						<reference key="source" ref="210633948"/>
+						<reference key="destination" ref="200533443"/>
+					</object>
+					<int key="connectionID">609</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -3223,7 +3228,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">607</int>
+			<int key="maxID">609</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3261,7 +3266,8 @@
 							<string>myArrayController</string>
 							<string>myTableView</string>
 							<string>popUpButton</string>
-							<string>progressLogConsole</string>
+							<string>progressLogConsoleScrollView</string>
+							<string>progressLogConsoleTextView</string>
 							<string>stlFileNameDisplay</string>
 							<string>stlFileToGCode</string>
 							<string>window</string>
@@ -3277,6 +3283,7 @@
 							<string>NSArrayController</string>
 							<string>NSTableView</string>
 							<string>NSPopUpButton</string>
+							<string>NSScrollView</string>
 							<string>NSTextView</string>
 							<string>NSTextField</string>
 							<string>NSString</string>

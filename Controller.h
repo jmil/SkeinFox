@@ -12,7 +12,8 @@
     IBOutlet NSButton *launchButton;
     IBOutlet NSButton *gCodeMeButton;
     IBOutlet NSTextField *stlFileNameDisplay;
-    IBOutlet NSTextView *progressLogConsole;
+    IBOutlet NSTextView *progressLogConsoleTextView;
+    IBOutlet NSScrollView *progressLogConsoleScrollView;
     IBOutlet NSDrawer *consoleDrawer;
     IBOutlet NSButton *consoleToggleButton;
     IBOutlet NSMenuItem *consoleToggleMenuItem;
@@ -46,5 +47,7 @@
 - (void)readPipe:(NSNotification *)aNotification;
 
 - (IBAction)consoleToggle:(id)sender;
+
+- (void)scrollToBottom:(id)sender;
 
 @end
