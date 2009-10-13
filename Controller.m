@@ -50,13 +50,15 @@
 }
 
 - (void)readPipe:(NSNotification *)aNotification {
-    NSLog(@"We are reading live output from standard output as it is being written, because we are being notified each time it's being written!!!");
+    //NSLog(@"We are reading live output from standard output as it is being written, because we are being notified each time it's being written!!!");
     
     NSData *data;
     NSString *text;
     
 //    if( [notification object] != _fileHandle )
 //        return;
+    
+    //NSLog(@"the userinfo NSDictionary is \n %@", [aNotification userInfo]);
     
     data = [[aNotification userInfo] 
             objectForKey:NSFileHandleNotificationDataItem];
@@ -69,11 +71,14 @@
     
     [text release];
     
+    //NSLog(@"the data are '%@'", data);
     // If the task is still running, then keep reading!!
-    if ([aNotification object]) {
+    if ([data length] != 0) {
         [[aNotification object] readInBackgroundAndNotify];
     }
-    
+//    if ([data length] == 0) {
+//        NSLog(@"MY DATA ARE NIL!!!!!!!");
+//    }    
 }
 
 
