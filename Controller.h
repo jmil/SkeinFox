@@ -15,6 +15,7 @@
     IBOutlet NSWindow *window;
     IBOutlet NSArrayController *myArrayController;
     NSString *stlFileToGCode;
+    NSTask *gCodeTaskInBackground;
 }
 
 @property (readwrite, retain) NSMutableArray *gitBranches;
@@ -35,7 +36,9 @@
 - (BOOL)dragIsFile:(id <NSDraggingInfo>)sender;
 - (NSString *)getFileForDrag:(id <NSDraggingInfo>)sender;
 
-- (void)processFile:(NSString *)filename;
+- (void)processFile;
+- (void)finishedGCodeMe:(NSNotification *)aNotification;
+- (void)readPipe:(NSNotification *)aNotification;
 
 
 @end

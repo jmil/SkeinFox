@@ -56,9 +56,26 @@
 
 + (oneway void) executeShellCommandAsynchronously:(NSString*)command
 {
-	[[self taskForShellCommand:command] launch];
-	
-	return;
+//  [[self taskForShellCommand:command] launch];
+    
+    
+    // Jordan's reimplementation here, so we can read the output in the background and show the user the output!!
+    NSTask *task = [self taskForShellCommand:command];
+    
+    //we pipe stdout and stderr into a file handle that we read to 
+    NSPipe *outputPipe = [NSPipe pipe];
+    [task setStandardOutput: outputPipe];
+    [task setStandardError: outputPipe];
+    NSFileHandle *outputFileHandle = [outputPipe fileHandleForReading];    
+    
+    
+    // We need to read in background and notify!!!!!
+    [outputFileHandle readInBackgroundAndNotify];
+    
+    [task launch];
+    
+    
+    return;
 }
 
 @end

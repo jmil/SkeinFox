@@ -24,6 +24,59 @@
 //@synthesize notificationCenter;
 //@synthesize popUpButton;
 
+
+
+- (id)init {
+    self = [super init];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector( readPipe: )
+                                                 name:NSFileHandleReadCompletionNotification 
+                                               object:nil];
+    
+        [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(finishedGCodeMe:) 
+                                                 name:NSTaskDidTerminateNotification 
+                                               object:nil];
+
+    return self;
+}
+
+
+- (void)finishedGCodeMe:(NSNotification *)aNotification {
+    NSLog(@"Finished GCodeMe!!!");
+    [gCodeMeButton setTitle:@"Create GCode"];
+    [indicator stopAnimation:nil];
+
+}
+
+- (void)readPipe:(NSNotification *)aNotification {
+    NSLog(@"We are reading live output from standard output as it is being written, because we are being notified each time it's being written!!!");
+    
+    NSData *data;
+    NSString *text;
+    
+//    if( [notification object] != _fileHandle )
+//        return;
+    
+    data = [[aNotification userInfo] 
+            objectForKey:NSFileHandleNotificationDataItem];
+    text = [[NSString alloc] initWithData:data 
+                                 encoding:NSASCIIStringEncoding];
+    
+    // Do something with your text
+    // ...
+    NSLog(text);
+    
+    [text release];
+    
+    // If the task is still running, then keep reading!!
+    if ([aNotification object]) {
+        [[aNotification object] readInBackgroundAndNotify];
+    }
+    
+}
+
+
 - (void)awakeFromNib {
     
     // Check if git is installed!
@@ -31,6 +84,7 @@
     
     // Turn off interface buttons!
     //[popUpButton setEnabled:NO];
+    [gCodeMeButton setTitle:@"Create GCode"];
     [gCodeMeButton setEnabled:NO];
     [launchButton setEnabled:NO];
     
@@ -111,10 +165,15 @@
 }
 
 
-- (void)processFile:(NSString *)filename {
+- (void)processFile {
     [popUpButton setEnabled:NO];
-    [gCodeMeButton setEnabled:NO];
     [launchButton setEnabled:NO];
+
+    // Disable gCodeMeButton and start the indicator spinning animation
+    [gCodeMeButton setEnabled:NO];
+    [gCodeMeButton setTitle:@"Running..."];
+    [indicator startAnimation:nil];
+    
     //[openFile setEnabled:NO];
 }
 
@@ -279,13 +338,44 @@
         NSString *completeStringToExecute = [[commandToExecuteWithQuotes stringByAppendingString:@" "] stringByAppendingString:quotedSTLFileToGcode];
         NSLog(@"'%@'", completeStringToExecute);
 
-        // Disable gCodeMeButton and start the indicator spinning animation
-        [gCodeMeButton setEnabled:NO];
-        [indicator startAnimation:nil];
         
-        [self processFile:[self stlFileToGCode]];
+        [self processFile];
         [ShellTask executeShellCommandAsynchronously:completeStringToExecute];
         NSLog(@"yep, skeinforge was launched asynchronously");
+
+        
+        
+        
+        
+        //Launch "ls -l -a -t" in the current directory, and then read the result into an NSString:
+        
+//        NSTask *task;
+//        task = [[NSTask alloc] init];
+////        [task setLaunchPath: @"/bin/ls"];
+//        [task setLaunchPath: commandToExecuteWithoutQuotes];
+//
+//        NSArray *arguments;
+////        arguments = [NSArray arrayWithObjects: @"-l", @"-a", @"-t", nil];
+//        arguments = [NSArray arrayWithObjects: stlFileToGCode, nil];
+//        [task setArguments: arguments];
+//        
+//        NSPipe *pipe;
+//        pipe = [NSPipe pipe];
+//        [task setStandardOutput: pipe];
+//        
+//        NSFileHandle *file;
+//        file = [pipe fileHandleForReading];
+//        
+//        [task launch];
+//        
+//        NSData *data;
+//        data = [file readDataToEndOfFile];
+//        
+//        NSString *string;
+//        string = [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
+//        NSLog (@"got\n%@", string);
+    
+
     }
     
     
