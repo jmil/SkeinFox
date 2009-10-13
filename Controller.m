@@ -29,6 +29,12 @@
     // Check if git is installed!
     
     
+    // Turn off interface buttons!
+    //[popUpButton setEnabled:NO];
+    [gCodeMeButton setEnabled:NO];
+    [launchButton setEnabled:NO];
+    
+    
     
     // Register for Dragtypes so that we can accept drag-and-dropped .stl files!
 //    NSArray *dragTypes = [NSArray arrayWithObjects:<#(id)firstObj#>];
@@ -170,6 +176,9 @@
     NSLog(@"my filename is '%@'", filename);
     self.stlFileToGCode = filename;
     
+    [gCodeMeButton setEnabled:YES];
+
+    
     return NSDragOperationAll;
 }
 
@@ -268,7 +277,9 @@
         
         NSString *completeStringToExecute = [[commandToExecuteWithQuotes stringByAppendingString:@" "] stringByAppendingString:quotedSTLFileToGcode];
         NSLog(@"'%@'", completeStringToExecute);
-        
+
+        // Disable gCodeMeButton and start the indicator spinning animation
+        [gCodeMeButton setEnabled:NO];
         [indicator startAnimation:nil];
         
         [self processFile:[self stlFileToGCode]];
