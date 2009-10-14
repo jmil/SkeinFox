@@ -324,6 +324,56 @@
 
 
 
+// Controller.m is set as NSTableView's delegate in Interface Builder. This allows us to call this NSTableView delegate method
+- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn: 
+(NSTableColumn *)aTableColumn row:(int)rowIndex {
+    NSLog(@"should edit table column at this row index!!!");
+    return YES;
+}
+
+- (void)textDidEndEditing:(NSNotification *)aNotification {
+    NSLog(@"I finished editing my text!!!");
+}
+
+- (BOOL)textShouldBeginEditing:(NSText *)textObject {
+    NSLog(@"Should I begin editing!!!");
+    return YES;
+}
+
+
+
+
+- (void)tableViewSelectionIsChanging:(NSNotification *)aNotification {
+    NSLog(@"TableView SELECTION IS CHANGING!!!");
+}
+
+- (void)tableView:(NSTableView *)tableView mouseDownInHeaderOfTableColumn:(NSTableColumn *)tableColumn {
+    NSLog(@"TableView Header Clicked!!!");
+}
+
+//- (BOOL)selectionShouldChangeInTableView:(NSTableView *)aTableView {
+//    NSLog(@"SELECTION SHOULD CHANGE IN TABLE VIEW!!!");   
+//    //[self didUpdateGitBranchSelection:self];
+//    return YES;
+//}
+
+- (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(NSInteger)rowIndex {
+    NSLog(@"TableView Should select row #%i!!!", rowIndex);
+    NSLog(@"BUT my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
+    //NSLog(@"Which Contains: %@", [myArrayController ]);
+    
+    // Now setting the selection index for this object!!
+    [myArrayController setSelectionIndex:rowIndex];
+    NSLog(@"NOW my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
+    
+    //Switch Git Branches!!!!
+    [self didUpdateGitBranchSelection:self];
+    return YES;
+}
+
+
+
+
 
 // Send a notification to self that the user did update the git branch selection
 
@@ -331,10 +381,15 @@
     NSLog(@"I was selected!!");
     
     NSLog(@"my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
+    NSLog(@"my current selection objects in myArrayController is: %@", [myArrayController selectedObjects]);
+    NSLog(@"my current selection OBJECT NAME IS: %@", [[[myArrayController selectedObjects] objectAtIndex:0] name]);
     
-    NSLog(@"therefore my selection must be %@", [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name]);
     
-    NSLog(@"but actually the row selected is: %i", [myTableView selectedRow]);
+    
+
+//    NSLog(@"therefore my selection must be %@", [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name]);
+//    
+//    NSLog(@"but actually the row selected is: %i", [myTableView selectedRow]);
     
     //NSLog(@"therefore my selection must be %@", [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name]);
     
@@ -342,8 +397,11 @@
 //    NSLog(@"I was selected and my name is %@", popUpButton.selectedItem.title);
 //    NSString *selectedItemName = popUpButton.selectedItem.title;
     
-    NSLog(@"I was selected and my name is %@", [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name]);
-    NSString *selectedItemName = [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name];
+//    NSLog(@"I was selected and my name is %@", [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name]);
+
+    // NEED TO GRAB DATA FROM myArrayController, NOT from gitBranches!!!
+    //NSString *selectedItemName = [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name];
+    NSString *selectedItemName = [[[myArrayController selectedObjects] objectAtIndex:0] name];
 
     // Force Git Checkout; this is what the user will expect, that we will switch branches. any modifications to skeinforge will be thrown away. later we can give another option to not throw away changes and notify user that there were changes and let them fix things...
     NSString *prefix = @"cd ~/.skeinforge; git checkout -f ";
