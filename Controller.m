@@ -177,45 +177,37 @@
         gitBranch *branch = [[[gitBranch alloc] init] autorelease];
         branch.name = name;
         branch.lastModified = @"last modified on XXXXX";
-
-        
-//        //There's a logical interface error in that as soon as self.gitBranches is set to gitBranches, the table will be populated and - (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(NSInteger)rowIndex; will IMMEDIATELY be called. The fallout means that although the user will have some branch currently checked out, the table will ALWAYS select the object that is at index 0. Therefore, immediately before adding branch to gitBranches we should check if it's name is equal to self.currentBranch; if so, then we should add branch to gitBranches atIndex:0. Then when the table is sorted this object will be selected no matter where it is sorted to, because it is first in the gitBranches array!!
-        
-        // NOTE: THIS DOES NOT WORK!!!
-//        
-//        NSLog(@"the currentBranch '%@' is", self.currentBranch);
-//        
-//        NSLog(@"going to be compared to name of:'%@'", name);
-//        if ([branch.name isEqualToString:self.currentBranch]) {
-//            NSLog(@"WOWOWOWOW the currentBranch '%@' is verified as identical to '%@'!!!", self.currentBranch, name);
-//            [gitBranches insertObject:branch atIndex:0];
-//            
-//        } else {
         [gitBranches addObject:branch];
 
-//        }
-        
         
     }
     
     NSLog(@"myArrayController selection index is currently %i", [myArrayController selectionIndex]);
 
+    // Since we use Cocoa Bindings, AS SOON AS self.gitBranches is defined, the table will be as well!
     self.gitBranches = gitBranches;
     
     
-    for (gitBranch *whoami in self.gitBranches) {
-        NSLog(@"my branch name is:%@", whoami.name);
+    // Now that the table is populated, we must immediately tell the table which row to select!
+    for (gitBranch *thisBranch in self.gitBranches) {
+        //NSLog(@"my branch name is:%@", whoami.name);
+        
+        if ([thisBranch.name isEqualToString:self.currentBranch]) {
+            //NSLog(@"Yes!! the currentBranch '%@' is verified as identical to '%@'!!!", self.currentBranch, thisBranch.name);
+            [myArrayController setSelectedObjects:[NSArray arrayWithObjects:thisBranch, nil]];
+        }
+                
     }
-    
-    
-//    NSLog(@"my currentBranch is %@", [NSMutableString :self.currentBranch]);
-    
-    //[myArrayController setSelectionIndex:4];
     
     NSLog(@"myArrayController selection index is currently %i", [myArrayController selectionIndex]);
     
+    // We also DON'T need to update the GitBranchSelection since we have just selected the current Branch!!!
+    //[self didUpdateGitBranchSelection:self];
+
     
-    
+    //*******************
+    // Control for Interface Elements setup
+    //*******************
     
     // Turn off interface buttons!
     //[popUpButton setEnabled:NO];
