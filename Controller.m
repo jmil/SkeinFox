@@ -98,6 +98,17 @@
     // Check if git is installed!
     
     
+    
+    
+    
+    // See if .skeinforge Directory exists
+    NSString *skeinforgeConfigDirectory = [@"~/.skeinforge" stringByExpandingTildeInPath];
+    
+    NSString *SkeinFoxDefaultskeinforgeConfigDirectory = @"hello";
+    
+    
+    
+    
     // Turn off interface buttons!
     //[popUpButton setEnabled:NO];
     [gCodeMeButton setTitle:@"Create GCode"];
