@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">437.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="381"/>
+			<integer value="372"/>
 			<integer value="29"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -1002,7 +1002,7 @@
 							<reference key="NSNextResponder" ref="439893737"/>
 							<int key="NSvFlags">1314</int>
 							<object class="NSPSMatrix" key="NSDrawMatrix"/>
-							<string key="NSFrame">{{165, 16}, {225, 20}}</string>
+							<string key="NSFrame">{{223, 16}, {167, 20}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<int key="NSpiFlags">24586</int>
 							<double key="NSMinValue">2.000000e+01</double>
@@ -1204,6 +1204,26 @@
 								<bool key="NSAnimates">NO</bool>
 							</object>
 							<bool key="NSEditable">YES</bool>
+						</object>
+						<object class="NSButton" id="265815918">
+							<reference key="NSNextResponder" ref="439893737"/>
+							<int key="NSvFlags">288</int>
+							<string key="NSFrame">{{165, 10}, {58, 32}}</string>
+							<reference key="NSSuperview" ref="439893737"/>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="376107163">
+								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags2">134217728</int>
+								<string key="NSContents">Halt</string>
+								<reference key="NSSupport" ref="331036165"/>
+								<reference key="NSControlView" ref="265815918"/>
+								<int key="NSButtonFlags">-2038284033</int>
+								<int key="NSButtonFlags2">129</int>
+								<string key="NSAlternateContents"/>
+								<string key="NSKeyEquivalent"/>
+								<int key="NSPeriodicDelay">200</int>
+								<int key="NSPeriodicInterval">25</int>
+							</object>
 						</object>
 					</object>
 					<string key="NSFrameSize">{480, 375}</string>
@@ -1990,6 +2010,22 @@
 					</object>
 					<int key="connectionID">639</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">haltButton</string>
+						<reference key="source" ref="210633948"/>
+						<reference key="destination" ref="265815918"/>
+					</object>
+					<int key="connectionID">646</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">haltGCoding:</string>
+						<reference key="source" ref="210633948"/>
+						<reference key="destination" ref="265815918"/>
+					</object>
+					<int key="connectionID">647</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -2616,6 +2652,7 @@
 							<reference ref="25069416"/>
 							<reference ref="242423191"/>
 							<reference ref="235606191"/>
+							<reference ref="265815918"/>
 						</object>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -2892,6 +2929,20 @@
 						<reference key="object" ref="1006353615"/>
 						<reference key="parent" ref="235606191"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">644</int>
+						<reference key="object" ref="265815918"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="376107163"/>
+						</object>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">645</int>
+						<reference key="object" ref="376107163"/>
+						<reference key="parent" ref="265815918"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -3099,6 +3150,8 @@
 					<string>626.IBPluginDependency</string>
 					<string>642.IBPluginDependency</string>
 					<string>643.IBPluginDependency</string>
+					<string>644.IBPluginDependency</string>
+					<string>645.IBPluginDependency</string>
 					<string>72.IBPluginDependency</string>
 					<string>72.ImportedFromIB2</string>
 					<string>73.IBPluginDependency</string>
@@ -3329,6 +3382,8 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
@@ -3371,7 +3426,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">643</int>
+			<int key="maxID">647</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3387,11 +3442,13 @@
 							<string>consoleToggle:</string>
 							<string>didUpdateGitBranchSelection:</string>
 							<string>gCodeMe:</string>
+							<string>haltGCoding:</string>
 							<string>launchSkeinforge:</string>
 							<string>scrollToBottom:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -3408,6 +3465,7 @@
 							<string>consoleToggleButton</string>
 							<string>consoleToggleMenuItem</string>
 							<string>gCodeMeButton</string>
+							<string>haltButton</string>
 							<string>indicator</string>
 							<string>launchButton</string>
 							<string>myArrayController</string>
@@ -3424,6 +3482,7 @@
 							<string>NSDrawer</string>
 							<string>NSButton</string>
 							<string>NSMenuItem</string>
+							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSProgressIndicator</string>
 							<string>NSButton</string>

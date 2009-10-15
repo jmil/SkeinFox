@@ -39,14 +39,22 @@
                                                  name:NSTaskDidTerminateNotification 
                                                object:nil];
     
-    firstTimeTableViewIsPopulated = YES;
+    // Define gCodeTaskInBackground here!!
+    gCodeTaskInBackground = [[[NSTask alloc] init] autorelease]; 
+    [gCodeTaskInBackground setLaunchPath: @"/bin/sh"]; //we are launching sh, it is wha will process command for us
+    [gCodeTaskInBackground setStandardInput:[NSFileHandle fileHandleWithNullDevice]]; //stdin is directed to /dev/null    
+
 
     return self;
 }
 
 
 - (void)finishedGCodeMe:(NSNotification *)aNotification {
-    NSLog(@"Finished GCodeMe!!!");
+    NSLog(@"'%@' ", aNotification.name);
+    
+    
+    
+    
     [gCodeMeButton setTitle:@"Create GCode"];
     [indicator stopAnimation:nil];
 
@@ -132,12 +140,12 @@
     
     NSArray *namesTemp = [branchesRaw componentsSeparatedByString:@"\n"];
     NSMutableArray *names = [NSMutableArray arrayWithArray:namesTemp];
-    NSLog(@"the branch names are the following:%@", names);
+    //NSLog(@"the branch names are the following:%@", names);
     
     
-    //Set the current branch to 'basic--Raft'
+    //Set the self.currentBranch default value to 'basic--Raft'
     self.currentBranch = [[NSMutableString alloc] initWithString:@"basic--Raft"];
-    NSLog(@"the default currentBranch value has been successfully set to '%@'", self.currentBranch);
+    //NSLog(@"the default currentBranch value has been successfully set to '%@'", self.currentBranch);
     
     
     // Cleanup the Array to both mark the currently selected branch and also to remove leading and lagging whitespace
@@ -151,7 +159,7 @@
             // Check whether 2nd character is *, therefore this is the current branch
             if ([[element substringToIndex:1] isEqualToString: @"*"] ) {
                 [[self currentBranch] setString:[element substringFromIndex:2]];
-                NSLog(@"I am the current branch, and my name is '%@' @index '%i'", [element substringFromIndex:2], index);
+                //NSLog(@"I am the current branch, and my name is '%@' @index '%i'", [element substringFromIndex:2], index);
             }
             
             
@@ -182,8 +190,6 @@
         
     }
     
-    NSLog(@"myArrayController selection index is currently %i", [myArrayController selectionIndex]);
-
     // Since we use Cocoa Bindings, AS SOON AS self.gitBranches is defined, the table will be as well!
     self.gitBranches = gitBranches;
     
@@ -199,7 +205,7 @@
                 
     }
     
-    NSLog(@"myArrayController selection index is currently %i", [myArrayController selectionIndex]);
+    //NSLog(@"myArrayController selection index is currently %i", [myArrayController selectionIndex]);
     
     // We also DON'T need to update the GitBranchSelection since we have just selected the current Branch!!!
     //[self didUpdateGitBranchSelection:self];
@@ -531,6 +537,10 @@
     
 }
 
+- (IBAction) haltGCoding:(id)sender {
+    gCodeTaskInBackground.terminate;
+    
+}
 
 - (IBAction) gCodeMe:(id)sender {
     
@@ -554,9 +564,26 @@
         NSString *completeStringToExecute = [[commandToExecuteWithQuotes stringByAppendingString:@" "] stringByAppendingString:quotedSTLFileToGcode];
         NSLog(@"'%@'", completeStringToExecute);
 
-        
+        // Update UI that we're working
         [self processFile];
-        [ShellTask executeShellCommandAsynchronously:completeStringToExecute];
+        // Launch the shellTask in the background
+        // We have to have the task be completely defined here because we need to keep track of the NSTask so that we can terminate the task if we want to!!
+        
+        
+        //[ShellTask executeShellCommandAsynchronously:completeStringToExecute];
+        
+        
+        NSArray	*args = [NSArray arrayWithObjects:	@"-c", //-c tells sh to execute commands from the next argument
+                         completeStringToExecute, //sh will read and execute the commands in this string.
+                         nil];
+        [gCodeTaskInBackground setArguments: args];
+        
+        
+        
+        
+        
+        
+        
         NSLog(@"yep, skeinforge was launched asynchronously");
 
         

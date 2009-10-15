@@ -9,7 +9,6 @@
     NSMutableString *currentBranch;
     IBOutlet NSPopUpButton *popUpButton;
     IBOutlet NSTableView *myTableView;
-    BOOL firstTimeTableViewIsPopulated;
     IBOutlet NSButton *launchButton;
     IBOutlet NSButton *gCodeMeButton;
     IBOutlet NSTextField *stlFileNameDisplay;
@@ -22,6 +21,7 @@
     IBOutlet NSWindow *window;
     IBOutlet NSArrayController *myArrayController;
     NSString *stlFileToGCode;
+    IBOutlet NSButton *haltButton;
     NSTask *gCodeTaskInBackground;
 }
 
@@ -38,6 +38,7 @@
 // Launch Skeinforge
 - (IBAction) launchSkeinforge:(id)sender;
 - (IBAction) gCodeMe:(id)sender;
+- (IBAction) haltGCoding:(id)sender;
 
 
 // Drag and Drop!!

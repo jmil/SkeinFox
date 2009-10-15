@@ -19,16 +19,16 @@
 //Sending the task a - launch message will tell sh to run it.
 + (NSTask*) taskForShellCommand:(NSString*)command
 {
-	NSTask *task = [[[NSTask alloc] init] autorelease]; 
+    NSTask *task = [[[NSTask alloc] init] autorelease]; 
     [task setLaunchPath: @"/bin/sh"]; //we are launching sh, it is wha will process command for us
-	[task setStandardInput:[NSFileHandle fileHandleWithNullDevice]]; //stdin is directed to /dev/null
-	
-	
-	NSArray	*args = [NSArray arrayWithObjects:	@"-c", //-c tells sh to execute commands from the next argument
-												command, //sh will read and execute the commands in this string.
-												nil];
+    [task setStandardInput:[NSFileHandle fileHandleWithNullDevice]]; //stdin is directed to /dev/null
+    
+    
+    NSArray	*args = [NSArray arrayWithObjects:	@"-c", //-c tells sh to execute commands from the next argument
+                         command, //sh will read and execute the commands in this string.
+                         nil];
     [task setArguments: args];
-
+    
     return task;
 }
 
@@ -41,22 +41,22 @@
 //I have not experienced the problem myself, so I can’t comment.
 + (NSString*) executeShellCommandSynchronously:(NSString*)command
 {
-	NSTask *task = [self taskForShellCommand:command];
-	
-	//we pipe stdout and stderr into a file handle that we read to 
+    NSTask *task = [self taskForShellCommand:command];
+    
+    //we pipe stdout and stderr into a file handle that we read to 
     NSPipe *outputPipe = [NSPipe pipe];
     [task setStandardOutput: outputPipe];
-	[task setStandardError: outputPipe];
+    [task setStandardError: outputPipe];
     NSFileHandle *outputFileHandle = [outputPipe fileHandleForReading];
-	
+    
     [task launch];
-
-	return [[[NSString alloc] initWithData:[outputFileHandle readDataToEndOfFile] encoding: NSUTF8StringEncoding] autorelease];
+    
+    return [[[NSString alloc] initWithData:[outputFileHandle readDataToEndOfFile] encoding: NSUTF8StringEncoding] autorelease];
 }
 
 + (oneway void) executeShellCommandAsynchronously:(NSString*)command
 {
-//  [[self taskForShellCommand:command] launch];
+    //  [[self taskForShellCommand:command] launch];
     
     
     // Jordan's reimplementation here, so we can read the output in the background and show the user the output!!
