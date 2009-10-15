@@ -6,9 +6,10 @@
 
 @interface Controller : NSObject {
     NSMutableArray *gitBranches;
-    NSUInteger currentBranch;
+    NSMutableString *currentBranch;
     IBOutlet NSPopUpButton *popUpButton;
     IBOutlet NSTableView *myTableView;
+    BOOL firstTimeTableViewIsPopulated;
     IBOutlet NSButton *launchButton;
     IBOutlet NSButton *gCodeMeButton;
     IBOutlet NSTextField *stlFileNameDisplay;
@@ -25,6 +26,7 @@
 }
 
 @property (readwrite, retain) NSMutableArray *gitBranches;
+@property (readwrite, retain) NSMutableString *currentBranch;
 //@property (nonatomic, retain) IBOutlet NSPopUpButton *popUpButton;
 @property (nonatomic, retain) IBOutlet NSArrayController *myArrayController;
 @property (nonatomic, retain) IBOutlet NSString *stlFileToGCode;

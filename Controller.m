@@ -21,6 +21,7 @@
 
 @synthesize gitBranches, myArrayController;
 @synthesize stlFileToGCode;
+@synthesize currentBranch;
 //@synthesize notificationCenter;
 //@synthesize popUpButton;
 
@@ -37,6 +38,8 @@
                                              selector:@selector(finishedGCodeMe:) 
                                                  name:NSTaskDidTerminateNotification 
                                                object:nil];
+    
+    firstTimeTableViewIsPopulated = YES;
 
     return self;
 }
@@ -102,56 +105,39 @@
     
     
     // See if .skeinforge Directory exists
-    NSString *skeinforgeConfigDirectory = [@"~/.skeinforge" stringByExpandingTildeInPath];
+    //NSString *skeinforgeConfigDirectory = [@"~/.skeinforge" stringByExpandingTildeInPath];
     
-    NSString *SkeinFoxDefaultskeinforgeConfigDirectory = @"hello";
-    
-    
+    //NSString *SkeinFoxDefaultskeinforgeConfigDirectory = @"hello";
     
     
-    // Turn off interface buttons!
-    //[popUpButton setEnabled:NO];
-    [gCodeMeButton setTitle:@"Create GCode"];
-    [gCodeMeButton setEnabled:NO];
-    [launchButton setEnabled:NO];
-    [consoleToggleMenuItem setTitle:@"Show Console"];
-    [consoleToggleButton setState:NSOffState];
-    [stlFileNameDisplay setStringValue:@""];
-
     
-    
-    // Register for Dragtypes so that we can accept drag-and-dropped .stl files!
-//    NSArray *dragTypes = [NSArray arrayWithObjects:<#(id)firstObj#>];
-//    [self.window registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType,NSFilenamesPboardType, nil]];    
-
-    NSArray *dragTypes = [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
-    
-    [window registerForDraggedTypes:dragTypes];
     
     
     
     // Populate pop-up with Git branches for .skeinforge directory!
     
-    NSString *testDoesGitExist = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge; PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch"];
-    NSLog(testDoesGitExist);
+    //NSString *testDoesGitExist = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge; PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch"];
+    //NSLog(testDoesGitExist);
 
 
-    NSString *whereIsGit = [ShellTask executeShellCommandSynchronously:@"which git"];
-    NSLog(whereIsGit);
+    //NSString *whereIsGit = [ShellTask executeShellCommandSynchronously:@"which git"];
+    //NSLog(whereIsGit);
 
 //    NSString *whereIsGit = [ShellTask executeShellCommandSynchronously:@"which git"];
 //    NSLog(whereIsGit);
 
 
     NSString *branchesRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch"];
-    NSLog(branchesRaw);
+    //NSLog(branchesRaw);
     
     NSArray *namesTemp = [branchesRaw componentsSeparatedByString:@"\n"];
     NSMutableArray *names = [NSMutableArray arrayWithArray:namesTemp];
+    NSLog(@"the branch names are the following:%@", names);
     
     
-    //Set the current branch to 0
-    currentBranch = 0;
+    //Set the current branch to 'basic--Raft'
+    self.currentBranch = [[NSMutableString alloc] initWithString:@"basic--Raft"];
+    NSLog(@"the default currentBranch value has been successfully set to '%@'", self.currentBranch);
     
     
     // Cleanup the Array to both mark the currently selected branch and also to remove leading and lagging whitespace
@@ -164,12 +150,12 @@
             
             // Check whether 2nd character is *, therefore this is the current branch
             if ([[element substringToIndex:1] isEqualToString: @"*"] ) {
-                NSLog(@"I am the current branch, and my name is %@", element);
-                currentBranch = index;                
+                [[self currentBranch] setString:[element substringFromIndex:2]];
+                NSLog(@"I am the current branch, and my name is '%@' @index '%i'", [element substringFromIndex:2], index);
             }
             
             
-            // Remove first 3 characters
+            // Remove first 3 characters before adding to the tempArray
             [tempArray addObject:[element substringFromIndex:2]];
             
             
@@ -187,23 +173,135 @@
     
     //NSArray *names = [NSArray arrayWithObjects:@"Bird", @"Chair", @"Song", @"Computer", nil];
     gitBranches = [NSMutableArray array];
-    for (NSString *name in names)
-    {
+    for (NSString *name in names) {
         gitBranch *branch = [[[gitBranch alloc] init] autorelease];
         branch.name = name;
         branch.lastModified = @"last modified on XXXXX";
+
+        
+//        //There's a logical interface error in that as soon as self.gitBranches is set to gitBranches, the table will be populated and - (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(NSInteger)rowIndex; will IMMEDIATELY be called. The fallout means that although the user will have some branch currently checked out, the table will ALWAYS select the object that is at index 0. Therefore, immediately before adding branch to gitBranches we should check if it's name is equal to self.currentBranch; if so, then we should add branch to gitBranches atIndex:0. Then when the table is sorted this object will be selected no matter where it is sorted to, because it is first in the gitBranches array!!
+        
+        // NOTE: THIS DOES NOT WORK!!!
+//        
+//        NSLog(@"the currentBranch '%@' is", self.currentBranch);
+//        
+//        NSLog(@"going to be compared to name of:'%@'", name);
+//        if ([branch.name isEqualToString:self.currentBranch]) {
+//            NSLog(@"WOWOWOWOW the currentBranch '%@' is verified as identical to '%@'!!!", self.currentBranch, name);
+//            [gitBranches insertObject:branch atIndex:0];
+//            
+//        } else {
         [gitBranches addObject:branch];
+
+//        }
+        
+        
     }
     
+    NSLog(@"myArrayController selection index is currently %i", [myArrayController selectionIndex]);
+
     self.gitBranches = gitBranches;
     
-    NSLog(@"my currentBranch is %i", currentBranch);
     
-    [myArrayController setSelectionIndex:currentBranch];
+    for (gitBranch *whoami in self.gitBranches) {
+        NSLog(@"my branch name is:%@", whoami.name);
+    }
+    
+    
+//    NSLog(@"my currentBranch is %@", [NSMutableString :self.currentBranch]);
+    
+    //[myArrayController setSelectionIndex:4];
+    
+    NSLog(@"myArrayController selection index is currently %i", [myArrayController selectionIndex]);
+    
+    
+    
+    
+    // Turn off interface buttons!
+    //[popUpButton setEnabled:NO];
+    [gCodeMeButton setTitle:@"Create GCode"];
+    [gCodeMeButton setEnabled:NO];
+    [launchButton setEnabled:NO];
+    [consoleToggleMenuItem setTitle:@"Show Console"];
+    [consoleToggleButton setState:NSOffState];
+    [stlFileNameDisplay setStringValue:@""];
+    
+    
+    
+    // Register for Dragtypes so that we can accept drag-and-dropped .stl files!
+    //    NSArray *dragTypes = [NSArray arrayWithObjects:<#(id)firstObj#>];
+    //    [self.window registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType,NSFilenamesPboardType, nil]];    
+    
+    NSArray *dragTypes = [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
+    
+    [window registerForDraggedTypes:dragTypes];
     
     
         
 }
+
+
+- (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(NSInteger)rowIndex {
+    NSLog(@"tableView:aTableView called!!!");
+    
+    // During awakeFromNib, self.gitBranches is set. Since the contents of the tableView is bound to this array, AS SOON AS self.gitBranches is set the table tries to select row0 despite our attempts to have it display that the currently checked out branch is selected with initial code in awakeFromNib! We cannot programmatically select an item in the table until the table is populated, but AS SOON AS ITS POPULATED the first row is automatically and IMMEDIATELY selected, which calls this function. Ugh. We need to override this to instead figure out which branch we are currently on, and then select that one on initial application loading without checking anything out. For subsequent calls of this function though, we need to first set the selection and then checkout that branch. Ugh.
+    // So we therefore need a new ivar which just keeps track of whether we should select the current branch or allow the selection to change
+    
+    if (firstTimeTableViewIsPopulated) {
+        firstTimeTableViewIsPopulated = NO;
+        
+        NSLog(@"THIS IS THE FIRST TIME THE TABLE VIEW IS POPULATED");
+        //We need to override default behavior to select row0 and instead search where self.gitBranches matches currentBranch and tell the table to select that row and DON'T CHECKOUT that branch, since it's ALREADY checked out
+        
+        NSLog(@"my array controller is %@", self.myArrayController);
+        
+        //        for (gitBranch *compareThisBranch in self.myArrayController) {
+        //            NSLog(@"the gitBranch for comparison is: '%@'", compareThisBranch.name);
+        //        }
+        
+        //        if ([branch.name isEqualToString:self.currentBranch]) {
+        //        NSLog(@"WOWOWOWOW the currentBranch '%@' is verified as identical to '%@'!!!", self.currentBranch, name);
+        //        [gitBranches insertObject:branch atIndex:0];
+        //        } else {
+        //        [gitBranches addObject:branch];
+        //        
+        //        }
+        
+        
+        
+        // Now setting the selection index for this object!!
+        [myArrayController setSelectionIndex:4];
+        NSLog(@"NOW my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
+        
+        //DON'T Switch Git Branches!!!!
+        //////////[self didUpdateGitBranchSelection:self];
+        
+        // AND DEFINITELY Disallow the selection of rowIndex 0
+        return NO;
+        
+    } else {
+        NSLog(@"TableView Should select row #%i!!!", rowIndex);
+        NSLog(@"BUT my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
+        //NSLog(@"Which Contains: %@", [myArrayController ]);
+        
+        // Now setting the selection index for this object!!
+        [myArrayController setSelectionIndex:rowIndex];
+        NSLog(@"NOW my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
+        
+        //Switch Git Branches!!!!
+        [self didUpdateGitBranchSelection:self];
+        return YES;
+    }
+    
+}
+
+
+
+
+
+
+
+
 
 - (void)consoleToggle:(id)sender {
     //NSLog(@"Console toggled");
@@ -378,20 +476,6 @@
 //    //[self didUpdateGitBranchSelection:self];
 //    return YES;
 //}
-
-- (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(NSInteger)rowIndex {
-    NSLog(@"TableView Should select row #%i!!!", rowIndex);
-    NSLog(@"BUT my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
-    //NSLog(@"Which Contains: %@", [myArrayController ]);
-    
-    // Now setting the selection index for this object!!
-    [myArrayController setSelectionIndex:rowIndex];
-    NSLog(@"NOW my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
-    
-    //Switch Git Branches!!!!
-    [self didUpdateGitBranchSelection:self];
-    return YES;
-}
 
 
 
