@@ -244,54 +244,17 @@
 - (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(NSInteger)rowIndex {
     NSLog(@"tableView:aTableView called!!!");
     
-    // During awakeFromNib, self.gitBranches is set. Since the contents of the tableView is bound to this array, AS SOON AS self.gitBranches is set the table tries to select row0 despite our attempts to have it display that the currently checked out branch is selected with initial code in awakeFromNib! We cannot programmatically select an item in the table until the table is populated, but AS SOON AS ITS POPULATED the first row is automatically and IMMEDIATELY selected, which calls this function. Ugh. We need to override this to instead figure out which branch we are currently on, and then select that one on initial application loading without checking anything out. For subsequent calls of this function though, we need to first set the selection and then checkout that branch. Ugh.
-    // So we therefore need a new ivar which just keeps track of whether we should select the current branch or allow the selection to change
+    NSLog(@"TableView Should select row #%i!!!", rowIndex);
+    NSLog(@"BUT my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
+    //NSLog(@"Which Contains: %@", [myArrayController ]);
     
-    if (firstTimeTableViewIsPopulated) {
-        firstTimeTableViewIsPopulated = NO;
-        
-        NSLog(@"THIS IS THE FIRST TIME THE TABLE VIEW IS POPULATED");
-        //We need to override default behavior to select row0 and instead search where self.gitBranches matches currentBranch and tell the table to select that row and DON'T CHECKOUT that branch, since it's ALREADY checked out
-        
-        NSLog(@"my array controller is %@", self.myArrayController);
-        
-        //        for (gitBranch *compareThisBranch in self.myArrayController) {
-        //            NSLog(@"the gitBranch for comparison is: '%@'", compareThisBranch.name);
-        //        }
-        
-        //        if ([branch.name isEqualToString:self.currentBranch]) {
-        //        NSLog(@"WOWOWOWOW the currentBranch '%@' is verified as identical to '%@'!!!", self.currentBranch, name);
-        //        [gitBranches insertObject:branch atIndex:0];
-        //        } else {
-        //        [gitBranches addObject:branch];
-        //        
-        //        }
-        
-        
-        
-        // Now setting the selection index for this object!!
-        [myArrayController setSelectionIndex:4];
-        NSLog(@"NOW my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
-        
-        //DON'T Switch Git Branches!!!!
-        //////////[self didUpdateGitBranchSelection:self];
-        
-        // AND DEFINITELY Disallow the selection of rowIndex 0
-        return NO;
-        
-    } else {
-        NSLog(@"TableView Should select row #%i!!!", rowIndex);
-        NSLog(@"BUT my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
-        //NSLog(@"Which Contains: %@", [myArrayController ]);
-        
-        // Now setting the selection index for this object!!
-        [myArrayController setSelectionIndex:rowIndex];
-        NSLog(@"NOW my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
-        
-        //Switch Git Branches!!!!
-        [self didUpdateGitBranchSelection:self];
-        return YES;
-    }
+    // Now setting the selection index for this object!!
+    [myArrayController setSelectionIndex:rowIndex];
+    NSLog(@"NOW my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
+    
+    //Switch Git Branches!!!!
+    [self didUpdateGitBranchSelection:self];
+    return YES;
     
 }
 
