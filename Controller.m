@@ -121,7 +121,18 @@
     
     // Populate pop-up with Git branches for .skeinforge directory!
     
-    NSString *branchesRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge; git branch"];
+    NSString *testDoesGitExist = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge; PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch"];
+    NSLog(testDoesGitExist);
+
+
+    NSString *whereIsGit = [ShellTask executeShellCommandSynchronously:@"which git"];
+    NSLog(whereIsGit);
+
+//    NSString *whereIsGit = [ShellTask executeShellCommandSynchronously:@"which git"];
+//    NSLog(whereIsGit);
+
+
+    NSString *branchesRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch"];
     NSLog(branchesRaw);
     
     NSArray *namesTemp = [branchesRaw componentsSeparatedByString:@"\n"];
@@ -404,7 +415,7 @@
     NSString *selectedItemName = [[[myArrayController selectedObjects] objectAtIndex:0] name];
 
     // Force Git Checkout; this is what the user will expect, that we will switch branches. any modifications to skeinforge will be thrown away. later we can give another option to not throw away changes and notify user that there were changes and let them fix things...
-    NSString *prefix = @"cd ~/.skeinforge; git checkout -f ";
+    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git checkout -f ";
     NSString *commandToExecute = [prefix stringByAppendingString:selectedItemName];
 //    NSLog(@"'%@'", commandToExecute);
 //    NSString *checkoutResult = [ShellTask executeShellCommandSynchronously:commandToExecute];
