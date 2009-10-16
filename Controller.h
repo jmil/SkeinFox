@@ -9,6 +9,10 @@
     NSMutableString *currentBranch;
     IBOutlet NSPopUpButton *popUpButton;
     IBOutlet NSTableView *myTableView;
+    IBOutlet NSTextFieldCell *myTextFieldCell;
+    IBOutlet NSButton *addGitBranchButton;
+    IBOutlet NSButton *delGitBranchButton;
+    IBOutlet NSButton *gitCommitButton;
     IBOutlet NSButton *launchButton;
     IBOutlet NSButton *gCodeMeButton;
     IBOutlet NSTextField *stlFileNameDisplay;
@@ -29,16 +33,24 @@
 @property (readwrite, retain) NSMutableString *currentBranch;
 //@property (nonatomic, retain) IBOutlet NSPopUpButton *popUpButton;
 @property (nonatomic, retain) IBOutlet NSArrayController *myArrayController;
+@property (nonatomic, retain) IBOutlet NSTextFieldCell *myTextFieldCell;
 @property (nonatomic, retain) IBOutlet NSString *stlFileToGCode;
+@property (nonatomic, retain) NSTask *gCodeTaskInBackground;
 
 
 // Send a notification to self that the user did update the git branch selection
 - (IBAction) didUpdateGitBranchSelection:(id)sender;
+- (IBAction) didUpdateGitBranchSettings:(id)sender;
 
 // Launch Skeinforge
 - (IBAction) launchSkeinforge:(id)sender;
 - (IBAction) gCodeMe:(id)sender;
 - (IBAction) haltGCoding:(id)sender;
+
+- (IBAction)addGitBranch:(id)sender;
+- (IBAction)delGitBranch:(id)sender;
+- (IBAction)commitGitBranch:(id)sender;
+    
 
 
 // Drag and Drop!!
@@ -48,6 +60,7 @@
 - (void)processFile;
 - (void)finishedGCodeMe:(NSNotification *)aNotification;
 - (void)readPipe:(NSNotification *)aNotification;
+- (IBAction)didRenameGitBranch:(NSNotification *)aNotification;
 
 - (IBAction)consoleToggle:(id)sender;
 - (IBAction)clearConsole:(id)sender;

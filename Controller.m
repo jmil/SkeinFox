@@ -15,13 +15,16 @@
 #import "Controller.h"
 #import "gitBranch.h"
 #import "ShellTask.h"
+#import "TextFieldCell.h"
 
 
 @implementation Controller
 
 @synthesize gitBranches, myArrayController;
 @synthesize stlFileToGCode;
+@synthesize myTextFieldCell;
 @synthesize currentBranch;
+@synthesize gCodeTaskInBackground;
 //@synthesize notificationCenter;
 //@synthesize popUpButton;
 
@@ -34,28 +37,56 @@
                                                  name:NSFileHandleReadCompletionNotification 
                                                object:nil];
     
-        [[NSNotificationCenter defaultCenter] addObserver:self 
+    [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(finishedGCodeMe:) 
                                                  name:NSTaskDidTerminateNotification 
                                                object:nil];
     
-    // Define gCodeTaskInBackground here!!
-    gCodeTaskInBackground = [[[NSTask alloc] init] autorelease]; 
-    [gCodeTaskInBackground setLaunchPath: @"/bin/sh"]; //we are launching sh, it is wha will process command for us
-    [gCodeTaskInBackground setStandardInput:[NSFileHandle fileHandleWithNullDevice]]; //stdin is directed to /dev/null    
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(didRenameGitBranch:) 
+                                                 name:NSTextDidChangeNotification 
+                                               object:nil];
 
+    // Define gCodeTaskInBackground here!!
+//    self.gCodeTaskInBackground = [[[NSTask alloc] init] autorelease]; 
+//    [self.gCodeTaskInBackground setLaunchPath: @"/bin/sh"]; //we are launching sh, it is wha will process command for us
+//    [self.gCodeTaskInBackground setStandardInput:[NSFileHandle fileHandleWithNullDevice]]; //stdin is directed to /dev/null    
+//
+//    //we pipe stdout and stderr into a file handle that we read to 
+//    NSPipe *outputPipe = [NSPipe pipe];
+//    [self.gCodeTaskInBackground setStandardOutput: outputPipe];
+//    [self.gCodeTaskInBackground setStandardError: outputPipe];
+//    NSFileHandle *outputFileHandle = [outputPipe fileHandleForReading];    
+//    
+//    
+//    // We need to read in background and notify!!!!!
+//    [outputFileHandle readInBackgroundAndNotify];
+    
+    [self.myTextFieldCell setWantsNotificationForMarkedText:NO];
+    
 
     return self;
+}
+
+- (IBAction)addGitBranch:(id)sender {
+    
+}
+- (IBAction)delGitBranch:(id)sender {
+    
 }
 
 
 - (void)finishedGCodeMe:(NSNotification *)aNotification {
     NSLog(@"'%@' ", aNotification.name);
     
-    
+    NSLog(@"the termination reason is %i", [gCodeTaskInBackground terminationStatus]);
     
     
     [gCodeMeButton setTitle:@"Create GCode"];
+
+    //Reenable the gCodeMe button since we still have an .stl file selected...
+    [gCodeMeButton setEnabled:YES];
+    [launchButton setEnabled:YES];
     [indicator stopAnimation:nil];
 
 }
@@ -104,6 +135,7 @@
 }
 
 
+
 - (void)awakeFromNib {
     
     // Check if git is installed!
@@ -141,6 +173,31 @@
     NSArray *namesTemp = [branchesRaw componentsSeparatedByString:@"\n"];
     NSMutableArray *names = [NSMutableArray arrayWithArray:namesTemp];
     //NSLog(@"the branch names are the following:%@", names);
+    
+    
+//    for (NSString *branchInfoString in names) {
+//        NSLog(branchInfoString);
+//        
+//        NSArray *branchInfoArray = [branchInfoString componentsSeparatedByString:@" "];
+//        NSLog(@"%@", branchInfoArray);
+//        
+//        
+//        NSString *regex = @".*l{2,}.*";
+//        
+//        NSPredicate *regextest = [NSPredicate
+//                                  predicateWithFormat:@"SELF MATCHES %@", regex];
+//        
+//        if ([regextest evaluateWithObject:branchInfoString] == YES) {
+//            NSLog(@"Match!");
+//        } else {
+//            NSLog(@"No match!");
+//        }
+//        
+//        
+//        
+//        
+//        
+//    }
     
     
     //Set the self.currentBranch default value to 'basic--Raft'
@@ -219,7 +276,7 @@
     //[popUpButton setEnabled:NO];
     [gCodeMeButton setTitle:@"Create GCode"];
     [gCodeMeButton setEnabled:NO];
-    [launchButton setEnabled:NO];
+    [launchButton setEnabled:YES];
     [consoleToggleMenuItem setTitle:@"Show Console"];
     [consoleToggleButton setState:NSOffState];
     [stlFileNameDisplay setStringValue:@""];
@@ -404,6 +461,14 @@
 }
 
 
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+    
+    if (rowIndex == [myArrayController selectionIndex]) {
+        //NSLog(@"Will Display Cell!!!");
+        //[self didRenameGitBranch:self];        
+    }    
+}
+
 
 // Controller.m is set as NSTableView's delegate in Interface Builder. This allows us to call this NSTableView delegate method
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn: 
@@ -492,6 +557,23 @@
     
 }    
 
+// Edited the settings in Skeinforge, so now we need to commit the changes
+// git add .; git commit -a -m "DateTimeStamp"
+- (IBAction) didUpdateGitBranchSettings:(id)sender {
+    NSLog(@"changes committed!!");
+    
+}
+
+
+// We renamed the branch name, so now we need to actually rename the branch name on disk
+// Note that changes may be present, so we should also try to do a commit!
+// git branch -M "NewBranchName"
+- (IBAction)didRenameGitBranch:(NSNotification *)aNotification {
+    [self didUpdateGitBranchSettings:self];
+    NSLog(@"renamed git branch!!");
+}
+
+
 
 - (void)scrollToBottom:(id)sender {
     // Scroll to the bottom!!!
@@ -532,14 +614,13 @@
     NSString *commandToExecuteWithQuotes = [[prefix stringByAppendingString:commandToExecuteWithoutQuotes] stringByAppendingString:suffix];
     NSLog(@"'%@'", commandToExecuteWithQuotes);
     [ShellTask executeShellCommandAsynchronously:commandToExecuteWithQuotes];
-    NSLog(@"yep, skeinforge was launched asynchronously");
+    //NSLog(@"yep, skeinforge was launched asynchronously");
     
     
 }
 
 - (IBAction) haltGCoding:(id)sender {
-    gCodeTaskInBackground.terminate;
-    
+    self.gCodeTaskInBackground.terminate;    
 }
 
 - (IBAction) gCodeMe:(id)sender {
@@ -570,22 +651,26 @@
         // We have to have the task be completely defined here because we need to keep track of the NSTask so that we can terminate the task if we want to!!
         
         
-        //[ShellTask executeShellCommandAsynchronously:completeStringToExecute];
+        [ShellTask executeShellCommandAsynchronously:completeStringToExecute];
         
         
-        NSArray	*args = [NSArray arrayWithObjects:	@"-c", //-c tells sh to execute commands from the next argument
-                         completeStringToExecute, //sh will read and execute the commands in this string.
-                         nil];
-        [gCodeTaskInBackground setArguments: args];
+//        NSArray	*args = [NSArray arrayWithObjects:	@"-c", //-c tells sh to execute commands from the next argument
+//                         completeStringToExecute, //sh will read and execute the commands in this string.
+//                         nil];
+//        [self.gCodeTaskInBackground setArguments: args];
+        
+        
+//        [self.gCodeTaskInBackground launch];
         
         
         
-        
-        
-        
-        
-        NSLog(@"yep, skeinforge was launched asynchronously");
+                NSLog(@"yep, skeinforge was launched asynchronously");
 
+        
+        
+
+        
+        //[self.gCodeTaskInBackground launch];
         
         
         

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D6A3E3B1088F89400BCDDAE /* TextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D6A3E3A1088F89400BCDDAE /* TextFieldCell.m */; };
 		2DA2BBD9106AB8A80004156F /* skeinforge-0005 in Resources */ = {isa = PBXBuildFile; fileRef = 2DA2BB0D106AB8A80004156F /* skeinforge-0005 */; };
 		2DA2BCD3106AB95C0004156F /* .skeinforge in Resources */ = {isa = PBXBuildFile; fileRef = 2DA2BBE0106AB95C0004156F /* .skeinforge */; };
 		2DDC41B01069FD32000BCA31 /* ShellTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DDC41AE1069FD32000BCA31 /* ShellTask.m */; };
@@ -28,6 +29,8 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		2D5310221069F71300B4687D /* SkeinFox_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SkeinFox_Prefix.pch; sourceTree = "<group>"; };
+		2D6A3E391088F89400BCDDAE /* TextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFieldCell.h; sourceTree = "<group>"; };
+		2D6A3E3A1088F89400BCDDAE /* TextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFieldCell.m; sourceTree = "<group>"; };
 		2DA2BB0D106AB8A80004156F /* skeinforge-0005 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "skeinforge-0005"; sourceTree = "<group>"; };
 		2DA2BBE0106AB95C0004156F /* .skeinforge */ = {isa = PBXFileReference; lastKnownFileType = folder; path = .skeinforge; sourceTree = "<group>"; };
 		2DDC41AE1069FD32000BCA31 /* ShellTask.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ShellTask.m; sourceTree = "<group>"; };
@@ -62,6 +65,8 @@
 				A5C697A30D4C49DF008DF2C0 /* gitBranch.m */,
 				2DDC41AE1069FD32000BCA31 /* ShellTask.m */,
 				2DDC41AF1069FD32000BCA31 /* ShellTask.h */,
+				2D6A3E391088F89400BCDDAE /* TextFieldCell.h */,
+				2D6A3E3A1088F89400BCDDAE /* TextFieldCell.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -197,6 +202,7 @@
 				A5C6979F0D4C49D1008DF2C0 /* Controller.m in Sources */,
 				A5C697A40D4C49DF008DF2C0 /* gitBranch.m in Sources */,
 				2DDC41B01069FD32000BCA31 /* ShellTask.m in Sources */,
+				2D6A3E3B1088F89400BCDDAE /* TextFieldCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
