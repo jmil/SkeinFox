@@ -872,6 +872,7 @@
 													</object>
 													<int key="NSResizingMask">3</int>
 													<bool key="NSIsResizeable">YES</bool>
+													<bool key="NSIsEditable">YES</bool>
 													<reference key="NSTableView" ref="96822512"/>
 													<object class="NSSortDescriptor" key="NSSortDescriptorPrototype">
 														<string key="NSKey">name</string>
@@ -1180,7 +1181,7 @@
 							<reference key="NSSuperview" ref="439893737"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="617357236">
-								<int key="NSCellFlags">-2080244224</int>
+								<int key="NSCellFlags">-1543373312</int>
 								<int key="NSCellFlags2">134217728</int>
 								<string key="NSContents">Create GCode</string>
 								<reference key="NSSupport" ref="331036165"/>
@@ -2072,52 +2073,12 @@
 					<int key="connectionID">631</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: arrangedObjects.name</string>
-						<reference key="source" ref="851071742"/>
-						<reference key="destination" ref="310562847"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="851071742"/>
-							<reference key="NSDestination" ref="310562847"/>
-							<string key="NSLabel">value: arrangedObjects.name</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">arrangedObjects.name</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSContinuouslyUpdatesValue</string>
-								<reference key="NS.object.0" ref="5"/>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">634</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="96822512"/>
 						<reference key="destination" ref="210633948"/>
 					</object>
 					<int key="connectionID">639</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: arrangedObjects.lastModified</string>
-						<reference key="source" ref="864547674"/>
-						<reference key="destination" ref="310562847"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="864547674"/>
-							<reference key="NSDestination" ref="310562847"/>
-							<string key="NSLabel">value: arrangedObjects.lastModified</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">arrangedObjects.lastModified</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSContinuouslyUpdatesValue</string>
-								<reference key="NS.object.0" ref="5"/>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">656</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2214,6 +2175,46 @@
 						<reference key="destination" ref="1064555045"/>
 					</object>
 					<int key="connectionID">691</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: arrangedObjects.lastModified</string>
+						<reference key="source" ref="864547674"/>
+						<reference key="destination" ref="310562847"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="864547674"/>
+							<reference key="NSDestination" ref="310562847"/>
+							<string key="NSLabel">value: arrangedObjects.lastModified</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">arrangedObjects.lastModified</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSConditionallySetsEditable</string>
+								<reference key="NS.object.0" ref="5"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">697</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: arrangedObjects.name</string>
+						<reference key="source" ref="851071742"/>
+						<reference key="destination" ref="310562847"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="851071742"/>
+							<reference key="NSDestination" ref="310562847"/>
+							<string key="NSLabel">value: arrangedObjects.name</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">arrangedObjects.name</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSConditionallySetsEditable</string>
+								<reference key="NS.object.0" ref="5"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">699</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -3693,7 +3694,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">695</int>
+			<int key="maxID">699</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

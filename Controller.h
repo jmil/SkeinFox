@@ -33,6 +33,7 @@
 @property (readwrite, retain) NSMutableString *currentBranch;
 //@property (nonatomic, retain) IBOutlet NSPopUpButton *popUpButton;
 @property (nonatomic, retain) IBOutlet NSArrayController *myArrayController;
+@property (nonatomic, retain) IBOutlet NSTableView *myTableView;
 @property (nonatomic, retain) IBOutlet NSTextFieldCell *myTextFieldCell;
 @property (nonatomic, retain) IBOutlet NSString *stlFileToGCode;
 @property (nonatomic, retain) NSTask *gCodeTaskInBackground;
@@ -58,7 +59,7 @@
 - (NSString *)getFileForDrag:(id <NSDraggingInfo>)sender;
 
 - (void)processFile;
-- (void)finishedGCodeMe:(NSNotification *)aNotification;
+- (void)completedTask:(NSNotification *)aNotification;
 - (void)readPipe:(NSNotification *)aNotification;
 - (IBAction)didRenameGitBranch:(NSNotification *)aNotification;
 

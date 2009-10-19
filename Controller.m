@@ -24,6 +24,7 @@
 @synthesize stlFileToGCode;
 @synthesize myTextFieldCell;
 @synthesize currentBranch;
+@synthesize myTableView;
 @synthesize gCodeTaskInBackground;
 //@synthesize notificationCenter;
 //@synthesize popUpButton;
@@ -38,7 +39,7 @@
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(finishedGCodeMe:) 
+                                             selector:@selector(completedTask:) 
                                                  name:NSTaskDidTerminateNotification 
                                                object:nil];
     
@@ -62,30 +63,173 @@
 //    // We need to read in background and notify!!!!!
 //    [outputFileHandle readInBackgroundAndNotify];
     
-    [self.myTextFieldCell setWantsNotificationForMarkedText:NO];
+    //[self.myTextFieldCell setWantsNotificationForMarkedText:NO];
     
+    //Set the self.currentBranch default value to 'basic--Raft'
+    self.currentBranch = [[NSMutableString alloc] initWithString:@"basic--Raft"];
 
     return self;
 }
 
+-(void)populateGitBranchesAndSelectCurrentBranch {
+    // Populate NSTableView with Git branches for .skeinforge directory!
+    
+    NSString *branchesRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch"];
+    NSLog(branchesRaw);
+    
+    NSArray *namesTemp = [branchesRaw componentsSeparatedByString:@"\n"];
+    NSMutableArray *names = [NSMutableArray arrayWithArray:namesTemp];
+    
+    
+    // Cleanup the Array to both mark the currently selected branch and also to remove leading and lagging whitespace
+    NSInteger index = 0;
+    NSMutableArray *tempArray = [[NSMutableArray alloc] init];
+    
+    for (NSString *element in names) {
+        // Remove last return character! -- remove lagging whitespace == last newline
+        if (index != ([names count] - 1)) {
+            
+            // Check whether 2nd character is *, therefore this is the current branch
+            if ([[element substringToIndex:1] isEqualToString: @"*"] ) {
+                [[self currentBranch] setString:[element substringFromIndex:2]];
+                NSLog(@"I am the current branch, and my name is '%@' @index '%i'", [element substringFromIndex:2], index);
+            }
+            
+            
+            // Remove first 3 characters before adding to the tempArray
+            [tempArray addObject:[element substringFromIndex:2]];
+            
+            
+        }
+        index++;
+    }
+    
+    [names setArray:tempArray];
+    [tempArray release];
+    
+    
+    
+    
+    
+    
+    //NSArray *names = [NSArray arrayWithObjects:@"Bird", @"Chair", @"Song", @"Computer", nil];
+    NSMutableArray *tempGitBranches = [NSMutableArray array];
+    for (NSString *name in names) {
+        gitBranch *branch = [[[gitBranch alloc] init] autorelease];
+        branch.name = name;
+        branch.lastModified = @"last modified on XXXXX";
+        [tempGitBranches addObject:branch];
+        
+        
+    }
+    
+    // Since we use Cocoa Bindings, AS SOON AS self.gitBranches is defined, the table will be as well!
+    self.gitBranches = tempGitBranches;
+    
+    
+    // Now that the table is populated, we must immediately tell the table which row to select!
+    for (gitBranch *thisBranch in self.gitBranches) {
+        //NSLog(@"my branch name is:%@", whoami.name);
+        
+        if ([thisBranch.name isEqualToString:self.currentBranch]) {
+            //NSLog(@"Yes!! the currentBranch '%@' is verified as identical to '%@'!!!", self.currentBranch, thisBranch.name);
+            [myArrayController setSelectedObjects:[NSArray arrayWithObjects:thisBranch, nil]];
+        }
+        
+    }
+    
+    //NSLog(@"myArrayController selection index is currently %i", [myArrayController selectionIndex]);
+    
+    // We also DON'T need to update the GitBranchSelection since we have just selected the current Branch!!!
+    //[self didUpdateGitBranchSelection:self];
+
+//    [self.myTableView reloadData];
+//    [self.myTableView setNeedsDisplay:YES];
+}
+
+
+
 - (IBAction)addGitBranch:(id)sender {
+    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git checkout -f -b ";
+    NSString *commandToExecute = [prefix stringByAppendingString:@"untitled"];
+    
+    
+    
+    [ShellTask executeShellCommandSynchronously:commandToExecute];
+    
+    [self populateGitBranchesAndSelectCurrentBranch];
+
+    NSLog(@"addedGitBranch!");
     
 }
+
 - (IBAction)delGitBranch:(id)sender {
     
+    // To delete it's a bit more complicated because we CANNOT delete the branch that we have currently checked out; So we should figure out which branch we have currently selected and store that name temporarily, then select the branch below it (or the branch above it if it is the last branch), then delete the branch above it and reload the gitbranches
+    [self.currentBranch setString:[[[myArrayController selectedObjects] objectAtIndex:0] name]];
+    NSLog(@"the branch to delete is: %@", self.currentBranch);
+    NSUInteger currentSelectionIndexToDelete = self.myArrayController.selectionIndex;
+    NSUInteger nextSelectionIndex = 0;
+    NSLog(@"the branchIndex to delete is: %i", currentSelectionIndexToDelete);
+    NSString *branchToDelete = [[[myArrayController selectedObjects] objectAtIndex:0] name];
+
+    // Select the next or previous row as possible given how many objects are in the myArrayController
+    // NOTE: cannot use selectNext: and selectPrevious: because:
+    // "Beginning with Mac OS X v10.4 the result of this method is deferred until the next iteration of the runloop so that the error presentation mechanism can provide feedback as a sheet."
+    
+    if (self.myArrayController.canSelectNext) {
+        // set the array controller selection to the next one
+        //[self.myArrayController selectNext:self];
+        nextSelectionIndex = currentSelectionIndexToDelete + 1;
+        
+    } else if (self.myArrayController.canSelectPrevious) {
+        // set the array controller selection to the previous one
+        //[self.myArrayController selectPrevious:self];
+        nextSelectionIndex = currentSelectionIndexToDelete - 1;
+    }
+    
+//    // Make Sure we actually change branches!!
+    [myArrayController setSelectionIndex:nextSelectionIndex];
+    [self didUpdateGitBranchSelection:self];
+
+    //[self.myTableView reloadData];
+    NSLog(@"currentIndexToDelete %i, nextSelectionIndex %i", currentSelectionIndexToDelete, nextSelectionIndex);
+    
+//    NSLog(@"branchToDelete is %@, while the newly selected branch is now %@", branchToDelete, [[[myArrayController selectedObjects] objectAtIndex:0] name]);
+
+    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch -D ";
+    NSString *commandToExecute = [prefix stringByAppendingString:branchToDelete];
+//    
+    [ShellTask executeShellCommandSynchronously:commandToExecute];
+//
+
+    NSLog(@"%@ was deleted", branchToDelete);
+    // Make sure table view reloads appropriately!!
+    [self populateGitBranchesAndSelectCurrentBranch];
+
+    //[self.gitBranches removeAllObjects];
+    
+    
 }
 
 
-- (void)finishedGCodeMe:(NSNotification *)aNotification {
-    NSLog(@"'%@' ", aNotification.name);
+- (void)completedTask:(NSNotification *)aNotification {
+//    NSLog(@"'%@' ", aNotification.name);
+//    
+//    NSLog(@"the termination reason is %i", [gCodeTaskInBackground terminationStatus]);
     
-    NSLog(@"the termination reason is %i", [gCodeTaskInBackground terminationStatus]);
+    
+    
     
     
     [gCodeMeButton setTitle:@"Create GCode"];
 
     //Reenable the gCodeMe button since we still have an .stl file selected...
-    [gCodeMeButton setEnabled:YES];
+    // On launch, a task is run for some reason, so we need to check if there is an .stl file loaded. If so, then keep gcodeMeButton enabled!
+    if ([stlFileToGCode isNotEqualTo:nil]) {
+        [gCodeMeButton setEnabled:YES];        
+    }
+    
     [launchButton setEnabled:YES];
     [indicator stopAnimation:nil];
 
@@ -151,122 +295,9 @@
     
     
     
+    [self populateGitBranchesAndSelectCurrentBranch];
     
     
-    
-    // Populate pop-up with Git branches for .skeinforge directory!
-    
-    //NSString *testDoesGitExist = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge; PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch"];
-    //NSLog(testDoesGitExist);
-
-
-    //NSString *whereIsGit = [ShellTask executeShellCommandSynchronously:@"which git"];
-    //NSLog(whereIsGit);
-
-//    NSString *whereIsGit = [ShellTask executeShellCommandSynchronously:@"which git"];
-//    NSLog(whereIsGit);
-
-
-    NSString *branchesRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch"];
-    //NSLog(branchesRaw);
-    
-    NSArray *namesTemp = [branchesRaw componentsSeparatedByString:@"\n"];
-    NSMutableArray *names = [NSMutableArray arrayWithArray:namesTemp];
-    //NSLog(@"the branch names are the following:%@", names);
-    
-    
-//    for (NSString *branchInfoString in names) {
-//        NSLog(branchInfoString);
-//        
-//        NSArray *branchInfoArray = [branchInfoString componentsSeparatedByString:@" "];
-//        NSLog(@"%@", branchInfoArray);
-//        
-//        
-//        NSString *regex = @".*l{2,}.*";
-//        
-//        NSPredicate *regextest = [NSPredicate
-//                                  predicateWithFormat:@"SELF MATCHES %@", regex];
-//        
-//        if ([regextest evaluateWithObject:branchInfoString] == YES) {
-//            NSLog(@"Match!");
-//        } else {
-//            NSLog(@"No match!");
-//        }
-//        
-//        
-//        
-//        
-//        
-//    }
-    
-    
-    //Set the self.currentBranch default value to 'basic--Raft'
-    self.currentBranch = [[NSMutableString alloc] initWithString:@"basic--Raft"];
-    //NSLog(@"the default currentBranch value has been successfully set to '%@'", self.currentBranch);
-    
-    
-    // Cleanup the Array to both mark the currently selected branch and also to remove leading and lagging whitespace
-    NSInteger index = 0;
-    NSMutableArray *tempArray = [[NSMutableArray alloc] init];
-    
-    for (NSString *element in names) {
-        // Remove last return character! -- remove lagging whitespace == last newline
-        if (index != ([names count] - 1)) {
-            
-            // Check whether 2nd character is *, therefore this is the current branch
-            if ([[element substringToIndex:1] isEqualToString: @"*"] ) {
-                [[self currentBranch] setString:[element substringFromIndex:2]];
-                //NSLog(@"I am the current branch, and my name is '%@' @index '%i'", [element substringFromIndex:2], index);
-            }
-            
-            
-            // Remove first 3 characters before adding to the tempArray
-            [tempArray addObject:[element substringFromIndex:2]];
-            
-            
-        }
-        index++;
-    }
-    
-    [names setArray:tempArray];
-    [tempArray release];
-    
-    
-    
-    
-    
-    
-    //NSArray *names = [NSArray arrayWithObjects:@"Bird", @"Chair", @"Song", @"Computer", nil];
-    gitBranches = [NSMutableArray array];
-    for (NSString *name in names) {
-        gitBranch *branch = [[[gitBranch alloc] init] autorelease];
-        branch.name = name;
-        branch.lastModified = @"last modified on XXXXX";
-        [gitBranches addObject:branch];
-
-        
-    }
-    
-    // Since we use Cocoa Bindings, AS SOON AS self.gitBranches is defined, the table will be as well!
-    self.gitBranches = gitBranches;
-    
-    
-    // Now that the table is populated, we must immediately tell the table which row to select!
-    for (gitBranch *thisBranch in self.gitBranches) {
-        //NSLog(@"my branch name is:%@", whoami.name);
-        
-        if ([thisBranch.name isEqualToString:self.currentBranch]) {
-            //NSLog(@"Yes!! the currentBranch '%@' is verified as identical to '%@'!!!", self.currentBranch, thisBranch.name);
-            [myArrayController setSelectedObjects:[NSArray arrayWithObjects:thisBranch, nil]];
-        }
-                
-    }
-    
-    //NSLog(@"myArrayController selection index is currently %i", [myArrayController selectionIndex]);
-    
-    // We also DON'T need to update the GitBranchSelection since we have just selected the current Branch!!!
-    //[self didUpdateGitBranchSelection:self];
-
     
     //*******************
     // Control for Interface Elements setup
@@ -297,10 +328,10 @@
 
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(NSInteger)rowIndex {
-    NSLog(@"tableView:aTableView called!!!");
-    
-    NSLog(@"TableView Should select row #%i!!!", rowIndex);
-    NSLog(@"BUT my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
+//    NSLog(@"tableView:aTableView called!!!");
+//    
+//    NSLog(@"TableView Should select row #%i!!!", rowIndex);
+//    NSLog(@"BUT my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
     //NSLog(@"Which Contains: %@", [myArrayController ]);
     
     // Now setting the selection index for this object!!
@@ -470,6 +501,7 @@
 }
 
 
+
 // Controller.m is set as NSTableView's delegate in Interface Builder. This allows us to call this NSTableView delegate method
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn: 
 (NSTableColumn *)aTableColumn row:(int)rowIndex {
@@ -490,7 +522,7 @@
 
 
 - (void)tableViewSelectionIsChanging:(NSNotification *)aNotification {
-    NSLog(@"TableView SELECTION IS CHANGING!!!");
+//    NSLog(@"TableView SELECTION IS CHANGING!!!");
 }
 
 - (void)tableView:(NSTableView *)tableView mouseDownInHeaderOfTableColumn:(NSTableColumn *)tableColumn {
@@ -510,30 +542,17 @@
 // Send a notification to self that the user did update the git branch selection
 
 - (IBAction) didUpdateGitBranchSelection:(id)sender {
-    NSLog(@"I was selected!!");
-    
+    NSLog(@"I was selected!!");    
     NSLog(@"my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
     NSLog(@"my current selection objects in myArrayController is: %@", [myArrayController selectedObjects]);
     NSLog(@"my current selection OBJECT NAME IS: %@", [[[myArrayController selectedObjects] objectAtIndex:0] name]);
     
-    
+    [self.currentBranch setString:[[[myArrayController selectedObjects] objectAtIndex:0] name]];
     
 
-//    NSLog(@"therefore my selection must be %@", [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name]);
-//    
-//    NSLog(@"but actually the row selected is: %i", [myTableView selectedRow]);
     
-    //NSLog(@"therefore my selection must be %@", [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name]);
-    
-    // Get the title of the currently selected item
-//    NSLog(@"I was selected and my name is %@", popUpButton.selectedItem.title);
-//    NSString *selectedItemName = popUpButton.selectedItem.title;
-    
-//    NSLog(@"I was selected and my name is %@", [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name]);
-
-    // NEED TO GRAB DATA FROM myArrayController, NOT from gitBranches!!!
-    //NSString *selectedItemName = [[gitBranches objectAtIndex:[myArrayController selectionIndex]] name];
     NSString *selectedItemName = [[[myArrayController selectedObjects] objectAtIndex:0] name];
+
 
     // Force Git Checkout; this is what the user will expect, that we will switch branches. any modifications to skeinforge will be thrown away. later we can give another option to not throw away changes and notify user that there were changes and let them fix things...
     NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git checkout -f ";
@@ -560,6 +579,10 @@
 // Edited the settings in Skeinforge, so now we need to commit the changes
 // git add .; git commit -a -m "DateTimeStamp"
 - (IBAction) didUpdateGitBranchSettings:(id)sender {
+    [ShellTask executeShellCommandAsynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git add .;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git commit -a -m Now"];
+    //NSLog(branchesRaw);
+
+    
     NSLog(@"changes committed!!");
     
 }
@@ -620,7 +643,7 @@
 }
 
 - (IBAction) haltGCoding:(id)sender {
-    self.gCodeTaskInBackground.terminate;    
+    //self.gCodeTaskInBackground.terminate;    
 }
 
 - (IBAction) gCodeMe:(id)sender {
