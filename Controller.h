@@ -4,11 +4,13 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class TableView;
+
 @interface Controller : NSObject {
     NSMutableArray *gitBranches;
     NSMutableString *currentBranch;
     IBOutlet NSPopUpButton *popUpButton;
-    IBOutlet NSTableView *myTableView;
+    IBOutlet TableView *myTableView;
     IBOutlet NSTextFieldCell *myTextFieldCell;
     IBOutlet NSButton *addGitBranchButton;
     IBOutlet NSButton *delGitBranchButton;
@@ -33,7 +35,7 @@
 @property (readwrite, retain) NSMutableString *currentBranch;
 //@property (nonatomic, retain) IBOutlet NSPopUpButton *popUpButton;
 @property (nonatomic, retain) IBOutlet NSArrayController *myArrayController;
-@property (nonatomic, retain) IBOutlet NSTableView *myTableView;
+@property (nonatomic, retain) IBOutlet TableView *myTableView;
 @property (nonatomic, retain) IBOutlet NSTextFieldCell *myTextFieldCell;
 @property (nonatomic, retain) IBOutlet NSString *stlFileToGCode;
 @property (nonatomic, retain) NSTask *gCodeTaskInBackground;
@@ -42,6 +44,7 @@
 // Send a notification to self that the user did update the git branch selection
 - (IBAction) didUpdateGitBranchSelection:(id)sender;
 - (IBAction) didUpdateGitBranchSettings:(id)sender;
+- (IBAction)doubleClickTableViewRow:(id)sender;
 
 // Launch Skeinforge
 - (IBAction) launchSkeinforge:(id)sender;
@@ -50,7 +53,6 @@
 
 - (IBAction)addGitBranch:(id)sender;
 - (IBAction)delGitBranch:(id)sender;
-- (IBAction)commitGitBranch:(id)sender;
     
 
 
@@ -61,7 +63,7 @@
 - (void)processFile;
 - (void)completedTask:(NSNotification *)aNotification;
 - (void)readPipe:(NSNotification *)aNotification;
-- (IBAction)didRenameGitBranch:(NSNotification *)aNotification;
+- (IBAction)didRenameGitBranch:(NSString *)newBranchName;
 
 - (IBAction)consoleToggle:(id)sender;
 - (IBAction)clearConsole:(id)sender;

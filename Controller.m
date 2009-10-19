@@ -15,6 +15,7 @@
 #import "Controller.h"
 #import "gitBranch.h"
 #import "ShellTask.h"
+#import "TableView.h"
 #import "TextFieldCell.h"
 
 
@@ -26,8 +27,6 @@
 @synthesize currentBranch;
 @synthesize myTableView;
 @synthesize gCodeTaskInBackground;
-//@synthesize notificationCenter;
-//@synthesize popUpButton;
 
 
 
@@ -43,10 +42,7 @@
                                                  name:NSTaskDidTerminateNotification 
                                                object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(didRenameGitBranch:) 
-                                                 name:NSTextDidChangeNotification 
-                                               object:nil];
+
 
     // Define gCodeTaskInBackground here!!
 //    self.gCodeTaskInBackground = [[[NSTask alloc] init] autorelease]; 
@@ -92,7 +88,7 @@
             // Check whether 2nd character is *, therefore this is the current branch
             if ([[element substringToIndex:1] isEqualToString: @"*"] ) {
                 [[self currentBranch] setString:[element substringFromIndex:2]];
-                NSLog(@"I am the current branch, and my name is '%@' @index '%i'", [element substringFromIndex:2], index);
+                //NSLog(@"I am the current branch, and my name is '%@' @index '%i'", [element substringFromIndex:2], index);
             }
             
             
@@ -147,6 +143,17 @@
 //    [self.myTableView setNeedsDisplay:YES];
 }
 
+- (IBAction)doubleClickTableViewRow:(id)sender {
+    NSLog(@"DoubleClick!!");
+}
+
+- (IBAction)renameGitBranch:(id)sender {
+    NSLog(@"Rename Git Branch at Index %i!!", myArrayController.selectionIndex);
+    // Open Sheet
+    //Test Entered Text
+    // Make the Modification
+    
+}
 
 
 - (IBAction)addGitBranch:(id)sender {
@@ -492,50 +499,6 @@
 }
 
 
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    
-    if (rowIndex == [myArrayController selectionIndex]) {
-        //NSLog(@"Will Display Cell!!!");
-        //[self didRenameGitBranch:self];        
-    }    
-}
-
-
-
-// Controller.m is set as NSTableView's delegate in Interface Builder. This allows us to call this NSTableView delegate method
-- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn: 
-(NSTableColumn *)aTableColumn row:(int)rowIndex {
-    NSLog(@"should edit table column at this row index!!!");
-    return YES;
-}
-
-- (void)textDidEndEditing:(NSNotification *)aNotification {
-    NSLog(@"I finished editing my text!!!");
-}
-
-- (BOOL)textShouldBeginEditing:(NSText *)textObject {
-    NSLog(@"Should I begin editing!!!");
-    return YES;
-}
-
-
-
-
-- (void)tableViewSelectionIsChanging:(NSNotification *)aNotification {
-//    NSLog(@"TableView SELECTION IS CHANGING!!!");
-}
-
-- (void)tableView:(NSTableView *)tableView mouseDownInHeaderOfTableColumn:(NSTableColumn *)tableColumn {
-    NSLog(@"TableView Header Clicked!!!");
-}
-
-//- (BOOL)selectionShouldChangeInTableView:(NSTableView *)aTableView {
-//    NSLog(@"SELECTION SHOULD CHANGE IN TABLE VIEW!!!");   
-//    //[self didUpdateGitBranchSelection:self];
-//    return YES;
-//}
-
-
 
 
 
@@ -583,7 +546,7 @@
     //NSLog(branchesRaw);
 
     
-    NSLog(@"changes committed!!");
+    NSLog(@"Controller didUpdateGitBranchSettings to commit them!!");
     
 }
 
@@ -591,8 +554,27 @@
 // We renamed the branch name, so now we need to actually rename the branch name on disk
 // Note that changes may be present, so we should also try to do a commit!
 // git branch -M "NewBranchName"
-- (IBAction)didRenameGitBranch:(NSNotification *)aNotification {
+- (IBAction)didRenameGitBranch:(NSString *)newBranchName {
+    NSLog(@"Controller didRenameGitBranch");
+    
+    // First we commit the current branch in case there are any changes
     [self didUpdateGitBranchSettings:self];
+    // Then we rename the git Branch to the currently named text
+    // Attempting to rename current git Branch
+    //[ShellTask executeShellCommandAsynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git add .;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git commit -a -m Now"];
+
+    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch -M ";
+    NSString *commandToExecute = [prefix stringByAppendingString:newBranchName];
+    
+    
+    NSLog(@"The New Branch Name will be %@", newBranchName);
+    NSLog(@"The Command to Execute will be '%@'", commandToExecute);
+    
+    [ShellTask executeShellCommandSynchronously:commandToExecute];
+    
+    [self populateGitBranchesAndSelectCurrentBranch];
+    
+    
     NSLog(@"renamed git branch!!");
 }
 
