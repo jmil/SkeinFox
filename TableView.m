@@ -29,7 +29,7 @@
 
 - (void) textDidEndEditing:(NSNotification *)notification
 {
-    NSLog(@"tableview textDidEndEditing!!!!!!");
+    //NSLog(@"tableview textDidEndEditing!!!!!!");
 
     
     NSString *newGitBranchName = [[[notification object] textStorage] string];

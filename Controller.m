@@ -16,7 +16,6 @@
 #import "gitBranch.h"
 #import "ShellTask.h"
 #import "TableView.h"
-#import "TextFieldCell.h"
 
 
 @implementation Controller
@@ -71,7 +70,7 @@
     // Populate NSTableView with Git branches for .skeinforge directory!
     
     NSString *branchesRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch"];
-    NSLog(branchesRaw);
+    //NSLog(branchesRaw);
     
     NSArray *namesTemp = [branchesRaw componentsSeparatedByString:@"\n"];
     NSMutableArray *names = [NSMutableArray arrayWithArray:namesTemp];
@@ -143,24 +142,11 @@
 //    [self.myTableView setNeedsDisplay:YES];
 }
 
-- (IBAction)doubleClickTableViewRow:(id)sender {
-    NSLog(@"DoubleClick!!");
-}
-
-- (IBAction)renameGitBranch:(id)sender {
-    NSLog(@"Rename Git Branch at Index %i!!", myArrayController.selectionIndex);
-    // Open Sheet
-    //Test Entered Text
-    // Make the Modification
-    
-}
 
 
 - (IBAction)addGitBranch:(id)sender {
     NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git checkout -f -b ";
     NSString *commandToExecute = [prefix stringByAppendingString:@"untitled"];
-    
-    
     
     [ShellTask executeShellCommandSynchronously:commandToExecute];
     
@@ -174,10 +160,10 @@
     
     // To delete it's a bit more complicated because we CANNOT delete the branch that we have currently checked out; So we should figure out which branch we have currently selected and store that name temporarily, then select the branch below it (or the branch above it if it is the last branch), then delete the branch above it and reload the gitbranches
     [self.currentBranch setString:[[[myArrayController selectedObjects] objectAtIndex:0] name]];
-    NSLog(@"the branch to delete is: %@", self.currentBranch);
+    //NSLog(@"the branch to delete is: %@", self.currentBranch);
     NSUInteger currentSelectionIndexToDelete = self.myArrayController.selectionIndex;
     NSUInteger nextSelectionIndex = 0;
-    NSLog(@"the branchIndex to delete is: %i", currentSelectionIndexToDelete);
+    //NSLog(@"the branchIndex to delete is: %i", currentSelectionIndexToDelete);
     NSString *branchToDelete = [[[myArrayController selectedObjects] objectAtIndex:0] name];
 
     // Select the next or previous row as possible given how many objects are in the myArrayController
@@ -200,7 +186,7 @@
     [self didUpdateGitBranchSelection:self];
 
     //[self.myTableView reloadData];
-    NSLog(@"currentIndexToDelete %i, nextSelectionIndex %i", currentSelectionIndexToDelete, nextSelectionIndex);
+    //NSLog(@"currentIndexToDelete %i, nextSelectionIndex %i", currentSelectionIndexToDelete, nextSelectionIndex);
     
 //    NSLog(@"branchToDelete is %@, while the newly selected branch is now %@", branchToDelete, [[[myArrayController selectedObjects] objectAtIndex:0] name]);
 
@@ -210,7 +196,7 @@
     [ShellTask executeShellCommandSynchronously:commandToExecute];
 //
 
-    NSLog(@"%@ was deleted", branchToDelete);
+    //NSLog(@"%@ was deleted", branchToDelete);
     // Make sure table view reloads appropriately!!
     [self populateGitBranchesAndSelectCurrentBranch];
 
@@ -296,13 +282,55 @@
     
     
     // See if .skeinforge Directory exists
-    //NSString *skeinforgeConfigDirectory = [@"~/.skeinforge" stringByExpandingTildeInPath];
+    NSString *skeinforgeConfigDirectory = [@"~/.skeinforge" stringByExpandingTildeInPath];
+    NSLog(skeinforgeConfigDirectory);
+    NSString *skeinforgeMasterTemplatesDirectory = [[NSBundle mainBundle] pathForResource:@".skeinforge" ofType:nil];
+    NSLog(@"The .skeinforge master template folder is located at: '%@'", skeinforgeMasterTemplatesDirectory);
     
-    //NSString *SkeinFoxDefaultskeinforgeConfigDirectory = @"hello";
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL fileExists = [fileManager fileExistsAtPath:skeinforgeConfigDirectory];
+    if (!fileExists) {
+        NSLog(@".skeinforge directory DOES NOT exist!");
+        // If .skeinforge doesn't exist, then copy it from the current application resources        
+        
+        if ([fileManager copyItemAtPath:skeinforgeMasterTemplatesDirectory toPath:skeinforgeConfigDirectory error:nil]) {
+            NSLog(@"Skeinforge Directory copy SUCCESS");
+        } else {
+            NSLog(@"Skeinforge Directory copy FAILURE");            
+        }
+    } else {
+        NSLog(@".skeinforge directory exists!");
+        
+        
+        // If the .git directory doesn't already exist... if it already exists, DON'T OVERWRITE IT. People will be pissed!
+        NSString *gitConfigDirectory = [skeinforgeConfigDirectory stringByAppendingString:@"/.git"];
+        NSLog(gitConfigDirectory);
+        
+        BOOL gitExists = [fileManager fileExistsAtPath:gitConfigDirectory];
+        if (!gitExists) {
+            // If .skeinforge directory already exists, and the .git DOES NOT exist, then we should just initiate a brand new .git repo and DO NOT TRY TO COPY OR INTERLEAVE GIT BRANCHES with that of the current user
+            NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git init; PATH=/usr/local/bin:/usr/local/git/bin:$PATH git add .; PATH=/usr/local/bin:/usr/local/git/bin:$PATH git commit -a -m 'hello'; PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch -M ";
+            NSString *commandToExecute = [prefix stringByAppendingString:NSUserName()];
+            NSLog(commandToExecute);
+            
+            [ShellTask executeShellCommandSynchronously:commandToExecute];
+            
+            
+
+        } else {
+            NSLog(@"%@'s .git directory exists", NSUserName());
+            // So we do nothing
+        }
+    }
     
     
+    // Now we definitely have a .skeinforge directory with a .git repo inside of it
     
+    // So setup all of our table variables
     [self populateGitBranchesAndSelectCurrentBranch];
+    
+    
+    
     
     
     
@@ -343,7 +371,7 @@
     
     // Now setting the selection index for this object!!
     [myArrayController setSelectionIndex:rowIndex];
-    NSLog(@"NOW my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
+    //NSLog(@"NOW my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
     
     //Switch Git Branches!!!!
     [self didUpdateGitBranchSelection:self];
@@ -412,7 +440,7 @@
 
 // Drag and drop .stl files!
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
-    NSLog(@"dragging entered and started!!");
+    //NSLog(@"dragging entered and started!!");
     
     NSView *view = [window contentView];
     
@@ -439,7 +467,7 @@
 //}
 
 - (NSDragOperation)draggingExited:(id <NSDraggingInfo>)sender {
-    NSLog(@"dragging exited!!");
+    //NSLog(@"dragging exited!!");
 
     // Remove Border Highlighting when dragging exited
     [[window contentView] setNeedsDisplay:YES];
@@ -448,7 +476,7 @@
 }
 
 - (NSDragOperation)prepareForDragOperation:(id <NSDraggingInfo>)sender {
-    NSLog(@"preparing for drag operation!!");
+    //NSLog(@"preparing for drag operation!!");
     
     // Remove Window View Border Highlighting when dragging released
     [[window contentView] setNeedsDisplay:YES];
@@ -457,10 +485,10 @@
 }
 
 - (NSDragOperation)performDragOperation:(id <NSDraggingInfo>)sender {
-    NSLog(@"perform drag operation!!");
+    //NSLog(@"perform drag operation!!");
     
     NSString *filename = [self getFileForDrag:sender];
-    NSLog(@"my filename is '%@'", filename);
+    //NSLog(@"my filename is '%@'", filename);
     self.stlFileToGCode = filename;
     
     [stlFileNameDisplay setStringValue:[self stlFileToGCode]];
@@ -505,10 +533,10 @@
 // Send a notification to self that the user did update the git branch selection
 
 - (IBAction) didUpdateGitBranchSelection:(id)sender {
-    NSLog(@"I was selected!!");    
-    NSLog(@"my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
-    NSLog(@"my current selection objects in myArrayController is: %@", [myArrayController selectedObjects]);
-    NSLog(@"my current selection OBJECT NAME IS: %@", [[[myArrayController selectedObjects] objectAtIndex:0] name]);
+//    NSLog(@"I was selected!!");    
+//    NSLog(@"my current selection index in myArrayController is: %i", [myArrayController selectionIndex]);
+//    NSLog(@"my current selection objects in myArrayController is: %@", [myArrayController selectedObjects]);
+//    NSLog(@"my current selection OBJECT NAME IS: %@", [[[myArrayController selectedObjects] objectAtIndex:0] name]);
     
     [self.currentBranch setString:[[[myArrayController selectedObjects] objectAtIndex:0] name]];
     
@@ -546,7 +574,7 @@
     //NSLog(branchesRaw);
 
     
-    NSLog(@"Controller didUpdateGitBranchSettings to commit them!!");
+    //NSLog(@"Controller didUpdateGitBranchSettings to commit them!!");
     
 }
 
@@ -555,7 +583,7 @@
 // Note that changes may be present, so we should also try to do a commit!
 // git branch -M "NewBranchName"
 - (IBAction)didRenameGitBranch:(NSString *)newBranchName {
-    NSLog(@"Controller didRenameGitBranch");
+    //NSLog(@"Controller didRenameGitBranch");
     
     // First we commit the current branch in case there are any changes
     [self didUpdateGitBranchSettings:self];
@@ -567,15 +595,15 @@
     NSString *commandToExecute = [prefix stringByAppendingString:newBranchName];
     
     
-    NSLog(@"The New Branch Name will be %@", newBranchName);
-    NSLog(@"The Command to Execute will be '%@'", commandToExecute);
+    //NSLog(@"The New Branch Name will be %@", newBranchName);
+    //NSLog(@"The Command to Execute will be '%@'", commandToExecute);
     
     [ShellTask executeShellCommandSynchronously:commandToExecute];
     
     [self populateGitBranchesAndSelectCurrentBranch];
     
     
-    NSLog(@"renamed git branch!!");
+    //NSLog(@"renamed git branch!!");
 }
 
 
@@ -602,22 +630,22 @@
 
 
 - (IBAction) launchSkeinforge:(id)sender {
-    NSLog(@"A request to launch SkeinForge was received");
+    //NSLog(@"A request to launch SkeinForge was received");
     
     // Use the Skeinforge that is contained within this application package!!
     NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
-    NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
+    //NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
     NSString *skeinforgePy = @"/skeinforge.py";
     NSString *prefix = @"\"";
     NSString *suffix = prefix;
-    NSLog(@"'%@'", prefix);
-    NSLog(@"'%@'", suffix);
+    //NSLog(@"'%@'", prefix);
+    //NSLog(@"'%@'", suffix);
     
     
     // EXECUTE WITH QUOTES SO THAT SPACES (AND SPECIAL CHARACTERS LIKE 'µ') IN POSIX PATHS WILL BE HONORED
     NSString *commandToExecuteWithoutQuotes = [pathToSkeinforge stringByAppendingString:skeinforgePy];
     NSString *commandToExecuteWithQuotes = [[prefix stringByAppendingString:commandToExecuteWithoutQuotes] stringByAppendingString:suffix];
-    NSLog(@"'%@'", commandToExecuteWithQuotes);
+    //NSLog(@"'%@'", commandToExecuteWithQuotes);
     [ShellTask executeShellCommandAsynchronously:commandToExecuteWithQuotes];
     //NSLog(@"yep, skeinforge was launched asynchronously");
     
@@ -633,22 +661,22 @@
     if (nil != self.stlFileToGCode) {
         // Use the Skeinforge that is contained within this application package!!
         NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
-        NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
+        //NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
         NSString *skeinforgePy = @"/skeinforge.py";
         NSString *prefix = @"\"";
         NSString *suffix = prefix;
-        NSLog(@"'%@'", prefix);
-        NSLog(@"'%@'", suffix);
+        //NSLog(@"'%@'", prefix);
+        //NSLog(@"'%@'", suffix);
         
         // EXECUTE WITH QUOTES SO THAT SPACES (AND SPECIAL CHARACTERS LIKE 'µ') IN POSIX PATHS WILL BE HONORED
         NSString *commandToExecuteWithoutQuotes = [pathToSkeinforge stringByAppendingString:skeinforgePy];
         NSString *commandToExecuteWithQuotes = [[prefix stringByAppendingString:commandToExecuteWithoutQuotes] stringByAppendingString:suffix];
-        NSLog(@"'%@'", commandToExecuteWithQuotes);
+        //NSLog(@"'%@'", commandToExecuteWithQuotes);
         
         NSString *quotedSTLFileToGcode = [[prefix stringByAppendingString:stlFileToGCode] stringByAppendingString:suffix];
         
         NSString *completeStringToExecute = [[commandToExecuteWithQuotes stringByAppendingString:@" "] stringByAppendingString:quotedSTLFileToGcode];
-        NSLog(@"'%@'", completeStringToExecute);
+        //NSLog(@"'%@'", completeStringToExecute);
 
         // Update UI that we're working
         [self processFile];
@@ -669,7 +697,7 @@
         
         
         
-                NSLog(@"yep, skeinforge was launched asynchronously");
+                //NSLog(@"yep, skeinforge was launched asynchronously");
 
         
         
