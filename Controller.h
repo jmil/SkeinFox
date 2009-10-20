@@ -54,7 +54,8 @@
 - (IBAction)addGitBranch:(id)sender;
 - (IBAction)delGitBranch:(id)sender;
     
-
+- (void)setupBundleNameInMenuBar;
+- (void)replaceTitlePlaceholderInMenuItem:(NSMenuItem *)root withString:(NSString *)appName;
 
 // Drag and Drop!!
 - (BOOL)dragIsFile:(id <NSDraggingInfo>)sender;

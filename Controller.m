@@ -263,13 +263,16 @@
 
     //Reenable the gCodeMe button since we still have an .stl file selected...
     // On launch, a task is run for some reason, so we need to check if there is an .stl file loaded. If so, then keep gcodeMeButton enabled!
-    if ([stlFileToGCode isNotEqualTo:nil]) {
+    if ([[self stlFileToGCode] isNotEqualTo:nil]) {
         [gCodeMeButton setEnabled:YES];        
     }
     
     [launchButton setEnabled:YES];
+    [gitCommitButton setEnabled:YES];
+    [addGitBranchButton setEnabled:YES];
+    [delGitBranchButton setEnabled:YES];
     [indicator stopAnimation:nil];
-
+    
 }
 
 - (void)readPipe:(NSNotification *)aNotification {
@@ -398,9 +401,28 @@
     
     [window registerForDraggedTypes:dragTypes];
     
-    
+    [self setupBundleNameInMenuBar];
         
 }
+
+- (void)setupBundleNameInMenuBar {
+    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey];
+    if (appName == nil) appName = [[NSProcessInfo processInfo] processName];
+    
+    NSMenu *menuBar = [NSApp mainMenu];
+    for (NSMenuItem *menuItem in [menuBar itemArray])
+        [self replaceTitlePlaceholderInMenuItem: menuItem withString: appName];
+}
+
+- (void)replaceTitlePlaceholderInMenuItem:(NSMenuItem *)root withString:(NSString *)appName {
+    root.title = [root.title stringByReplacingOccurrencesOfString: @"NewApplication"
+                  withString: appName];
+    
+    NSArray *submenuItems = [root.submenu itemArray];
+    for (NSMenuItem *menuItem in submenuItems)
+        [self replaceTitlePlaceholderInMenuItem: menuItem withString: appName];
+}
+
 
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(NSInteger)rowIndex {
@@ -465,6 +487,10 @@
 - (void)processFile {
     [popUpButton setEnabled:NO];
     [launchButton setEnabled:NO];
+    [launchButton setEnabled:NO];
+    [gitCommitButton setEnabled:NO];
+    [addGitBranchButton setEnabled:NO];
+    [delGitBranchButton setEnabled:NO];
 
     // Disable gCodeMeButton and start the indicator spinning animation
     [gCodeMeButton setEnabled:NO];
