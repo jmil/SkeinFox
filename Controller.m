@@ -207,7 +207,7 @@
     
     [self populateGitBranchesAndSelectCurrentBranch];
 
-    NSLog(@"addedGitBranch!");
+    //NSLog(@"addedGitBranch!");
     
 }
 
