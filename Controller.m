@@ -92,11 +92,11 @@
      */
     
     
-    NSString *branchesRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git branch"];
+    NSString *branchesRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git branch"];
     //NSLog(branchesRaw);
     
     
-    NSString *lastModifiedRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git log --branches --no-walk --format='%d %ai'"];
+    NSString *lastModifiedRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git log --branches --no-walk --format='%d %ai'"];
     //NSLog(lastModifiedRaw);
     
     
@@ -208,7 +208,7 @@
 
 
 - (IBAction)addGitBranch:(id)sender {
-    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git checkout -f -b ";
+    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git checkout -f -b ";
     NSString *commandToExecute = [prefix stringByAppendingString:@"untitled"];
     
     // Perform the shelltask and print it immediately to the console
@@ -254,7 +254,7 @@
     
 //    NSLog(@"branchToDelete is %@, while the newly selected branch is now %@", branchToDelete, [[[myArrayController selectedObjects] objectAtIndex:0] name]);
 
-    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git branch -D ";
+    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git branch -D ";
     NSString *commandToExecute = [prefix stringByAppendingString:branchToDelete];
 //    
     // Perform the shelltask and print it immediately to the console
@@ -376,7 +376,7 @@
         BOOL gitExists = [fileManager fileExistsAtPath:gitConfigDirectory];
         if (!gitExists) {
             // If .skeinforge directory already exists, and the .git DOES NOT exist, then we should just initiate a brand new .git repo and DO NOT TRY TO COPY OR INTERLEAVE GIT BRANCHES with that of the current user
-            NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git init; PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git add .; PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git commit -a -m 'hello'; PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git branch -M ";
+            NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git init; PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git add .; PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git commit -a -m 'hello'; PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git branch -M ";
             NSString *commandToExecute = [prefix stringByAppendingString:NSUserName()];
             NSLog(commandToExecute);
             
@@ -663,7 +663,7 @@
 
 
     // Force Git Checkout; this is what the user will expect, that we will switch branches. any modifications to skeinforge will be thrown away. later we can give another option to not throw away changes and notify user that there were changes and let them fix things...
-    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git checkout -f ";
+    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git checkout -f ";
     NSString *commandToExecute = [prefix stringByAppendingString:selectedItemName];
 //    NSLog(@"'%@'", commandToExecute);
 //    NSString *checkoutResult = [ShellTask executeShellCommandSynchronously:commandToExecute];
@@ -676,7 +676,7 @@
 // Edited the settings in Skeinforge, so now we need to commit the changes
 // git add .; git commit -a -m "DateTimeStamp"
 - (IBAction) didUpdateGitBranchSettings:(id)sender {
-    [ShellTask executeShellCommandAsynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git add .;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git commit -a -m Now"];
+    [ShellTask executeShellCommandAsynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git add .;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git commit -a -m Now"];
     //NSLog(branchesRaw);
 
     
@@ -695,9 +695,9 @@
     [self didUpdateGitBranchSettings:self];
     // Then we rename the git Branch to the currently named text
     // Attempting to rename current git Branch
-    //[ShellTask executeShellCommandAsynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git add .;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git commit -a -m Now"];
+    //[ShellTask executeShellCommandAsynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git add .;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git commit -a -m Now"];
 
-    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:$PATH git branch -M ";
+    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git branch -M ";
     NSString *commandToExecute = [prefix stringByAppendingString:newBranchName];
     
     
