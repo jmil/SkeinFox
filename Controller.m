@@ -193,17 +193,7 @@
     NSString *commandToExecute = [prefix stringByAppendingString:@"untitled"];
     
     // Perform the shelltask and print it immediately to the console
-    NSAttributedString *string = [[NSAttributedString alloc] initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
-    NSTextStorage *storage = [progressLogConsoleTextView textStorage];
-    
-    [storage beginEditing];
-    [storage appendAttributedString:string];
-    [storage endEditing];
-    
-    
-    [string release];
-    
-    [self scrollToBottom:self];
+    [self executeStringCommandSynchronouslyAndLogToConsole:commandToExecute isAShellTask:YES];
     
     [self populateGitBranchesAndSelectCurrentBranch];
 
@@ -249,19 +239,9 @@
     NSString *commandToExecute = [prefix stringByAppendingString:branchToDelete];
 //    
     // Perform the shelltask and print it immediately to the console
-    NSAttributedString *string = [[NSAttributedString alloc] initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
-    NSTextStorage *storage = [progressLogConsoleTextView textStorage];
-    
-    [storage beginEditing];
-    [storage appendAttributedString:string];
-    [storage endEditing];
-    
-    
-    [string release];
-    
-    [self scrollToBottom:self];
-    //
+    [self executeStringCommandSynchronouslyAndLogToConsole:commandToExecute isAShellTask:YES];
 
+    
     //NSLog(@"%@ was deleted", branchToDelete);
     // Make sure table view reloads appropriately!!
     [self populateGitBranchesAndSelectCurrentBranch];
@@ -299,6 +279,7 @@
 }
 
 - (void)readPipe:(NSNotification *)aNotification {
+    // See http://macosx.com/forums/software-programming-web-scripting/4522-better-way-read-nstask.html
     //NSLog(@"We are reading live output from standard output as it is being written, because we are being notified each time it's being written!!!");
     
     NSData *data;
@@ -357,7 +338,7 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     BOOL fileExists = [fileManager fileExistsAtPath:skeinforgeConfigDirectory];
     if (!fileExists) {
-        NSLog(@".skeinforge directory DOES NOT exist!");
+        //NSLog(@".skeinforge directory DOES NOT exist!");
         // If .skeinforge doesn't exist, then copy it from the current application resources        
         
         if ([fileManager copyItemAtPath:skeinforgeMasterTemplatesDirectory toPath:skeinforgeConfigDirectory error:nil]) {
@@ -366,12 +347,12 @@
             NSLog(@"Skeinforge Directory copy FAILURE");            
         }
     } else {
-        NSLog(@".skeinforge directory exists!");
+        //NSLog(@".skeinforge directory exists!");
         
         
         // If the .git directory doesn't already exist... if it already exists, DON'T OVERWRITE IT. People will be pissed!
         NSString *gitConfigDirectory = [skeinforgeConfigDirectory stringByAppendingString:@"/.git"];
-        NSLog(gitConfigDirectory);
+        //NSLog(gitConfigDirectory);
         
         BOOL gitExists = [fileManager fileExistsAtPath:gitConfigDirectory];
         if (!gitExists) {
@@ -381,22 +362,12 @@
             NSLog(commandToExecute);
             
             // Perform the shelltask and print it immediately to the console
-            NSAttributedString *string = [[NSAttributedString alloc] initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
-            NSTextStorage *storage = [progressLogConsoleTextView textStorage];
-            
-            [storage beginEditing];
-            [storage appendAttributedString:string];
-            [storage endEditing];
-            
-            
-            [string release];
-            
-            [self scrollToBottom:self];
+            [self executeStringCommandSynchronouslyAndLogToConsole:commandToExecute isAShellTask:YES];
             
             
 
         } else {
-            NSLog(@"%@'s .git directory exists, so don't mess with it", NSUserName());
+            //NSLog(@"%@'s .git directory exists, so don't mess with it", NSUserName());
             // So we do nothing
         }
     }
@@ -407,9 +378,9 @@
     // So setup all of our table variables
     [self populateGitBranchesAndSelectCurrentBranch];
     
+    NSString *logMessage = [NSString stringWithFormat:@"'%@' is the current branch\n", self.currentBranch];
     
-    
-    
+    [self executeStringCommandSynchronouslyAndLogToConsole:logMessage isAShellTask:NO];
     
     
     //*******************
@@ -438,6 +409,31 @@
     [self setupBundleNameInMenuBar];
         
 }
+
+- (void) executeStringCommandSynchronouslyAndLogToConsole:(NSString *)commandToExecute isAShellTask:(BOOL)isAShellTask {
+        // Perform the shelltask and print it immediately to the console
+    
+    
+    NSAttributedString *string = [NSAttributedString alloc];
+    
+    if (isAShellTask) {
+        // Execute the command and get the output
+        [string initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
+    } else {
+        [string initWithString:commandToExecute];
+    }
+        
+    NSTextStorage *storage = [progressLogConsoleTextView textStorage];
+
+    [storage beginEditing];
+    [storage appendAttributedString:string];
+    [storage endEditing];
+    
+    [string release];
+    
+    [self scrollToBottom:self];
+}
+
 
 - (void)setupBundleNameInMenuBar {
     NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey];
@@ -654,18 +650,7 @@
 //    NSString *checkoutResult = [ShellTask executeShellCommandSynchronously:commandToExecute];
 //    NSLog(checkoutResult);
 
-    // Perform the shelltask and print it immediately to the console
-    NSAttributedString *string = [[NSAttributedString alloc] initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
-    NSTextStorage *storage = [progressLogConsoleTextView textStorage];
-    
-    [storage beginEditing];
-    [storage appendAttributedString:string];
-    [storage endEditing];
-    
-    
-    [string release];
-    
-    [self scrollToBottom:self];
+    [self executeStringCommandSynchronouslyAndLogToConsole:commandToExecute isAShellTask:YES];
     
 }    
 
@@ -701,17 +686,7 @@
     //NSLog(@"The Command to Execute will be '%@'", commandToExecute);
     
     // Perform the shelltask and print it immediately to the console
-    NSAttributedString *string = [[NSAttributedString alloc] initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
-    NSTextStorage *storage = [progressLogConsoleTextView textStorage];
-    
-    [storage beginEditing];
-    [storage appendAttributedString:string];
-    [storage endEditing];
-    
-    
-    [string release];
-    
-    [self scrollToBottom:self];
+    [self executeStringCommandSynchronouslyAndLogToConsole:commandToExecute isAShellTask:YES];
     
     [self populateGitBranchesAndSelectCurrentBranch];
     

@@ -56,6 +56,7 @@
     
 - (void)setupBundleNameInMenuBar;
 - (void)replaceTitlePlaceholderInMenuItem:(NSMenuItem *)root withString:(NSString *)appName;
+- (void) executeStringCommandSynchronouslyAndLogToConsole:(NSString *)commandToExecute isAShellTask:(BOOL)isAShellTask;
 
 // Drag and Drop!!
 - (BOOL)dragIsFile:(id <NSDraggingInfo>)sender;
