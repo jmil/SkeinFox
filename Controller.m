@@ -69,11 +69,55 @@
 -(void)populateGitBranchesAndSelectCurrentBranch {
     // Populate NSTableView with Git branches for .skeinforge directory!
     
+    /* Output of:
+     git branch
+     
+     * basic--Raft
+     basic--noRaft
+     emptyFill-Walt--Raft
+     emptyFill-Walt--noRaft
+     watertight--Raft
+     watertight--noRaft     
+     */
+    
+    /* Output of:
+    git log --branches --no-walk --format='%d %ai'
+     
+     (watertight--noRaft) 2009-10-15 14:18:56 -0400
+     (watertight--Raft) 2009-10-15 14:18:10 -0400
+     (emptyFill-Walt--noRaft) 2009-10-15 14:17:20 -0400
+     (basic--noRaft) 2009-10-15 14:16:03 -0400
+     (basic--Raft) 2009-10-15 14:15:07 -0400
+     (emptyFill-Walt--Raft) 2009-10-15 14:12:25 -0400     
+     */
+    
+    
     NSString *branchesRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch"];
     //NSLog(branchesRaw);
     
+    
+    NSString *lastModifiedRaw = [ShellTask executeShellCommandSynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git log --branches --no-walk --format='%d %ai'"];
+    //NSLog(lastModifiedRaw);
+    
+    
     NSArray *namesTemp = [branchesRaw componentsSeparatedByString:@"\n"];
     NSMutableArray *names = [NSMutableArray arrayWithArray:namesTemp];
+    
+    NSArray *lastModifiedTemp = [lastModifiedRaw componentsSeparatedByString:@"\n"];
+    NSMutableArray *lastModifieds = [NSMutableArray arrayWithArray:lastModifiedTemp];
+    
+    // Step through array to get dictionary of lastModified Dates
+    NSInteger lastModifiedIndex = 0;
+    NSMutableArray *lastModifiedArray = [[NSMutableArray alloc] init];
+    
+    for (NSString *anElement in lastModifieds) {
+        
+        
+        
+    }
+    
+    
+    
     
     
     // Cleanup the Array to both mark the currently selected branch and also to remove leading and lagging whitespace
@@ -278,14 +322,11 @@
     // Check if git is installed!
     
     
-    
-    
-    
     // See if .skeinforge Directory exists
     NSString *skeinforgeConfigDirectory = [@"~/.skeinforge" stringByExpandingTildeInPath];
-    NSLog(skeinforgeConfigDirectory);
+    //NSLog(skeinforgeConfigDirectory);
     NSString *skeinforgeMasterTemplatesDirectory = [[NSBundle mainBundle] pathForResource:@".skeinforge" ofType:nil];
-    NSLog(@"The .skeinforge master template folder is located at: '%@'", skeinforgeMasterTemplatesDirectory);
+    //NSLog(@"The .skeinforge master template folder is located at: '%@'", skeinforgeMasterTemplatesDirectory);
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     BOOL fileExists = [fileManager fileExistsAtPath:skeinforgeConfigDirectory];
@@ -318,7 +359,7 @@
             
 
         } else {
-            NSLog(@"%@'s .git directory exists", NSUserName());
+            NSLog(@"%@'s .git directory exists, so don't mess with it", NSUserName());
             // So we do nothing
         }
     }
