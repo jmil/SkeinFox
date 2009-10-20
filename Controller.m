@@ -108,34 +108,69 @@
     
     // Step through array to get dictionary of lastModified Dates
     NSInteger lastModifiedIndex = 0;
-    NSMutableArray *lastModifiedArray = [[NSMutableArray alloc] init];
+    NSMutableDictionary *lastModifiedDictionary = [[NSMutableDictionary alloc] init];
 
     // We could use regex here, but regex searching is very processor intensive
     // Instead we let git do the heavy lifting, so we know the format will be exactly (BRANCH_NAME) DATE based on our git statement above:
     // git log --branches --no-walk --format='%d %ai
     
+    
     for (NSString *anElement in lastModifieds) {
-        NSLog(@"'%@' is element %i", anElement, lastModifiedIndex);
         
-        // First find the location of Open Parentheses
+        if (0 != [anElement length]) {
+            // Don't try to use substringWithRange on an empty string! you'll get an exception!!
+            //NSLog(@"'%@' is element %i in this array", anElement, lastModifiedIndex);
+            
+            // First remove the first two characters
+            // Try just removing the first two characters. These characters MUST be " (" based on git-log for git 1.6.5 intel leopard
+//            NSString *openParenChopped = [anElement substringFromIndex:2];
+//            NSLog(@"'%@' is element %i", openParenChopped, lastModifiedIndex);
+
+            // First find the location of Open Parentheses
+            NSRange openParenLocation = [anElement rangeOfString:@"("];
+            //NSLog(@"the Range for openParenLocation is: '%i' of length '%i'", openParenLocation.location, openParenLocation.length);
+            //NSUInteger openParen = openParenLocation.location;
+            
+            // Next find the location of closed Parentheses
+            NSRange closeParenLocation = [anElement rangeOfString:@")"];
+            //NSLog(@"the Range for openParenLocation is: '%i' of length '%i'", closeParenLocation.location, closeParenLocation.length);
+            
+            
+            // Then the branch name will be the characters between these            
+            NSUInteger startOfBranchName = openParenLocation.location + 1;
+            NSUInteger branchNameLength = closeParenLocation.location - openParenLocation.location - 1;
+            NSRange branchNameRange = NSMakeRange(startOfBranchName, branchNameLength);
+            NSString *thisBranchName = [anElement substringWithRange:branchNameRange];
+            NSLog(@"branch name must therefore be '%@'", thisBranchName);
+                        
+            // And then the date last modified will be the characters after closed parentheses + 1 (because we have a ' ' space character in the git log format string
+            // USE EXACT STRING LENGTH SO THAT WE CAN ADD MORE INFO LATER LIKE CUSTOM NAME FOR THIS BRANCH IN THE COMMIT MESSAGE THAT CAN USE SPECIAL CHARACTERS
+            // This means the date must be 25 more characters starting at closeParenLocation +2
+            NSRange lastModifiedDateRange = NSMakeRange((closeParenLocation.location + 2), 25);
+            NSString *thisBranchModifiedDate = [anElement substringWithRange:lastModifiedDateRange];
+            //NSLog(@"branch DATE must therefore be '%@'", thisBranchModifiedDate);
+            
+            
+            // Now set these variables as the key and value of a new dictionary. Then when we later set the current branch based on the "*" being an early character we will use the branch name as the key to this dictionary to pull out the lastModified date!
+            [lastModifiedDictionary setObject:thisBranchModifiedDate forKey:thisBranchName];
+            
+            // NOTE: here we need special code. This is because if the user has just duplicated a branch, then the git log --branches --no-walk --format='%d %ai command will produce something like this:
+            //  (untitled2,, untitled, basic--Raft) 2009-10-15 14:15:07 -0400
+            // Which means that thisBranchName is actually multiple different branches, each of which needs to have it's own entry in the mutabledictionary!
+            // So the workaround is to test if thisBranchName contains the characters ', ' and then split on these characters into a new array, then iterate through the new array and add each to the dictionary with the IDENTICAL last Modified Date
+            
+            
+            
+            
+            
+            
+            lastModifiedIndex++;            
+        }
         
-        
-        // Next find the location of closed Parentheses
-        
-        // Then the branch name will be the characters between these
-        
-        // And then the date last modified will be the characters after closed parentheses + 1 (because we have a ' ' space character in the git log format string
-        
-        
-        // Now set these variables as the key and value of a new dictionary. Then when we later set the current branch based on the "*" being an early character we will use the branch name as the key to this dictionary to pull out the lastModified date! 
-        
-        
-        
-        
-        lastModifiedIndex++;
     }
     
     
+    NSLog(@"My branches with paired last Modified Dates is: '%@'", lastModifiedDictionary);
     
     
     
@@ -175,7 +210,8 @@
     for (NSString *name in names) {
         gitBranch *branch = [[[gitBranch alloc] init] autorelease];
         branch.name = name;
-        branch.lastModified = @"last modified on XXXXX";
+        //branch.lastModified = @"last modified on XXXXX";
+        branch.lastModified = [lastModifiedDictionary objectForKey:name];
         [tempGitBranches addObject:branch];
         
         

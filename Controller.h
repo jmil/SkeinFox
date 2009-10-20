@@ -44,7 +44,7 @@
 // Send a notification to self that the user did update the git branch selection
 - (IBAction) didUpdateGitBranchSelection:(id)sender;
 - (IBAction) didUpdateGitBranchSettings:(id)sender;
-- (IBAction)doubleClickTableViewRow:(id)sender;
+//- (IBAction)doubleClickTableViewRow:(id)sender;
 
 // Launch Skeinforge
 - (IBAction) launchSkeinforge:(id)sender;
