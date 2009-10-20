@@ -192,7 +192,18 @@
     NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git checkout -f -b ";
     NSString *commandToExecute = [prefix stringByAppendingString:@"untitled"];
     
-    [ShellTask executeShellCommandSynchronously:commandToExecute];
+    // Perform the shelltask and print it immediately to the console
+    NSAttributedString *string = [[NSAttributedString alloc] initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
+    NSTextStorage *storage = [progressLogConsoleTextView textStorage];
+    
+    [storage beginEditing];
+    [storage appendAttributedString:string];
+    [storage endEditing];
+    
+    
+    [string release];
+    
+    [self scrollToBottom:self];
     
     [self populateGitBranchesAndSelectCurrentBranch];
 
@@ -237,8 +248,19 @@
     NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:$PATH git branch -D ";
     NSString *commandToExecute = [prefix stringByAppendingString:branchToDelete];
 //    
-    [ShellTask executeShellCommandSynchronously:commandToExecute];
-//
+    // Perform the shelltask and print it immediately to the console
+    NSAttributedString *string = [[NSAttributedString alloc] initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
+    NSTextStorage *storage = [progressLogConsoleTextView textStorage];
+    
+    [storage beginEditing];
+    [storage appendAttributedString:string];
+    [storage endEditing];
+    
+    
+    [string release];
+    
+    [self scrollToBottom:self];
+    //
 
     //NSLog(@"%@ was deleted", branchToDelete);
     // Make sure table view reloads appropriately!!
@@ -263,7 +285,7 @@
 
     //Reenable the gCodeMe button since we still have an .stl file selected...
     // On launch, a task is run for some reason, so we need to check if there is an .stl file loaded. If so, then keep gcodeMeButton enabled!
-    if ([[self stlFileToGCode] isNotEqualTo:nil]) {
+    if ([self.stlFileToGCode isNotEqualTo:nil]) {
         [gCodeMeButton setEnabled:YES];        
     }
     
@@ -271,6 +293,7 @@
     [gitCommitButton setEnabled:YES];
     [addGitBranchButton setEnabled:YES];
     [delGitBranchButton setEnabled:YES];
+    [myTableView setEnabled:YES];
     [indicator stopAnimation:nil];
     
 }
@@ -357,7 +380,18 @@
             NSString *commandToExecute = [prefix stringByAppendingString:NSUserName()];
             NSLog(commandToExecute);
             
-            [ShellTask executeShellCommandSynchronously:commandToExecute];
+            // Perform the shelltask and print it immediately to the console
+            NSAttributedString *string = [[NSAttributedString alloc] initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
+            NSTextStorage *storage = [progressLogConsoleTextView textStorage];
+            
+            [storage beginEditing];
+            [storage appendAttributedString:string];
+            [storage endEditing];
+            
+            
+            [string release];
+            
+            [self scrollToBottom:self];
             
             
 
@@ -491,6 +525,7 @@
     [gitCommitButton setEnabled:NO];
     [addGitBranchButton setEnabled:NO];
     [delGitBranchButton setEnabled:NO];
+    [myTableView setEnabled:NO];
 
     // Disable gCodeMeButton and start the indicator spinning animation
     [gCodeMeButton setEnabled:NO];
@@ -665,7 +700,18 @@
     //NSLog(@"The New Branch Name will be %@", newBranchName);
     //NSLog(@"The Command to Execute will be '%@'", commandToExecute);
     
-    [ShellTask executeShellCommandSynchronously:commandToExecute];
+    // Perform the shelltask and print it immediately to the console
+    NSAttributedString *string = [[NSAttributedString alloc] initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
+    NSTextStorage *storage = [progressLogConsoleTextView textStorage];
+    
+    [storage beginEditing];
+    [storage appendAttributedString:string];
+    [storage endEditing];
+    
+    
+    [string release];
+    
+    [self scrollToBottom:self];
     
     [self populateGitBranchesAndSelectCurrentBranch];
     
