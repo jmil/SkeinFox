@@ -16,6 +16,7 @@
 #import "gitBranch.h"
 #import "ShellTask.h"
 #import "TableView.h"
+#import "gitDateToHumanReadableTransformer.h"
 
 
 @implementation Controller
@@ -63,6 +64,30 @@
     //Set the self.currentBranch default value to 'basic--Raft'
     self.currentBranch = [[NSMutableString alloc] initWithString:@"basic--Raft"];
 
+    // Register the gitDateToHumanReadableTransformer
+    /*Based on Apple Demo:
+     FahrenheitToCelsiusTransformer *fToCTransformer;
+     
+     // create an autoreleased instance of our value transformer
+     fToCTransformer = [[[FahrenheitToCelsiusTransformer alloc] init]
+     autorelease];
+     
+     // register it with the name that we refer to it with
+     [NSValueTransformer setValueTransformer:fToCTransformer
+     forName:@"FahrenheitToCelsiusTransformer"];
+     */
+    gitDateToHumanReadableTransformer *gitDateHumanReadableTransformer;
+    
+    // create an autoreleased instance of our value transformer
+    gitDateHumanReadableTransformer = [[[gitDateToHumanReadableTransformer alloc] init] autorelease];
+    
+    // register it with the name that we refer to it with
+    [NSValueTransformer setValueTransformer:gitDateHumanReadableTransformer
+                                    forName:@"gitDateToHumanReadableTransformer"];
+    
+    
+    
+    
     return self;
 }
 

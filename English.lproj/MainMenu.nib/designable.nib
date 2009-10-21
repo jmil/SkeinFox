@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">437.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="372"/>
+			<integer value="384"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2193,26 +2193,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: arrangedObjects.lastModified</string>
-						<reference key="source" ref="864547674"/>
-						<reference key="destination" ref="310562847"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="864547674"/>
-							<reference key="NSDestination" ref="310562847"/>
-							<string key="NSLabel">value: arrangedObjects.lastModified</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">arrangedObjects.lastModified</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSConditionallySetsEditable</string>
-								<reference key="NS.object.0" ref="5"/>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">697</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: arrangedObjects.name</string>
 						<reference key="source" ref="851071742"/>
 						<reference key="destination" ref="310562847"/>
@@ -2262,6 +2242,35 @@
 						<reference key="destination" ref="1072403926"/>
 					</object>
 					<int key="connectionID">719</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: arrangedObjects.lastModified</string>
+						<reference key="source" ref="864547674"/>
+						<reference key="destination" ref="310562847"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="864547674"/>
+							<reference key="NSDestination" ref="310562847"/>
+							<string key="NSLabel">value: arrangedObjects.lastModified</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">arrangedObjects.lastModified</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSConditionallySetsEditable</string>
+									<string>NSValueTransformerName</string>
+								</object>
+								<object class="NSMutableArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<reference ref="5"/>
+									<string>gitDateToHumanReadableTransformer</string>
+								</object>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">720</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -3664,8 +3673,8 @@
 					<reference ref="9"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="9"/>
-					<string>{{321, 59}, {480, 378}}</string>
-					<string>{{321, 59}, {480, 378}}</string>
+					<string>{{474, 101}, {480, 378}}</string>
+					<string>{{474, 101}, {480, 378}}</string>
 					<reference ref="9"/>
 					<string>{{398, 352}, {480, 360}}</string>
 					<boolean value="NO"/>
@@ -3785,7 +3794,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">719</int>
+			<int key="maxID">720</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3804,7 +3813,6 @@
 							<string>didRenameGitBranch:</string>
 							<string>didUpdateGitBranchSelection:</string>
 							<string>didUpdateGitBranchSettings:</string>
-							<string>doubleClickTableViewRow:</string>
 							<string>gCodeMe:</string>
 							<string>haltGCoding:</string>
 							<string>launchSkeinforge:</string>
@@ -3817,7 +3825,6 @@
 							<string>id</string>
 							<string>id</string>
 							<string>NSString</string>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
