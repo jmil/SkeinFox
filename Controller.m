@@ -451,7 +451,7 @@
             // If .skeinforge directory already exists, and the .git DOES NOT exist, then we should just initiate a brand new .git repo and DO NOT TRY TO COPY OR INTERLEAVE GIT BRANCHES with that of the current user
             NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git init; PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git add .; PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git commit -a -m 'hello'; PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git branch -M ";
             NSString *commandToExecute = [prefix stringByAppendingString:NSUserName()];
-            NSLog(commandToExecute);
+            //NSLog(commandToExecute);
             
             // Perform the shelltask and print it immediately to the console
             [self executeStringCommandSynchronouslyAndLogToConsole:commandToExecute isAShellTask:YES];

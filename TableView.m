@@ -15,15 +15,15 @@
 
 // make return and tab only end editing, and not cause other cells to edit
 
-- (BOOL) textShouldEndEditing:(NSNotification *)notification {
-    //NSLog(@"tableView textShouldEndEditing");
-    return YES;
-}
+//- (BOOL) textShouldEndEditing:(NSNotification *)notification {
+//    //NSLog(@"tableView textShouldEndEditing");
+//    return YES;
+//}
 
-- (void)textDidChange:(NSNotification *)aNotification {
-    //NSLog(@"tableView textDidChange!");
-    
-}
+//- (void)textDidChange:(NSNotification *)aNotification {
+//    //NSLog(@"tableView textDidChange!");
+//    
+//}
 
 
 

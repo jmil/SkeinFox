@@ -67,9 +67,9 @@
 				A5C697A20D4C49DF008DF2C0 /* gitBranch.h */,
 				A5C697A30D4C49DF008DF2C0 /* gitBranch.m */,
 				2DDC41AE1069FD32000BCA31 /* ShellTask.m */,
+				2DDC41AF1069FD32000BCA31 /* ShellTask.h */,
 				2D927E06108E8A250093D693 /* gitDateToHumanReadableTransformer.h */,
 				2D927E07108E8A250093D693 /* gitDateToHumanReadableTransformer.m */,
-				2DDC41AF1069FD32000BCA31 /* ShellTask.h */,
 				2D7D1E0A108CEC9E00E5E2BB /* TableView.h */,
 				2D7D1E0B108CEC9E00E5E2BB /* TableView.m */,
 			);
@@ -238,7 +238,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 37;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -256,7 +256,7 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 37;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
