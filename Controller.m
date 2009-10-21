@@ -141,7 +141,7 @@
             NSUInteger branchNameLength = closeParenLocation.location - openParenLocation.location - 1;
             NSRange branchNameRange = NSMakeRange(startOfBranchName, branchNameLength);
             NSString *thisBranchName = [anElement substringWithRange:branchNameRange];
-            NSLog(@"branch name must therefore be '%@'", thisBranchName);
+            //NSLog(@"branch name must therefore be '%@'", thisBranchName);
                         
             // And then the date last modified will be the characters after closed parentheses + 1 (because we have a ' ' space character in the git log format string
             // USE EXACT STRING LENGTH SO THAT WE CAN ADD MORE INFO LATER LIKE CUSTOM NAME FOR THIS BRANCH IN THE COMMIT MESSAGE THAT CAN USE SPECIAL CHARACTERS
@@ -151,18 +151,30 @@
             //NSLog(@"branch DATE must therefore be '%@'", thisBranchModifiedDate);
             
             
-            // Now set these variables as the key and value of a new dictionary. Then when we later set the current branch based on the "*" being an early character we will use the branch name as the key to this dictionary to pull out the lastModified date!
-            [lastModifiedDictionary setObject:thisBranchModifiedDate forKey:thisBranchName];
             
             // NOTE: here we need special code. This is because if the user has just duplicated a branch, then the git log --branches --no-walk --format='%d %ai command will produce something like this:
             //  (untitled2,, untitled, basic--Raft) 2009-10-15 14:15:07 -0400
             // Which means that thisBranchName is actually multiple different branches, each of which needs to have it's own entry in the mutabledictionary!
             // So the workaround is to test if thisBranchName contains the characters ', ' and then split on these characters into a new array, then iterate through the new array and add each to the dictionary with the IDENTICAL last Modified Date
+            // Now set these variables as the key and value of a new dictionary. Then when we later set the current branch based on the "*" being an early character we will use the branch name as the key to this dictionary to pull out the lastModified date!
             
+            // Note, we can do this very simply thanks to the behavior of componentsSeparatedByString:. See here:
+            /*
+             NSString *list = @"Norman, Stanley, Fletcher";
+             NSArray *listItems = [list componentsSeparatedByString:@", "];
+             produces an array { @"Norman", @"Stanley", @"Fletcher" }.
+             
+             If list begins with a comma and space—for example, ", Norman, Stanley, Fletcher"—the array has these contents: { @"", @"Norman", @"Stanley", @"Fletcher" }
+             
+             If list has no separators—for example, "Norman"—the array contains the string itself, in this case { @"Norman" }.
+             */
+            NSArray *allBranchesWithThisDate = [thisBranchName componentsSeparatedByString:@", "];
             
-            
-            
-            
+            for (NSString *aBranch in allBranchesWithThisDate) {
+                //NSLog(@"aBranch is '%@' of type '%@'", aBranch, aBranch.className);
+                
+                [lastModifiedDictionary setObject:thisBranchModifiedDate forKey:aBranch];
+            }            
             
             lastModifiedIndex++;            
         }
@@ -170,7 +182,7 @@
     }
     
     
-    NSLog(@"My branches with paired last Modified Dates is: '%@'", lastModifiedDictionary);
+    //NSLog(@"My branches with paired last Modified Dates is: '%@'", lastModifiedDictionary);
     
     
     
@@ -712,9 +724,17 @@
 // Edited the settings in Skeinforge, so now we need to commit the changes
 // git add .; git commit -a -m "DateTimeStamp"
 - (IBAction) didUpdateGitBranchSettings:(id)sender {
-    [ShellTask executeShellCommandAsynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git add .;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git commit -a -m Now"];
+    NSString *commandToExecute = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git add .;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git commit -a -m Now";
+    [self executeStringCommandSynchronouslyAndLogToConsole:commandToExecute isAShellTask:YES];
+
+    
+    // Update lastModified dates!!!
+    [self populateGitBranchesAndSelectCurrentBranch];
+
+
     //NSLog(branchesRaw);
 
+    
     
     //NSLog(@"Controller didUpdateGitBranchSettings to commit them!!");
     
@@ -722,16 +742,14 @@
 
 
 // We renamed the branch name, so now we need to actually rename the branch name on disk
-// Note that changes may be present, so we should also try to do a commit!
+// Note that changes may be present, BUT DO NOT DO A COMMIT! The user will not expect a rename will also commit any changes present. This is EXPLICITLY and EXCLUSIVELY what the "Save Changes" button is for!
 // git branch -M "NewBranchName"
 - (IBAction)didRenameGitBranch:(NSString *)newBranchName {
     //NSLog(@"Controller didRenameGitBranch");
     
+    // Note that changes may be present, BUT DO NOT DO A COMMIT! The user will not expect a rename will also commit any changes present. This is EXPLICITLY and EXCLUSIVELY what the "Save Changes" button is for!
     // First we commit the current branch in case there are any changes
-    [self didUpdateGitBranchSettings:self];
-    // Then we rename the git Branch to the currently named text
-    // Attempting to rename current git Branch
-    //[ShellTask executeShellCommandAsynchronously:@"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git add .;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git commit -a -m Now"];
+    //[self didUpdateGitBranchSettings:self];
 
     NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git branch -M ";
     NSString *commandToExecute = [prefix stringByAppendingString:newBranchName];
@@ -745,6 +763,10 @@
     
     [self populateGitBranchesAndSelectCurrentBranch];
     
+    
+    // Don't log the new branch name here, because git does not produce output for renamed branch. Rather, just leave it blank on success
+//    NSString *logMessage = [NSString stringWithFormat:@"Renamed branch to '%@'", newBranchName];
+//    [self executeStringCommandSynchronouslyAndLogToConsole:logMessage isAShellTask:NO];
     
     //NSLog(@"renamed git branch!!");
 }
