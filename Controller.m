@@ -858,7 +858,27 @@
 // Edited the settings in Skeinforge, so now we need to commit the changes
 // git add .; git commit -a -m "DateTimeStamp"
 - (IBAction) didUpdateGitBranchSettings:(id)sender {
-    NSString *commandToExecute = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git add .;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git commit -a -m Now";
+    NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git add .;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git commit -a -m ";
+    
+    // Get the current date!!
+    NSDateFormatter *dateFormatter =
+    [[[NSDateFormatter alloc] init] autorelease];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    NSDate *date = [NSDate date];
+    NSString *formattedDateString = [dateFormatter stringFromDate:date];
+    
+    //NSLog(@"formattedDateString for locale %@: %@", [[dateFormatter locale] localeIdentifier], formattedDateString);
+    // Output: formattedDateString for locale en_US: Jan 2, 2001
+    
+    NSLog(@"the date/time for the git log message is: '%@'", formattedDateString);
+    
+    
+    
+    NSString *commandToExecute = [prefix stringByAppendingString:[NSString stringWithFormat:@"\"%@ @ %@\"", NSUserName(), formattedDateString]];
+    
+    NSLog(@"'%@'", commandToExecute);
+    
     [self executeStringCommandSynchronouslyAndLogToConsole:commandToExecute isAShellTask:YES];
 
     
