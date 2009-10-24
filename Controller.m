@@ -277,6 +277,10 @@
 
 //    [self.myTableView reloadData];
 //    [self.myTableView setNeedsDisplay:YES];
+
+    
+    // Release lastModifiedDictionary!!
+    [lastModifiedDictionary release];
 }
 
 
@@ -614,14 +618,13 @@
 - (void) executeStringCommandSynchronouslyAndLogToConsole:(NSString *)commandToExecute isAShellTask:(BOOL)isAShellTask {
         // Perform the shelltask and print it immediately to the console
     
-    
-    NSAttributedString *string = [NSAttributedString alloc];
+    NSAttributedString *string;
     
     if (isAShellTask) {
         // Execute the command and get the output
-        [string initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
+        string = [[NSAttributedString alloc] initWithString:[ShellTask executeShellCommandSynchronously:commandToExecute]];
     } else {
-        [string initWithString:commandToExecute];
+        string = [[NSAttributedString alloc] initWithString:commandToExecute];
     }
         
     NSTextStorage *storage = [progressLogConsoleTextView textStorage];
