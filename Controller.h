@@ -7,6 +7,7 @@
 @class TableView;
 
 @interface Controller : NSObject {
+    NSString *gitVersion;
     NSMutableArray *gitBranches;
     NSMutableString *currentBranch;
     IBOutlet NSPopUpButton *popUpButton;
@@ -31,6 +32,7 @@
     NSTask *gCodeTaskInBackground;
 }
 
+@property (nonatomic, retain) NSString *gitVersion;
 @property (readwrite, retain) NSMutableArray *gitBranches;
 @property (readwrite, retain) NSMutableString *currentBranch;
 //@property (nonatomic, retain) IBOutlet NSPopUpButton *popUpButton;
@@ -39,6 +41,9 @@
 @property (nonatomic, retain) IBOutlet NSTextFieldCell *myTextFieldCell;
 @property (nonatomic, retain) IBOutlet NSString *stlFileToGCode;
 @property (nonatomic, retain) NSTask *gCodeTaskInBackground;
+
+// Git version checking
+- (void) notifyUserImproperGitVersion:(NSString *)gitVersionDotNumberRaw gitVersionRequiredArray:(NSArray *)gitVersionRequired;
 
 
 // Send a notification to self that the user did update the git branch selection

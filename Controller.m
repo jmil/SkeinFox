@@ -21,6 +21,7 @@
 
 @implementation Controller
 
+@synthesize gitVersion;
 @synthesize gitBranches, myArrayController;
 @synthesize stlFileToGCode;
 @synthesize myTextFieldCell;
@@ -419,6 +420,87 @@
 - (void)awakeFromNib {
     
     // Check if git is installed!
+    NSString *gitVersionRaw = [ShellTask executeShellCommandSynchronously:@"PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git --version"];
+//    if ([gitVersionRaw ]) {
+//        
+//    }
+//    
+//    [];
+//    
+    
+    //NSLog(@"The raw git version is '%@'", gitVersionRaw);
+    NSArray *gitVersionArray = [gitVersionRaw componentsSeparatedByString:@"\n"];
+    NSString *gitVersionSingleLine = [gitVersionArray objectAtIndex:0];
+    //NSLog(@"The single line git version is '%@'", gitVersionSingleLine);
+    NSString *gitVersionDotNumberRaw = [gitVersionSingleLine substringFromIndex:12];
+    NSLog(@"Git version '%@' detected", gitVersionDotNumberRaw);
+
+    NSArray *gitVersionArrayNoDots = [gitVersionDotNumberRaw componentsSeparatedByString:@"."];
+    
+    //NSLog(@"%@", gitVersionArrayNoDots);
+    
+    // Now the git version number may not contain 4 numbers like '1.6.4.2', and may instead contain '1.7'. So, we need to compare each number successively!
+    NSArray *gitVersionRequired = [NSArray arrayWithObjects:@"1", @"6", @"4", nil];
+    
+    
+    if ([gitVersionArrayNoDots count] >= 1) {
+        NSString *gVno1 = [gitVersionArrayNoDots objectAtIndex:0];
+        //NSLog(@"%@", gVno1);
+        if ([gVno1 intValue] >= [[gitVersionRequired objectAtIndex:0] intValue]) {
+            //NSLog(@"we are at least at version %@", [gitVersionRequired objectAtIndex:0]);
+            
+            // so we are at least at version 1
+            if ([gitVersionArrayNoDots count] >= 2) {
+                NSString *gVno2 = [gitVersionArrayNoDots objectAtIndex:1];
+                //NSLog(@"%@", gVno2);
+                
+                if ([gVno2 intValue] >= [[gitVersionRequired objectAtIndex:1] intValue]) {
+                    //NSLog(@"we are at least at version %@", [gitVersionRequired objectAtIndex:1]);
+                    
+                    
+                    if ([gitVersionArrayNoDots count] >= 3) {
+                        NSString *gVno3 = [gitVersionArrayNoDots objectAtIndex:2];
+                        //NSLog(@"%@", gVno3);
+                        if ([gVno3 intValue] >= [[gitVersionRequired objectAtIndex:2] intValue]) {
+                            //NSLog(@"we are at least at version %@", [gitVersionRequired objectAtIndex:2]);
+                        } else {
+                            [self notifyUserImproperGitVersion:gitVersionDotNumberRaw gitVersionRequiredArray:gitVersionRequired];
+                        }                
+                    }
+                } else {
+                    [self notifyUserImproperGitVersion:gitVersionDotNumberRaw gitVersionRequiredArray:gitVersionRequired];
+                }                
+                    
+            }
+        } else {
+            [self notifyUserImproperGitVersion:gitVersionDotNumberRaw gitVersionRequiredArray:gitVersionRequired];
+        }
+    }
+    
+//    NSString *gVno2 = [gitVersionArrayNoDots objectAtIndex:1];
+//    NSString *gVno3 = [gitVersionArrayNoDots objectAtIndex:2];
+//    NSString *gVno4 = [gitVersionArrayNoDots objectAtIndex:3];
+//    NSString *gVno5 = [gitVersionArrayNoDots objectAtIndex:4];
+//    NSLog(@"%@ %@ %@ %@ %@", gVno1, gVno2, gVno3, gVno4, gVno5);
+
+    
+    
+    // Actually have to remove the trailing return in the array!
+//    NSString *gVnoDots = [[[gitVersionArrayNoDots componentsJoinedByString:@""] componentsSeparatedByString:@"/n"] objectAtIndex:0];
+//    
+//    NSLog(@"The git version is '%@'", gVnoDots);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     // See if .skeinforge Directory exists
@@ -501,6 +583,33 @@
     [self setupBundleNameInMenuBar];
         
 }
+
+
+- (void) notifyUserImproperGitVersion:(NSString *)gitVersionDotNumberRaw gitVersionRequiredArray:(NSArray *)gitVersionRequired {
+    NSString *alertMessage = [NSString stringWithFormat:@"You are at git version '%@' while git version '%@' or later is required.", gitVersionDotNumberRaw, [gitVersionRequired componentsJoinedByString:@"."]];
+    
+    NSLog(@"%@", alertMessage);
+    
+    
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert addButtonWithTitle:@"OK"];
+    //[alert addButtonWithTitle:@"Cancel"];
+    [alert setMessageText:alertMessage];
+    [alert setInformativeText:@"Please update to a later version of git."];
+    [alert setAlertStyle:NSWarningAlertStyle];
+    
+    
+    if ([alert runModal] == NSAlertFirstButtonReturn) {
+        
+        // OK clicked, QUIT THE APPLICATION
+        [NSApp terminate:self];
+        
+    }
+    [alert release];
+    
+    
+} 
+
 
 - (void) executeStringCommandSynchronouslyAndLogToConsole:(NSString *)commandToExecute isAShellTask:(BOOL)isAShellTask {
         // Perform the shelltask and print it immediately to the console
