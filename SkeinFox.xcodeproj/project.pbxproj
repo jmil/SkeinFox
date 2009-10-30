@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D549E88109B418200CDE1BD /* SkeinFoxLogo_v5hexOnly.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2D549E87109B418200CDE1BD /* SkeinFoxLogo_v5hexOnly.icns */; };
 		2D7D1E0C108CEC9E00E5E2BB /* TableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D1E0B108CEC9E00E5E2BB /* TableView.m */; };
 		2D927E08108E8A250093D693 /* gitDateToHumanReadableTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D927E07108E8A250093D693 /* gitDateToHumanReadableTransformer.m */; };
 		2DA2BBD9106AB8A80004156F /* skeinforge-0005 in Resources */ = {isa = PBXBuildFile; fileRef = 2DA2BB0D106AB8A80004156F /* skeinforge-0005 */; };
@@ -32,6 +33,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		2D5310221069F71300B4687D /* SkeinFox_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SkeinFox_Prefix.pch; sourceTree = "<group>"; };
+		2D549E87109B418200CDE1BD /* SkeinFoxLogo_v5hexOnly.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SkeinFoxLogo_v5hexOnly.icns; sourceTree = "<group>"; };
 		2D7D1E0A108CEC9E00E5E2BB /* TableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableView.h; sourceTree = "<group>"; };
 		2D7D1E0B108CEC9E00E5E2BB /* TableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableView.m; sourceTree = "<group>"; };
 		2D927E06108E8A250093D693 /* gitDateToHumanReadableTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gitDateToHumanReadableTransformer.h; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				2DC0AD20109AC75F00AECB7B /* SkeinFoxIcon_v3.icns */,
+				2D549E87109B418200CDE1BD /* SkeinFoxLogo_v5hexOnly.icns */,
 				2DA2BB0D106AB8A80004156F /* skeinforge-0005 */,
 				2DC66C801095778D00E15482 /* reprap_python_beanshell */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -201,6 +204,7 @@
 				2DE975C31086AAE90063CFD9 /* hive76-buib_only.png in Resources */,
 				2DC66DC71095778D00E15482 /* reprap_python_beanshell in Resources */,
 				2DC0AD21109AC75F00AECB7B /* SkeinFoxIcon_v3.icns in Resources */,
+				2D549E88109B418200CDE1BD /* SkeinFoxLogo_v5hexOnly.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

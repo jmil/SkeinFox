@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string>SkeinFoxIcon_v3</string>
+	<string>SkeinFoxLogo_v5hexOnly</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.Hive76.SkeinFox</string>
 	<key>CFBundleInfoDictionaryVersion</key>
