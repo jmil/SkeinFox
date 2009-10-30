@@ -874,13 +874,13 @@
     //NSLog(@"formattedDateString for locale %@: %@", [[dateFormatter locale] localeIdentifier], formattedDateString);
     // Output: formattedDateString for locale en_US: Jan 2, 2001
     
-    NSLog(@"the date/time for the git log message is: '%@'", formattedDateString);
+    //NSLog(@"the date/time for the git log message is: '%@'", formattedDateString);
     
     
     
     NSString *commandToExecute = [prefix stringByAppendingString:[NSString stringWithFormat:@"\"%@ @ %@\"", NSUserName(), formattedDateString]];
     
-    NSLog(@"'%@'", commandToExecute);
+    //NSLog(@"'%@'", commandToExecute);
     
     [self executeStringCommandSynchronouslyAndLogToConsole:commandToExecute isAShellTask:YES];
 
@@ -955,7 +955,7 @@
     //NSLog(@"A request to launch SkeinForge was received");
     
     // Use the Skeinforge that is contained within this application package!!
-    // NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
+    //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
     NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"reprap_python_beanshell" ofType:nil];
     //NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
     NSString *skeinforgePy = @"/skeinforge.py";
@@ -983,7 +983,8 @@
     
     if (nil != self.stlFileToGCode) {
         // Use the Skeinforge that is contained within this application package!!
-        NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
+        //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
+        NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"reprap_python_beanshell" ofType:nil];
         //NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
         NSString *skeinforgePy = @"/skeinforge.py";
         NSString *prefix = @"\"";
