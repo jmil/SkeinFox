@@ -810,7 +810,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{335, 372}, {480, 378}}</string>
 				<int key="NSWTFlags">1946157056</int>
-				<string key="NSWindowTitle">Window</string>
+				<string key="NSWindowTitle">SkeinFox</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<nil key="NSViewClass"/>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
@@ -1233,7 +1233,7 @@
 						</object>
 						<object class="NSImageView" id="235606191">
 							<reference key="NSNextResponder" ref="439893737"/>
-							<int key="NSvFlags">268</int>
+							<int key="NSvFlags">265</int>
 							<object class="NSMutableSet" key="NSDragTypes">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSArray" key="set.sortedObjects">
@@ -1246,7 +1246,7 @@
 									<string>NeXT TIFF v4.0 pasteboard type</string>
 								</object>
 							</object>
-							<string key="NSFrame">{{429, 332}, {31, 41}}</string>
+							<string key="NSFrame">{{401, 326}, {58, 52}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="1006353615">
@@ -1254,7 +1254,7 @@
 								<int key="NSCellFlags2">33554432</int>
 								<object class="NSCustomResource" key="NSContents">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">hive76-buib_only</string>
+									<string key="NSResourceName">NSApplicationIcon</string>
 								</object>
 								<int key="NSAlign">0</int>
 								<int key="NSScale">0</int>
@@ -2903,12 +2903,12 @@
 							<reference ref="967571389"/>
 							<reference ref="25069416"/>
 							<reference ref="242423191"/>
-							<reference ref="235606191"/>
 							<reference ref="640159271"/>
 							<reference ref="1029388909"/>
 							<reference ref="1070868705"/>
 							<reference ref="745296483"/>
 							<reference ref="1064631261"/>
+							<reference ref="235606191"/>
 						</object>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -3674,9 +3674,9 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{474, 101}, {480, 378}}</string>
+					<string>{{511, 279}, {480, 378}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{474, 101}, {480, 378}}</string>
+					<string>{{511, 279}, {480, 378}}</string>
 					<integer value="1"/>
 					<string>{{398, 352}, {480, 360}}</string>
 					<boolean value="NO"/>
