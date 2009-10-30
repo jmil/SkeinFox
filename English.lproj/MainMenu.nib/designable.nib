@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="372"/>
+			<integer value="371"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2277,6 +2277,14 @@
 					</object>
 					<int key="connectionID">720</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">thisWindow</string>
+						<reference key="source" ref="210633948"/>
+						<reference key="destination" ref="972006081"/>
+					</object>
+					<int key="connectionID">721</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -3795,7 +3803,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">720</int>
+			<int key="maxID">721</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3856,6 +3864,7 @@
 							<string>progressLogConsoleTextView</string>
 							<string>stlFileNameDisplay</string>
 							<string>stlFileToGCode</string>
+							<string>thisWindow</string>
 							<string>window</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -3878,6 +3887,7 @@
 							<string>NSTextView</string>
 							<string>NSTextField</string>
 							<string>NSString</string>
+							<string>NSWindow</string>
 							<string>NSWindow</string>
 						</object>
 					</object>

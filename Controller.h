@@ -10,6 +10,7 @@
     NSString *gitVersion;
     NSMutableArray *gitBranches;
     NSMutableString *currentBranch;
+    IBOutlet NSWindow *thisWindow;
     IBOutlet NSPopUpButton *popUpButton;
     IBOutlet TableView *myTableView;
     IBOutlet NSTextFieldCell *myTextFieldCell;
@@ -33,6 +34,7 @@
 }
 
 @property (nonatomic, retain) NSString *gitVersion;
+@property (nonatomic, retain) IBOutlet NSWindow *thisWindow;
 @property (readwrite, retain) NSMutableArray *gitBranches;
 @property (readwrite, retain) NSMutableString *currentBranch;
 //@property (nonatomic, retain) IBOutlet NSPopUpButton *popUpButton;
@@ -68,6 +70,7 @@
 - (NSString *)getFileForDrag:(id <NSDraggingInfo>)sender;
 
 - (void)processFile;
+- (void)setConcatenatedWindowTitle;
 - (void)completedTask:(NSNotification *)aNotification;
 - (void)readPipe:(NSNotification *)aNotification;
 - (IBAction)didRenameGitBranch:(NSString *)newBranchName;

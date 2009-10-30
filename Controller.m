@@ -21,6 +21,7 @@
 
 @implementation Controller
 
+@synthesize thisWindow;
 @synthesize gitVersion;
 @synthesize gitBranches, myArrayController;
 @synthesize stlFileToGCode;
@@ -280,7 +281,7 @@
 
     
     // Release lastModifiedDictionary!!
-    [lastModifiedDictionary release];
+    [lastModifiedDictionary release];    
 }
 
 
@@ -498,7 +499,8 @@
     
     
     
-    
+    // Display the version number in the app window
+    [self setConcatenatedWindowTitle];
     
     
     
@@ -672,12 +674,25 @@
     
     //Switch Git Branches!!!!
     [self didUpdateGitBranchSelection:self];
+        
+    // Since a branch was selected, update the window name with the branch name!
+//    [self setConcatenatedWindowTitle];
+    
     return YES;
     
 }
 
 
-
+- (void) setConcatenatedWindowTitle {
+    NSString *currentVersionNumber = [[NSString stringWithString:@" v"] stringByAppendingString:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    NSLog(@"'%@' is the version number", currentVersionNumber);
+    
+    NSString *appNameVersion = [[[NSProcessInfo processInfo] processName] stringByAppendingString:currentVersionNumber];
+    
+    //[self.thisWindow setTitle:[appNameWithColonSpace stringByAppendingString:[[[myArrayController selectedObjects] objectAtIndex:0] name]]];
+    [self.thisWindow setTitle:appNameVersion];
+    
+}
 
 
 
