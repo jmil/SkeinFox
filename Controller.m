@@ -685,7 +685,7 @@
 
 - (void) setConcatenatedWindowTitle {
     NSString *currentVersionNumber = [[NSString stringWithString:@" v"] stringByAppendingString:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
-    NSLog(@"'%@' is the version number", currentVersionNumber);
+    //NSLog(@"'%@' is the version number", currentVersionNumber);
     
     NSString *appNameVersion = [[[NSProcessInfo processInfo] processName] stringByAppendingString:currentVersionNumber];
     
