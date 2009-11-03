@@ -970,8 +970,8 @@
     //NSLog(@"A request to launch SkeinForge was received");
     
     // Use the Skeinforge that is contained within this application package!!
-    //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
-    NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"reprap_python_beanshell" ofType:nil];
+    NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
+    //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"reprap_python_beanshell" ofType:nil];
     //NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
     NSString *skeinforgePy = @"/skeinforge.py";
     NSString *prefix = @"\"";
@@ -998,8 +998,8 @@
     
     if (nil != self.stlFileToGCode) {
         // Use the Skeinforge that is contained within this application package!!
-        //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
-        NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"reprap_python_beanshell" ofType:nil];
+        NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
+        //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"reprap_python_beanshell" ofType:nil];
         //NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
         NSString *skeinforgePy = @"/skeinforge.py";
         NSString *prefix = @"\"";
