@@ -26,7 +26,7 @@ To run export, in a shell type:
 
 The following examples export the files Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains
 Screw Holder Bottom.stl & export.py.  The function writeOutput checks to see if the text has been exported, if not they call
-getUnpauseChainGcode in unpause.py to unpause the text; once they have the unpaused text, then it exports.
+getTwitterbotChainGcode in twitterbot.py to twitterbot the text; once they have the twitterbotted text, then it exports.
 
 
 > python export.py
@@ -62,7 +62,7 @@ from skeinforge_tools.skeinforge_utilities import preferences
 from skeinforge_tools import analyze
 from skeinforge_tools.skeinforge_utilities import interpret
 from skeinforge_tools import polyfile
-from skeinforge_tools import unpause
+from skeinforge_tools import twitterbot
 import cStringIO
 import os
 import sys
@@ -125,8 +125,8 @@ def writeOutput( fileName = '' ):
 	print( 'File ' + gcodec.getSummarizedFilename( fileName ) + ' is being chain exported.' )
 	suffixFilename = fileName[ : fileName.rfind( '.' ) ] + '_export.' + exportPreferences.fileExtension.value
 	gcodeText = gcodec.getGcodeFileText( fileName, '' )
-	if not gcodec.isProcedureDone( gcodeText, 'unpause' ):
-		gcodeText = unpause.getUnpauseChainGcode( fileName, gcodeText )
+	if not gcodec.isProcedureDone( gcodeText, 'twitterbot' ):
+		gcodeText = twitterbot.getTwitterbotChainGcode( fileName, gcodeText )
 	if gcodeText == '':
 		return
 	analyze.writeOutput( suffixFilename, gcodeText )

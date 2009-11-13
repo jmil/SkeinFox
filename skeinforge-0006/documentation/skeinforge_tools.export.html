@@ -1,14 +1,14 @@
 
 <!doctype html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html><head><title>Python: module skeinforge_tools.export</title>
+<html><head><title>Python: module export</title>
 </head><body bgcolor="#f0f0f8">
 
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#7799ee">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="skeinforge_tools.html"><font color="#ffffff">skeinforge_tools</font></a>.export</strong></big></big> ($Date: 2008/21/04 $)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>export</strong></big></big> ($Date: 2008/21/04 $)</font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/enrique/Desktop/backup/babbleold/script/reprap/pyRepRap/skeinforge_tools/export.py">/home/enrique/Desktop/backup/babbleold/script/reprap/pyRepRap/skeinforge_tools/export.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Applications/MakerBot/SkeinFox 1.0.app/Contents/Resources/skeinforge-0005/skeinforge_tools/export.py">/Applications/MakerBot/SkeinFox 1.0.app/Contents/Resources/skeinforge-0005/skeinforge_tools/export.py</a></font></td></tr></table>
     <p><tt>Export&nbsp;is&nbsp;a&nbsp;script&nbsp;to&nbsp;pick&nbsp;an&nbsp;export&nbsp;plugin&nbsp;and&nbsp;optionally&nbsp;print&nbsp;the&nbsp;output&nbsp;to&nbsp;a&nbsp;file.<br>
 &nbsp;<br>
 The&nbsp;default&nbsp;'Activate&nbsp;Export'&nbsp;checkbox&nbsp;is&nbsp;on.&nbsp;&nbsp;When&nbsp;it&nbsp;is&nbsp;on,&nbsp;the&nbsp;functions&nbsp;described&nbsp;below&nbsp;will&nbsp;work,&nbsp;when&nbsp;it&nbsp;is&nbsp;off,&nbsp;the&nbsp;functions<br>
@@ -25,7 +25,7 @@ If&nbsp;the&nbsp;"Delete&nbsp;M110&nbsp;Gcode&nbsp;Line"&nbsp;checkbox&nbsp;is&n
 the&nbsp;gcode&nbsp;is&nbsp;generated&nbsp;by&nbsp;skeinforge.&nbsp;&nbsp;If&nbsp;the&nbsp;"Delete&nbsp;Comments"&nbsp;checkbox&nbsp;is&nbsp;true,&nbsp;export&nbsp;will&nbsp;delete&nbsp;the&nbsp;comments.&nbsp;&nbsp;The&nbsp;M110<br>
 gcode&nbsp;and&nbsp;the&nbsp;comments&nbsp;are&nbsp;not&nbsp;necessary&nbsp;to&nbsp;run&nbsp;a&nbsp;fabricator.<br>
 &nbsp;<br>
-When&nbsp;export&nbsp;is&nbsp;exporting&nbsp;the&nbsp;code,&nbsp;if&nbsp;there&nbsp;is&nbsp;a&nbsp;file&nbsp;replace.csv,&nbsp;it&nbsp;will&nbsp;replace&nbsp;the&nbsp;word&nbsp;in&nbsp;the&nbsp;first&nbsp;column&nbsp;be&nbsp;its&nbsp;replacement&nbsp;in<br>
+When&nbsp;export&nbsp;is&nbsp;exporting&nbsp;the&nbsp;code,&nbsp;if&nbsp;there&nbsp;is&nbsp;a&nbsp;file&nbsp;replace.csv,&nbsp;it&nbsp;will&nbsp;replace&nbsp;the&nbsp;word&nbsp;in&nbsp;the&nbsp;first&nbsp;column&nbsp;by&nbsp;its&nbsp;replacement&nbsp;in<br>
 the&nbsp;second&nbsp;column.&nbsp;&nbsp;There&nbsp;is&nbsp;an&nbsp;example&nbsp;file&nbsp;replace_example.csv&nbsp;to&nbsp;demonstrate&nbsp;the&nbsp;comma&nbsp;separated&nbsp;format,&nbsp;which&nbsp;can&nbsp;be<br>
 edited&nbsp;in&nbsp;a&nbsp;text&nbsp;editor&nbsp;or&nbsp;a&nbsp;spreadsheet.<br>
 &nbsp;<br>
@@ -36,7 +36,7 @@ To&nbsp;run&nbsp;export,&nbsp;in&nbsp;a&nbsp;shell&nbsp;type:<br>
 &nbsp;<br>
 The&nbsp;following&nbsp;examples&nbsp;export&nbsp;the&nbsp;files&nbsp;Screw&nbsp;Holder&nbsp;Bottom.stl.&nbsp;&nbsp;The&nbsp;examples&nbsp;are&nbsp;run&nbsp;in&nbsp;a&nbsp;terminal&nbsp;in&nbsp;the&nbsp;folder&nbsp;which&nbsp;contains<br>
 Screw&nbsp;Holder&nbsp;Bottom.stl&nbsp;&amp;&nbsp;export.py.&nbsp;&nbsp;The&nbsp;function&nbsp;writeOutput&nbsp;checks&nbsp;to&nbsp;see&nbsp;if&nbsp;the&nbsp;text&nbsp;has&nbsp;been&nbsp;exported,&nbsp;if&nbsp;not&nbsp;they&nbsp;call<br>
-getUnpauseChainGcode&nbsp;in&nbsp;unpause.py&nbsp;to&nbsp;unpause&nbsp;the&nbsp;text;&nbsp;once&nbsp;they&nbsp;have&nbsp;the&nbsp;unpaused&nbsp;text,&nbsp;then&nbsp;it&nbsp;exports.<br>
+getTwitterbotChainGcode&nbsp;in&nbsp;twitterbot.py&nbsp;to&nbsp;twitterbot&nbsp;the&nbsp;text;&nbsp;once&nbsp;they&nbsp;have&nbsp;the&nbsp;twitterbotted&nbsp;text,&nbsp;then&nbsp;it&nbsp;exports.<br>
 &nbsp;<br>
 &nbsp;<br>
 &gt;&nbsp;python&nbsp;export.py<br>
@@ -77,7 +77,7 @@ The&nbsp;exported&nbsp;file&nbsp;is&nbsp;saved&nbsp;as&nbsp;Screw&nbsp;Holder&nb
 <a href="skeinforge_tools.skeinforge_utilities.preferences.html">skeinforge_tools.skeinforge_utilities.preferences</a><br>
 <a href="sys.html">sys</a><br>
 <a href="time.html">time</a><br>
-</td><td width="25%" valign=top><a href="skeinforge_tools.unpause.html">skeinforge_tools.unpause</a><br>
+</td><td width="25%" valign=top><a href="skeinforge_tools.twitterbot.html">skeinforge_tools.twitterbot</a><br>
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
@@ -86,8 +86,8 @@ The&nbsp;exported&nbsp;file&nbsp;is&nbsp;saved&nbsp;as&nbsp;Screw&nbsp;Holder&nb
     
 <tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl>
-<dt><font face="helvetica, arial"><a href="skeinforge_tools.export.html#ExportPreferences">ExportPreferences</a>
-</font></dt><dt><font face="helvetica, arial"><a href="skeinforge_tools.export.html#ExportSkein">ExportSkein</a>
+<dt><font face="helvetica, arial"><a href="export.html#ExportPreferences">ExportPreferences</a>
+</font></dt><dt><font face="helvetica, arial"><a href="export.html#ExportSkein">ExportSkein</a>
 </font></dt></dl>
  <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
