@@ -1,19 +1,43 @@
+# coding=utf-8
 """
 Twitterbot is a tool to insert Twitterbot M-code into a gcode file so that a modified version of ReplicatorG can tweet printing progress to a Twitter account.
 Rick Pollack wrote the code to enable ReplicatorG to call the Twitter API via the twitter4j library.
-You can get the necessary files to modify ReplicatorG here: http://makerbot.googlegroups.com/web/TwitterBot+Src+Update+1.zip
-This tool has been tested with Skeinforge-0005, Skeinforge-0006, and ReplicatorG-0009.
+You can get a version of ReplicatorG-0010 that supports Twitterbot M-code on github. Search for Twitterbot. 
+Alternately, you can get the necessary files to modify any version of ReplicatorG here: http://makerbot.googlegroups.com/web/TwitterBot+Src+Update+1.zip
+This tool has been tested with the following version of Skeinforge and Replicator-G:
+Skeinforge
+   0005
+   0006
+ReplicatorG
+   0009
+   0010
 
 The default 'Activate Twitterbot' checkbox is off.  When it is on, the functions described below will be called. When it is off, the functions
 will not be called.
 
 The tool's Preferences are:
 
-'Activate Twitterbot'   - Check this to enable the tool. Default is un-checked or off.
-'Twitter Username'      - Username for the Twitter account. Default is empty.
-'Twitter Password'      - Password for the Twitter account. Default is empty.
-'Layers Between Tweets' - The number of layers between each tweet, e.g., 3 means tweet each 3rd layer. Default is 10.
-'Hashtag(s)'            - Space-delimited hashtags to append to each tweet. Default is #MakerBot #Twitterbot.
+Activate Twitterbot   - Check this to enable the tool.
+                        Default: un-checked or off.
+Twitter Username      - Username for the Twitter account.
+                        Default: empty.
+Twitter Password      - Password for the Twitter account.
+                        Default: empty.
+Layers Between Tweets - The number of layers between each tweet, e.g., 3 means tweet each 3rd layer.
+                        Default: 10
+Hashtag(s)            - Space delimited hashtags to append to each tweet.
+                        Default: empty
+Start Message         - Phrase that declares print is starting; uses placeholder <filename> which is the name of the STL file.
+                        Default: Starting <filename>...
+Progress Message      - Phrase that declares print is in progress; uses placeholders <layernum> and <filename> which is the final name of the gcode file.
+                        Default: <filename> layer: <layernum>
+Finish Message        - Phrase that declares print is in finished; uses placeholder <filename> which is the final name of the gcode file.
+                        Default: Finished <filename>!
+Percentage of Quips   - Percentage of tweets that are quips, e.g., 3 means quips will be tweeted 3 percent of time. This is based upon total number of lines in file, and cannot be greater than 10.
+                        Default: 3
+Quip(s)               - Pipe delimited phrases that are pulled at random from list and tweeted when specifed percentage of gcode lines are proccessed;
+                        uses placeholders <linenum>, <filename>, and <totallinesnum>.
+                        Default: 'ABS is the new black!|What's that smell???|Only at line <linenum> of <totallinesnum> :(|MakerBot: fixing the future!'
 
 Since your Twitter credentials are written to the generated gcode file, either remove them before sharing the file, or re-run with 'Activate Twitterbot' off. 
 
@@ -21,13 +45,13 @@ IMPORTANT! If you forget to remove your credentials after sharing a file, change
 
 NOTE: For tall, and therefore many layered source files, it is quite possible to exceed the Twitter rate limit with a single print.
 For more information see: http://apiwiki.twitter.com/Rate-limiting
-This may be addressed in a future version of twitterbot.
+This may be addressed in a future version of Twitterbot.
 
 To run twitterbot, in a shell type:
 > python twitterbot.py
 
 The following examples twitterbot - add Twitter M-code to - the files Screw Holder Bottom.gcode & Screw Holder Bottom.stl.  The examples are run in a terminal in the
-folder which contains Screw Holder Bottom.gcode, Screw Holder Bottom.stl and twitterbot.py.  The twitterbot function will twitterbot if 'Activate Twitterbot' is true,
+folder which contains Screw Holder Bottom.gcode, Screw Holder Bottom.stl and twitterbot.py.  The twitterbot function will twitterbot if 'Activate Twitterbot' is True,
 which can be set in the dialog or by changing the preferences file 'twitterbot.csv' in the '.skeinforge' folder in your home directory
 with a text editor or a spreadsheet program set to separate tabs.  The functions writeOutput and getTwitterbotChainGcode check
 to see if the text has been twitterbotted, if not they call getUnpauseChainGcode in unpause.py to unpause the text; once they have the
@@ -80,17 +104,12 @@ many lines of gcode
 """
 
 #TODO:
-#      * Make Starting, Printing layer, and Finishing, messages configurable, i.e., add them to Preferences. Need to figure out string replacing in Python first
-#      * Add quips to Preferences so humorous tweets can be sent randomly or when certain events occur, e.g., What's that smell?, Copper is the new black!, This print sure is ugly!, Only at layer 5? I need a rest!
-#      * To reduce the number of tweets per print, calculate the number of lines in the file (maybe G lines instead) and print a configurable percentage (dropdown menu?), 
-#      e.g., 25 means tweet only when every 25% of the print is printing. 25 would result in 6 tweets (1 start tweet + 4 progress tweets + 1 end tweet)
-#      * If Layers Between Tweets is less than 0 change to default, i.e., 5, and save to Preferencs file [twitterbot.csv]
+#      * Support UTF-8 strings throughout. This looks like a good resource: http://farmdev.com/talks/unicode/
 
 from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
-#from skeinforge_tools.skeinforge_utilities import euclidean
 from skeinforge_tools.skeinforge_utilities import gcodec
 from skeinforge_tools.skeinforge_utilities import preferences
 from skeinforge_tools import analyze
@@ -98,23 +117,34 @@ from skeinforge_tools import unpause
 from skeinforge_tools.skeinforge_utilities import interpret
 from skeinforge_tools import polyfile
 import cStringIO
-#import math
+import random
 import sys
 import os
 import time
-
+#import encode
+#import decode
 
 __author__ = "Miles Lightwood (m@teamteamusa.com)"
-__date__ = "$Date: 2009/08/11 $"
-__version__ = "$0.2 $"
+__date__ = "$Date: 2009/21/11 $"
+__version__ = "$0.3 $"
 __license__ = "GPL 3.0"
+
+#sys.setdefaultencoding('utf-8')
+# My defaults
+# Layers between tweets: 10
+# Hashtags: #Curiobot
+# Start Message: Go Go Curiobot! <filename>
+# Progress Message: Nice, Curiobot: layer <layernum> of <filename>
+# Finish Message: Curiobot Happy! <filename>
+# Quip percentage: 3
+# Quips: Hecho en TeamTeamUSA!|ABS is the new black!|What's that smell???|Only at line <linenum> of <totallinesnum> :(|MakerBot: fixing the future!|Fabrique au MakerBot!
 
 def getTwitterbotChainGcode( fileName, gcodeText, twitterbotPreferences = None ):
 	"Add Twitterbot M-code to a gcode text.  Chain twitterbot the gcode if it is not already twitterbotted."
 	gcodeText = gcodec.getGcodeFileText( fileName, gcodeText )
 	if not gcodec.isProcedureDone( gcodeText, 'unpause' ):
 		gcodeText = unpause.getUnpauseChainGcode( fileName, gcodeText )
-		print( 'getTwitterbotChainGcode(fileName): ' + fileName )
+		#print( 'getTwitterbotChainGcode(fileName): ' + fileName )
 	return getTwitterbotGcode( gcodeText, fileName, twitterbotPreferences )
 
 def getTwitterbotGcode( gcodeText, fileName, twitterbotPreferences = None ):
@@ -153,11 +183,18 @@ def writeOutput( fileName = '' ):
 	print( 'The twitterbotted file is saved as ' + gcodec.getSummarizedFilename( suffixFilename ) )
 	analyze.writeOutput( suffixFilename, twitterbotGcode )
 	print( 'It took ' + str( int( round( time.time() - startTime ) ) ) + ' seconds to add Twitterbot codes to the file.' )
+
+def to_unicode( obj, encoding='utf-8' ):
+	if isinstance(obj, basestring):
+		if not isinstance(obj, unicode):
+			obj = unicode(obj, encoding)
+	return obj
 			
 class TwitterbotPreferences:
 	"A class to handle the twitterbot preferences."
 	def __init__( self ):
 		"Set the default preferences, execute title & preferences fileName."
+		# Using string for integers so that fi	elds in Preferences dialog line up
 		self.archive = []
 		self.activateTwitterbot = preferences.BooleanPreference().getFromValue( 'Activate Twitterbot', False )
 		self.archive.append( self.activateTwitterbot )
@@ -167,9 +204,21 @@ class TwitterbotPreferences:
 		self.archive.append( self.twitterPassword )
 		self.layersBetweenTweets = preferences.StringPreference().getFromValue( 'Layers Between Tweets:', '10' )
 		self.archive.append( self.layersBetweenTweets )
-		self.twitterHashtags = preferences.StringPreference().getFromValue( 'Hashtag(s):', '#MakerBot #Twitterbot' )
+		self.twitterHashtags = preferences.StringPreference().getFromValue( 'Hashtag(s):', '' )
 		self.archive.append( self.twitterHashtags )
-		self.fileNameInput = preferences.Filename().getFromFilename( interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File to insert Twitterbot code into', '' )
+		self.startMessage = preferences.StringPreference().getFromValue( 'Start Message:', 'Starting <filename>...' )
+		self.archive.append( self.startMessage )
+		self.progressMessage = preferences.StringPreference().getFromValue( 'Progress Message:', '<filename> layer: <layernum>' )
+		self.archive.append( self.progressMessage )
+		self.finishMessage = preferences.StringPreference().getFromValue( 'Finish Message:', 'Finished <filename>!' )
+		self.archive.append( self.finishMessage )
+		self.percentageOfQuips = preferences.StringPreference().getFromValue( 'Percentage of Quips:', '3' )
+		self.archive.append( self.percentageOfQuips )
+		self.quips = preferences.StringPreference().getFromValue( 'Quip(s):', "ABS is the new black!|What's that smell???|Only at line <linenum> of <totallinesnum> :(|MakerBot: fixing the future!" )
+		self.archive.append( self.quips )
+		#quips = to_unicode( self.quips )
+		#self.archive.append( quips )
+		self.fileNameInput = preferences.Filename().getFromFilename( interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File In Which To Insert Twitterbot Code', '' )
 		self.archive.append( self.fileNameInput )
 		#Create the archive, title of the execute button, title of the dialog & preferences fileName.
 		self.executeTitle = 'Twitterbot'
@@ -199,7 +248,22 @@ class TwitterbotSkein:
 		self.mCodeMessage = 'M998'
 		# Not used yet
 		self.mCodeCleanup = 'M999'
-
+		# botbuild hashspace; these are used to determine print status
+		# #_bbs = botbuildstart
+		# #_bbp = botbuildprogress
+		# #_bbf = botbuildfinish
+		self.startHashtag = '#_bbs'
+		self.progressHashtag = '#_bbp'
+		self.finishHashtag = '#_bbf'
+		# tweet placeholders
+		self.filenamePlaceholder = '<filename>'
+		self.layernumPlaceholder = '<layernum>'
+		self.linenumPlaceholder = '<linenum>'
+		self.totallinesnumPlaceholder = '<totallinesnum>'
+		self.defaultQuipsList = ["Silly rabbit, quips are for kids!", "To quip is human, to print is bot", "I'm sorry, Dave. I'm afraid I can't do that.", "More bot than bot is our motto.", "When in trouble or in doubt, run in circles, scream and shout."]
+		self.isPrintFinished = False
+		self.isTwitterbotInitialized = False
+		
 	def setGcodeFilePathAndName( self, gcodeFilePathAndName ):
 		"Save path and filename of gcode file to this class. Called by getTwitterbotGcode()"
 		self.gcodeFilePathAndName = gcodeFilePathAndName
@@ -214,15 +278,32 @@ class TwitterbotSkein:
 		self.twitterUsername = twitterbotPreferences.twitterUsername.value
 		self.twitterPassword = twitterbotPreferences.twitterPassword.value
 		self.layersBetweenTweets = twitterbotPreferences.layersBetweenTweets.value
+		self.startMessage = twitterbotPreferences.startMessage.value
+		self.progressMessage = twitterbotPreferences.progressMessage.value
+		self.finishMessage = twitterbotPreferences.finishMessage.value
+		self.quips = twitterbotPreferences.quips.value
+		self.quipsList = self.quips.split( '|' )
+		#print( 'quipsList: ' + str ( self.quipsList ) )
+		self.prevQuip = ''
+		self.percentageOfQuips = int( twitterbotPreferences.percentageOfQuips.value )
+		if self.percentageOfQuips <= 0 or self.percentageOfQuips > 10:
+			self.percentageOfQuips = 3
 		if int( self.layersBetweenTweets ) < 1:
-			self.layersBetweenTweets = '5'
+			self.layersBetweenTweets = 10
 		self.twitterHashtags = twitterbotPreferences.twitterHashtags.value
-		#self.fileName = twitterbotPreferences.fileNameInput.value
 		self.parseInitialization( twitterbotPreferences )
 		#print( "===> self.lineIndex: " + str( self.lineIndex ) )	
+		self.totalGcodeLines = len( self.lines )
+		self.linesBetweenQuips = int( round( self.totalGcodeLines / self.percentageOfQuips, 0 ) )
+		#print( 'self.linesBetweenQuips: ' + str( self.linesBetweenQuips ) )
+		#print( 'self.totalGcodeLines: ' + str( self.totalGcodeLines ) )
 		for self.lineIndex in xrange( self.lineIndex, len( self.lines ) ):
+			# quip messages
+			# print( '===> self.lineIndex: ' + str( self.lineIndex ) )
+			if self.lineIndex % self.linesBetweenQuips == 0 and self.lineIndex > 0 and self.isPrintFinished == False:
+				self.addLine( self.createQuipMessage( self.lineIndex ) )
 			line = self.lines[ self.lineIndex ]
-		#	print( '===> Parsing line ' + str( self.lineIndex ) + ': ' + line )
+			# print( '===> Parsing line ' + str( self.lineIndex ) + ': ' + line )
 			self.parseLine( line )
 
 	def parseInitialization( self, twitterbotPreferences ):
@@ -233,10 +314,11 @@ class TwitterbotSkein:
 			firstWord = gcodec.getFirstWord( splitLine )
 			if firstWord == '(<extruderInitialization>)':
 				self.addLine( '(Twitterbot initialization)' )
-				self.addLine( self.mCodeInit + ' ' + self.twitterbotClass + ' ' + self.twitterUsername + ',' + self.twitterPassword )
-				self.getSavedGCodeFileName()
-				print( 'self.savedGcodeFilename: ' + self.savedGcodeFilename )
-				self.addLine( self.createMessage( 'Starting ' + self.savedGcodeFilename + '...' ) )
+				if self.twitterUsername != '' and self.twitterPassword != '':
+					self.addLine( self.mCodeInit + ' ' + self.twitterbotClass + ' ' + self.twitterUsername + ',' + self.twitterPassword )
+					self.isTwitterbotInitialized = True
+					#print( 'self.savedGcodeFilename: ' + self.savedGcodeFilename )
+					self.addLine( self.createStartMessage() )
 			elif firstWord == '(</extruderInitialization>)': 
 				self.addLine( '(<procedureDone> twitterbot </procedureDone>)' )
 				return
@@ -250,27 +332,128 @@ class TwitterbotSkein:
 		firstWord = splitLine[ 0 ]
 		#print( "===> firstWord: " + firstWord )	
 		if firstWord == '(<layer>':
-			if self.layerIndex == 1:
-				self.addLine( self.createMessage( self.savedGcodeFilename + ': layer ' + str( self.layerIndex ) ) )
-			if self.layerIndex % int( self.layersBetweenTweets ) == 0:
-				self.addLine( self.createMessage( self.savedGcodeFilename + ': layer ' + str( self.layerIndex ) ) )
-			self.layerIndex = self.layerIndex + 1
-		elif firstWord == '(</extrusion>)':
-			self.getSavedGCodeFileName()
-			self.addLine( self.createMessage( 'Finished ' + self.savedGcodeFilename + '!' ) )			
+			if self.layerIndex % int( self.layersBetweenTweets ) == 0 and self.progressMessage != '':
+				self.addLine( self.createProgressMessage( str( self.layerIndex ) ) )
+			self.layerIndex = self.layerIndex + 1			
+		elif firstWord == '(</extrusion>)':	
+			self.addLine( self.createFinishMessage() )			
 		self.addLine( line )
 
 	def getSavedGCodeFileName( self ):
-		"Get original filename and change to the skeinforged one, i.e., ???_export.gcode."
+		"Get original filename and change to the original file format one, i.e., ???.stl."
 		if self.savedGcodeFilename == '': 
 			self.gcodeFilePath,self.gcodeFileName = os.path.split( self.gcodeFilePathAndName )
-			self.savedGcodeFilename = self.gcodeFileName[ : self.gcodeFileName.rfind( '.' ) ] + '_export.gcode'
+			self.gcodeFileName = self.encodeHtmlEntities( self.gcodeFileName )
+			print( '===> self.gcodeFileName: ' + self.gcodeFileName )
+			#self.savedGcodeFilename = self.gcodeFileName[ : self.gcodeFileName.rfind( '.' ) ] + '_export.gcode'
+			gcodeFileName = self.gcodeFileName.lower()
+			if gcodeFileName.find( '.stl' ) != -1:
+				self.savedGcodeFilename = self.gcodeFileName[ : self.gcodeFileName.rfind( '.' ) ] + '.stl'
+			if gcodeFileName.find( '.gts' ) != -1:
+				self.savedGcodeFilename = self.gcodeFileName[ : self.gcodeFileName.rfind( '.' ) ] + '.gts'
+			if gcodeFileName.find( '.obj' ) != -1:
+				self.savedGcodeFilename = self.gcodeFileName[ : self.gcodeFileName.rfind( '.' ) ] + '.obj'
+			if gcodeFileName.find( '.slc' ) != -1:
+				self.savedGcodeFilename = self.gcodeFileName[ : self.gcodeFileName.rfind( '.' ) ] + '.slc'
+			if gcodeFileName.find( '.svg' ) != -1:
+				self.savedGcodeFilename = self.gcodeFileName[ : self.gcodeFileName.rfind( '.' ) ] + '.svg'
+			if gcodeFileName.find( '.gcode' ) != -1:
+				self.savedGcodeFilename = self.gcodeFileName[ : self.gcodeFileName.rfind( '.' ) ] + '.gcode'
+			if gcodeFileName.find( '.xml' ) != -1:
+				self.savedGcodeFilename = self.gcodeFileName[ : self.gcodeFileName.rfind( '.' ) ] + '.xml'
+		return self.savedGcodeFilename
+
+	def createMessage( self, text ):
+		"Create a message; if username and password are not empty, add the message M-Code to a string and return it. If either is empty, return commented alert string"
+		msg = '(Twitterbot: please ensure username and password are NOT empty!)'
+		if self.isTwitterbotInitialized == True:
+			msg = text
+			msg = self.encodeHtmlEntities( msg )
+			msg = self.mCodeMessage + " message '" + msg + "'"
+			#print( '===> msg: ' + msg )
+		return msg
 		
-	def createMessage( self, messageText ):
-		"Add the message M-Code to a string and return it."
-		msg = self.mCodeMessage + " message '" + messageText + " " + self.twitterHashtags + "'"
+	def createStartMessage( self ):
+		"Create a start message with substituted placeholders and return it."
+		startMsg = self.startMessage
+		startMsg = self.replacePlaceholder( startMsg, self.filenamePlaceholder, self.getSavedGCodeFileName()  )
+		startMsg = startMsg + " " + self.twitterHashtags + " " + self.startHashtag
+		msg = self.createMessage( startMsg )
 		#print( '===> msg: ' + msg )
 		return msg
+			
+	def createProgressMessage( self, layerNum ):
+		"Create a progress message with substituted placeholders and return it."
+		progMsg = self.progressMessage
+		progMsg = self.replacePlaceholder( progMsg, self.filenamePlaceholder, self.getSavedGCodeFileName()  )
+		progMsg = self.replacePlaceholder( progMsg, self.layernumPlaceholder, str( layerNum )  )
+		progMsg = progMsg + " " + self.progressHashtag
+		msg = self.createMessage( progMsg )
+		#print( '===> msg: ' + msg )
+		return msg
+
+	def createFinishMessage( self ):
+		"Create a finish message with substituted placeholders and return it."
+		finishMsg = self.finishMessage
+		#self.getSavedGCodeFileName()
+		finishMsg = self.replacePlaceholder( finishMsg, self.filenamePlaceholder, self.getSavedGCodeFileName()  )
+		finishMsg = finishMsg + " " + self.twitterHashtags + " " + self.finishHashtag
+		msg = self.createMessage( finishMsg )
+		#print( '===> msg: ' + msg )
+		self.isPrintFinished = True
+		return msg
+		
+	def createQuipMessage( self, lineNum ):
+		"Create a quip message with substituted placeholders and return it."
+		if len( self.quipsList ) > 0:
+			quipMsg = self.getQuip() 
+			#print( 'quipMsg: ' + quipMsg )
+			quipMsg = self.replacePlaceholder( quipMsg, self.linenumPlaceholder, str( lineNum )  )
+			quipMsg = self.replacePlaceholder( quipMsg, self.totallinesnumPlaceholder, str( self.totalGcodeLines )  )
+			quipMsg = self.replacePlaceholder( quipMsg, self.filenamePlaceholder, self.getSavedGCodeFileName()  )
+			quipMsg = quipMsg + " " + self.progressHashtag
+			msg = self.createMessage( quipMsg )
+			#print( '===> msg: ' + msg )
+			#print( '===> lineNum: ' + str( lineNum ) )
+			return msg
+
+	def getQuip( self ):
+		"Ensure the same quip isn't tweeted again this session."
+		if len( self.quipsList ) > 0:
+			quip = str( random.choice ( self.quipsList ) )
+			self.quipsList.remove( quip )
+		else:
+			quip = str( random.choice ( self.defaultQuipsList ) )
+		return quip
+				
+	def replacePlaceholder( self, text, find, replace ):
+		"Utility to replace a placeholder in a string."
+		if text.find( find ) != -1:
+			text = text.replace( find, replace )
+		return text
+
+	def encodeHtmlEntities( self, text ):
+		"Utility to replace semicolons, single and double quotes, plus and minus in string with their HTML entities because twitter4j doesn't like them."
+		# There's got to be a better way to do this, urllib.urlencode? htmlentitydefs?
+		# Do not append the semicolon; twitter4j/Java doesn't like it for some reason
+		if text.find( "'" ) != -1:
+			text = text.replace( "'", "&#39" )
+		if text.find( '"' ) != -1:
+			text = text.replace( '"', "&#34" )
+		if text.find( ';' ) != -1:
+			text = text.replace( ';', "&#59" )
+		if text.find( '-' ) != -1:
+			print( '===> - found: ' + text )
+			text = text.replace( '-', "&#8211" )
+		print( '===> text after - replaced: ' + text )
+		if text.find( '+' ) != -1:
+			print( '===> + found: ' + text )
+			text = text.replace( '+', "&#43" )
+		print( '===> text after + replaced: ' + text )
+		# ¡
+		#if text.find( u"\u00A1" ) != -1:
+		#	text = text.replace( u"\u00A1", '&#161')
+		return text
 
 def main( hashtable = None ):
 	"Display the Twitterbot dialog."
