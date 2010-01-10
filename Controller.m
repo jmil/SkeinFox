@@ -289,11 +289,22 @@
 - (IBAction)addGitBranch:(id)sender {
     NSString *prefix = @"cd ~/.skeinforge;PATH=/usr/local/bin:/usr/local/git/bin:/opt/local/bin:/sw/bin:$PATH git checkout -f -b ";
     NSString *commandToExecute = [prefix stringByAppendingString:@"untitled"];
-    
+
+	NSString *newBranchName;
+	
+	newBranchName = [self.currentBranch stringByAppendingString:@"-copy"];
+	//NSLog(newBranchName);
+	
+    //NSString *commandToExecute = [prefix stringByAppendingString:newBranchName];
+
+	//NSLog(commandToExecute);
+
     // Perform the shelltask and print it immediately to the console
     [self executeStringCommandSynchronouslyAndLogToConsole:commandToExecute isAShellTask:YES];
     
     [self populateGitBranchesAndSelectCurrentBranch];
+
+	[self didRenameGitBranch:newBranchName];
 
     //NSLog(@"addedGitBranch!");
     
@@ -301,7 +312,18 @@
 
 - (IBAction)delGitBranch:(id)sender {
     
-    // To delete it's a bit more complicated because we CANNOT delete the branch that we have currently checked out; So we should figure out which branch we have currently selected and store that name temporarily, then select the branch below it (or the branch above it if it is the last branch), then delete the branch above it and reload the gitbranches
+    NSAlert *alert = [[NSAlert alloc] init];
+	[alert addButtonWithTitle:@"OK"];
+	[alert addButtonWithTitle:@"Cancel"];
+	[alert setMessageText:@"Delete the selected settings template?"];
+	[alert setInformativeText:@"Deleted settings templates cannot be restored."];
+	[alert setAlertStyle:NSWarningAlertStyle];
+	
+	if ([alert runModal] == NSAlertFirstButtonReturn) {
+		
+	// OK clicked, delete the record
+		
+	// To delete it's a bit more complicated because we CANNOT delete the branch that we have currently checked out; So we should figure out which branch we have currently selected and store that name temporarily, then select the branch below it (or the branch above it if it is the last branch), then delete the branch above it and reload the gitbranches
     [self.currentBranch setString:[[[myArrayController selectedObjects] objectAtIndex:0] name]];
     //NSLog(@"the branch to delete is: %@", self.currentBranch);
     NSUInteger currentSelectionIndexToDelete = self.myArrayController.selectionIndex;
@@ -345,8 +367,8 @@
     [self populateGitBranchesAndSelectCurrentBranch];
 
     //[self.gitBranches removeAllObjects];
-    
-    
+	}
+    [alert release];
 }
 
 
@@ -918,6 +940,7 @@
 // git branch -M "NewBranchName"
 - (IBAction)didRenameGitBranch:(NSString *)newBranchName {
     //NSLog(@"Controller didRenameGitBranch");
+    //NSLog(newBranchName);
     
     // Note that changes may be present, BUT DO NOT DO A COMMIT! The user will not expect a rename will also commit any changes present. This is EXPLICITLY and EXCLUSIVELY what the "Save Changes" button is for!
     // First we commit the current branch in case there are any changes
@@ -1082,6 +1105,5 @@
     
     
 }
-
 
 @end
