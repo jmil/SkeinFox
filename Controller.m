@@ -313,13 +313,13 @@
 - (IBAction)delGitBranch:(id)sender {
     
     NSAlert *alert = [[NSAlert alloc] init];
-	[alert addButtonWithTitle:@"OK"];
 	[alert addButtonWithTitle:@"Cancel"];
+	[alert addButtonWithTitle:@"OK"];
 	[alert setMessageText:@"Delete the selected settings template?"];
 	[alert setInformativeText:@"Deleted settings templates cannot be restored."];
 	[alert setAlertStyle:NSWarningAlertStyle];
 	
-	if ([alert runModal] == NSAlertFirstButtonReturn) {
+	if ([alert runModal] == NSAlertSecondButtonReturn) {
 		
 	// OK clicked, delete the record
 		
