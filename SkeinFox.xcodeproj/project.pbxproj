@@ -12,7 +12,6 @@
 		2DA2BBD9106AB8A80004156F /* skeinforge-0005 in Resources */ = {isa = PBXBuildFile; fileRef = 2DA2BB0D106AB8A80004156F /* skeinforge-0005 */; };
 		2DA2BCD3106AB95C0004156F /* .skeinforge in Resources */ = {isa = PBXBuildFile; fileRef = 2DA2BBE0106AB95C0004156F /* .skeinforge */; };
 		2DA5A76810A2F08700AB3ECA /* skeinforge-0006 in Resources */ = {isa = PBXBuildFile; fileRef = 2DA5A68510A2F08700AB3ECA /* skeinforge-0006 */; };
-		2DC66DC71095778D00E15482 /* reprap_python_beanshell in Resources */ = {isa = PBXBuildFile; fileRef = 2DC66C801095778D00E15482 /* reprap_python_beanshell */; };
 		2DC6F856109B937800D455DE /* SkeinFoxLogo--MultiSized.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DC6F855109B937800D455DE /* SkeinFoxLogo--MultiSized.icns */; };
 		2DDC41B01069FD32000BCA31 /* ShellTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DDC41AE1069FD32000BCA31 /* ShellTask.m */; };
 		2DE975C31086AAE90063CFD9 /* hive76-buib_only.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DE975C21086AAE90063CFD9 /* hive76-buib_only.png */; };
@@ -40,7 +39,6 @@
 		2DA2BB0D106AB8A80004156F /* skeinforge-0005 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "skeinforge-0005"; sourceTree = "<group>"; };
 		2DA2BBE0106AB95C0004156F /* .skeinforge */ = {isa = PBXFileReference; lastKnownFileType = folder; path = .skeinforge; sourceTree = "<group>"; };
 		2DA5A68510A2F08700AB3ECA /* skeinforge-0006 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "skeinforge-0006"; sourceTree = "<group>"; };
-		2DC66C801095778D00E15482 /* reprap_python_beanshell */ = {isa = PBXFileReference; lastKnownFileType = folder; path = reprap_python_beanshell; sourceTree = "<group>"; };
 		2DC6F855109B937800D455DE /* SkeinFoxLogo--MultiSized.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "SkeinFoxLogo--MultiSized.icns"; sourceTree = "<group>"; };
 		2DDC41AE1069FD32000BCA31 /* ShellTask.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ShellTask.m; sourceTree = "<group>"; };
 		2DDC41AF1069FD32000BCA31 /* ShellTask.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShellTask.h; sourceTree = "<group>"; };
@@ -135,7 +133,6 @@
 				2DC6F855109B937800D455DE /* SkeinFoxLogo--MultiSized.icns */,
 				2DA2BB0D106AB8A80004156F /* skeinforge-0005 */,
 				2DA5A68510A2F08700AB3ECA /* skeinforge-0006 */,
-				2DC66C801095778D00E15482 /* reprap_python_beanshell */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				2DE975C21086AAE90063CFD9 /* hive76-buib_only.png */,
 				2DA2BBE0106AB95C0004156F /* .skeinforge */,
@@ -202,7 +199,6 @@
 				2DA2BBD9106AB8A80004156F /* skeinforge-0005 in Resources */,
 				2DA2BCD3106AB95C0004156F /* .skeinforge in Resources */,
 				2DE975C31086AAE90063CFD9 /* hive76-buib_only.png in Resources */,
-				2DC66DC71095778D00E15482 /* reprap_python_beanshell in Resources */,
 				2DC6F856109B937800D455DE /* SkeinFoxLogo--MultiSized.icns in Resources */,
 				2DA5A76810A2F08700AB3ECA /* skeinforge-0006 in Resources */,
 			);
