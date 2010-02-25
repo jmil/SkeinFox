@@ -1,29 +1,206 @@
 """
+This page is in the table of contents.
 Behold is an analysis script to display a gcode file in an isometric view.
 
+The behold manual page is at:
+http://www.bitsfrombytes.com/wiki/index.php?title=Skeinforge_Behold
+
+==Operation==
 The default 'Activate Behold' checkbox is on.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Behold' checkbox is on, when behold is run directly.  Behold can not separate the layers when it reads gcode without comments.
 
-The viewer is simple, the viewpoint can only be moved in a sphere around the center of the model by changing the viewpoint latitude and longitude.  Different regions of the model can be hidden by setting the width of the thread to zero.  The alternating bands act as contour bands and their brightness and width can be changed.  The layers will be displayed starting at the "Layer From" index up until the "Layer To" index.  All of the preferences can be set in the initial "Behold Preferences" window and some can be changed after the viewer is running in the "Behold Dynamic Preferences" window.  In the viewer, dragging the mouse will change the viewpoint.
+The viewer is simple, the viewpoint can only be moved in a sphere around the center of the model by changing the viewpoint latitude and longitude.  Different regions of the model can be hidden by setting the width of the thread to zero.  The alternating bands act as contour bands and their brightness and width can be changed.  The layers will be displayed starting at the "Layers From" index up until the "Layers To" index.  All of the settings can be set in the initial "Behold Settings" window and some can be changed after the viewer is running in the "Behold Dynamic Settings" window.  In the viewer, dragging the mouse will change the viewpoint.
 
-The "Band Height" is height of the band in layers, with the default of five, a pair of bands is ten layers high.  The "Bottom Band Brightness" is the ratio of the brightness of the bottom band over the brightness of the top band, the default is 0.7.  The "Bottom Layer Brightness" is the ratio of the brightness of the bottom layer over the brightness of the top layer, the default is 1.0.  With a low bottom layer brightness ratio the bottom of the model will be darker than the top of the model, as if it was being illuminated by a light just above the top.  The "Bright Band Start" button group determines where the bright band starts from.  If the "From the Bottom" choice is selected, the bright bands will start from the bottom.  If the default "From the Top" choice is selected, the bright bands will start from the top.
+==Settings==
+===Animation===
+====Animation Line Quickening====
+Default is one.
 
-If "Draw Arrows" is selected, arrows will be drawn at the end of each line segment, the default is on.  If "Go Around Extruder Off Travel" is selected, the display will include the travel when the extruder is off, which means it will include the nozzle wipe path if any.
+The quickness of the tool animation over the quickness of the actual tool.
 
-The "Layer From" is the index of the bottom layer that will be displayed.  If the layer from is the default zero, the display will start from the lowest layer.  If the the layer from index is negative, then the display will start from the layer from index below the top layer.  The "Layer To" is the index of the top layer that will be displayed.  If the layer to index is a huge number like the default 999999999, the display will go to the top of the model, at least until we model habitats:)  If the layer to index is negative, then the display will go to the layer to index below the top layer.  The layer from until layer to index is a python slice.
+====Animation Slide Show Rate====
+Default is two layers per second.
 
-The "Number of Fill Bottom Layers" is the number of layers at the bottom which will be colored olive.  The "Number of Fill Bottom Layers" is the number of layers at the top which will be colored blue.
+The rate, in layers per second, at which the layer changes when the soar or dive button is pressed..
 
-The "Pixels over Extrusion Width" preference is the scale of the image, the higher the number, the greater the size of the display.  The "Screen Horizontal Inset" determines how much the display will be inset in the horizontal direction from the edge of screen, the higher the number the more it will be inset and the smaller it will be, the default is one hundred.  The "Screen Vertical Inset" determines how much the display will be inset in the vertical direction from the edge of screen, the default is fifty.
+===Axis Rulings===
+Default is on.
 
-The "Viewpoint Latitude" is the latitude of the viewpoint, the default is 15 degrees.  The "Viewpoint Longitude" is the longitude of the viewpoint, the default is 210 degrees.  The viewpoint can also be moved by dragging the mouse.  The viewpoint latitude will be increased when the mouse is dragged from the center towards the edge.  The viewpoint longitude will be changed by the amount around the center the mouse is dragged.  This is not very intuitive, but I don't know how to do this the intuitive way and I have other stuff to develop.  If the shift key is pressed; if the latitude is changed more than the longitude, only the latitude will be changed, if the longitude is changed more only the longitude will be changed.
+When selected, rulings will be drawn on the axis lines.
 
-The "Width of Extrusion Thread" sets the width of the green extrusion threads, those threads which are not loops and not part of the raft.  The default is one, if the width is zero the extrusion threads will be invisible.  The "Width of Fill Bottom Thread" sets the width of the olive extrusion threads at the bottom of the model, the default is three.  The "Width of Fill Top Thread" sets the width of the blue extrusion threads at the top of the model, the default is three.  The "Width of Loop Thread" sets the width of the yellow loop threads, which are not perimeters, the default is three.  The "Width of Perimeter Inside Thread" sets the width of the orange inside perimeter threads, the default is three.  The "Width of Perimeter Outside Thread" sets the width of the red outside perimeter threads, the default is three.  The "Width of Raft Thread" sets the width of the brown raft threads, the default is one.  The "Width of Travel Thread" sets the width of the gray extruder off travel threads, the default is zero.
+===Banding===
+====Band Height====
+Default is five layers.
 
-The "Width of X Axis" preference sets the width of the dark orange X Axis, the default is five pixels.  The "Width of Y Axis" sets the width of the gold Y Axis, the default is five.  The "Width of Z Axis" sets the width of the sky blue Z Axis, the default is five.
+Defines the height of the band in layers, a pair of bands is twice that height.
 
-To run behold, in a shell in the folder which behold is in type:
-> python behold.py
+====Bottom Band Brightness====
+Default is 0.7.
 
+Defines the ratio of the brightness of the bottom band over the brightness of the top band.  The higher it is the brighter the bottom band will be.
+
+====Bottom Layer Brightness====
+Default is one.
+
+Defines the ratio of the brightness of the bottom layer over the brightness of the top layer.  With a low bottom layer brightness ratio the bottom of the model will be darker than the top of the model, as if it was being illuminated by a light just above the top.
+
+====Bright Band Start====
+Default choice is 'From the Top'.
+
+The button group that determines where the bright band starts from.
+
+=====From the Bottom=====
+
+When selected, the bright bands will start from the bottom.
+
+=====From the Top=====
+
+When selected, the bright bands will start from the top.
+
+===Draw Arrows===
+Default is on.
+
+When selected, arrows will be drawn at the end of each line segment.
+
+===Export Menu===
+
+When the submenu in the export menu item in the file menu is clicked, an export canvas dialog will be displayed, which can export the canvas to a file.
+
+===Go Around Extruder Off Travel===
+Default is off.
+
+When selected, the display will include the travel when the extruder is off, which means it will include the nozzle wipe path if any.
+
+===Layers===
+====Layer====
+Default is zero.
+
+On the display window, the Up button increases the 'Layer' by one, and the Down button decreases the layer by one.  When the layer displayed in the layer spin box is changed then <Return> is hit, the layer shown will be set to the spin box, to a mimimum of zero and to a maximum of the highest index layer.The Soar button increases the layer at the 'Animation Slide Show Rate', and the Dive (double left arrow button beside the layer field) button decreases the layer at the slide show rate.
+
+====Layer Extra Span====
+Default is a huge number.
+
+The viewer will draw the layers in the range including the 'Layer' index and the 'Layer' index plus the 'Layer Extra Span'.  If the 'Layer Extra Span' is negative, the layers viewed will start at the 'Layer' index, plus the 'Layer Extra Span', and go up to and include the 'Layer' index.  If the 'Layer Extra Span' is zero, only the 'Layer' index layer will be displayed.  If the 'Layer Extra Span' is positive, the layers viewed will start at the 'Layer' index, and go up to and include the 'Layer' index plus the 'Layer Extra Span'.
+
+===Line===
+Default is zero.
+
+The index of the selected line on the layer that is highlighted when the 'Display Line' mouse tool is chosen.  The line spin box up button increases the 'Line' by one.  If the line index of the layer goes over the index of the last line, the layer index will be increased by one and the new line index will be zero.  The down button decreases the line index by one.  If the line index goes below the index of the first line, the layer index will be decreased by one and the new line index will be at the last line.  When the line displayed in the line field is changed then <Return> is hit, the line shown will be set to the line field, to a mimimum of zero and to a maximum of the highest index line.  The Soar button increases the line at the speed at which the extruder would move, times the 'Animation Line Quickening' ratio, and the Dive (double left arrow button beside the line field) button decreases the line at the animation line quickening ratio.
+
+===Mouse Mode===
+Default is 'Display Line'.
+
+The mouse tool can be changed from the 'Mouse Mode' menu button or picture button.  The mouse tools listen to the arrow keys when the canvas has the focus.  Clicking in the canvas gives the canvas the focus, and when the canvas has the focus a thick black border is drawn around the canvas.
+
+====Display Line====
+The 'Display Line' tool will display the highlight the selected line, and display the file line count, counting from one, and the gcode line itself.  When the 'Display Line' tool is active, clicking the canvas will select the nearest line to the mouse click.
+
+====Viewpoint Move====
+The 'Viewpoint Move' tool will move the viewpoint in the xy plane when the mouse is clicked and dragged on the canvas.
+
+====Viewpoint Rotate====
+The 'Viewpoint Rotate' tool will rotate the viewpoint around the origin, when the mouse is clicked and dragged on the canvas, or the arrow keys have been used and <Return> is pressed.  The viewpoint can also be moved by dragging the mouse.  The viewpoint latitude will be increased when the mouse is dragged from the center towards the edge.  The viewpoint longitude will be changed by the amount around the center the mouse is dragged.  This is not very intuitive, but I don't know how to do this the intuitive way and I have other stuff to develop.  If the shift key is pressed; if the latitude is changed more than the longitude, only the latitude will be changed, if the longitude is changed more only the longitude will be changed.
+
+===Number of Fill Bottom Layers===
+Default is one.
+
+The "Number of Fill Bottom Layers" is the number of layers at the bottom which will be colored olive.
+
+===Number of Fill Top Layers===
+Default is one.
+
+The "Number of Fill Top Layers" is the number of layers at the top which will be colored blue.
+
+===Scale===
+Default is ten.
+
+The scale setting is the scale of the image in pixels per millimeter, the higher the number, the greater the size of the display.
+
+The zoom in mouse tool will zoom in the display at the point where the mouse was clicked, increasing the scale by a factor of two.  The zoom out tool will zoom out the display at the point where the mouse was clicked, decreasing the scale by a factor of two.
+
+===Screen Inset===
+====Screen Horizontal Inset====
+Default is one hundred.
+
+The "Screen Horizontal Inset" determines how much the canvas will be inset in the horizontal direction from the edge of screen, the higher the number the more it will be inset and the smaller it will be.
+
+====Screen Vertical Inset====
+Default is two hundred.
+
+The "Screen Vertical Inset" determines how much the canvas will be inset in the vertical direction from the edge of screen, the higher the number the more it will be inset and the smaller it will be..
+
+===Viewpoint Latitude===
+Default is fifteen degrees.
+
+The "Viewpoint Latitude" is the latitude of the viewpoint, a latitude of zero is the top pole giving a top view, a latitude of ninety gives a side view and a latitude of 180 gives a bottom view.
+
+===Viewpoint Longitude===
+Default is 210 degrees.
+
+The "Viewpoint Longitude" is the longitude of the viewpoint.
+
+===Width===
+The width of each type of thread and of each axis can be changed.  If the width is set to zero, the thread will not be visible.
+
+====Width of Axis Negative Side====
+Default is two.
+
+Defines the width of the negative side of the axis.
+
+====Width of Axis Positive Side====
+Default is six.
+
+Defines the width of the positive side of the axis.
+
+====Width of Infill Thread====
+Default is one.
+
+The "Width of Infill Thread" sets the width of the green extrusion threads, those threads which are not loops and not part of the raft.
+
+====Width of Fill Bottom Thread====
+Default is three.
+
+The "Width of Fill Bottom Thread" sets the width of the olive extrusion threads at the bottom of the model.
+
+====Width of Fill Top Thread====
+Default is three.
+
+The "Width of Fill Top Thread" sets the width of the blue extrusion threads at the top of the model.
+
+====Width of Loop Thread====
+Default is three.
+
+The "Width of Loop Thread" sets the width of the yellow loop threads, which are not perimeters.
+
+====Width of Perimeter Inside Thread====
+Default is eight.
+
+The "Width of Perimeter Inside Thread" sets the width of the orange inside perimeter threads.
+
+====Width of Perimeter Outside Thread====
+Default is eight.
+
+The "Width of Perimeter Outside Thread" sets the width of the red outside perimeter threads.
+
+====Width of Raft Thread====
+Default is one.
+
+The "Width of Raft Thread" sets the width of the brown raft threads.
+
+====Width of Selection Thread====
+Default is six.
+
+The "Width of Selection Thread" sets the width of the selected line.
+
+====Width of Travel Thread====
+Default is zero.
+
+The "Width of Travel Thread" sets the width of the grey extruder off travel threads.
+
+==Icons==
+The dive, soar and zoom icons are from Mark James' soarSilk icon set 1.3 at:
+http://www.famfamfam.com/lab/icons/silk/
+
+==Gcodes==
 An explanation of the gcodes is at:
 http://reprap.org/bin/view/Main/Arduino_GCode_Interpreter
 
@@ -33,15 +210,16 @@ http://reprap.org/bin/view/Main/MCodeReference
 A gode example is at:
 http://forums.reprap.org/file.php?12,file=565
 
-This example lets the viewer behold the gcode file Screw Holder.gcode.  This example is run in a terminal in the folder which contains Screw Holder.gcode and behold.py.
+==Examples==
+Below are examples of behold being used.  These examples are run in a terminal in the folder which contains Screw Holder_penultimate.gcode and behold.py.
 
 
 > python behold.py
 This brings up the behold dialog.
 
 
-> python behold.py Screw Holder.gcode
-This brings up the behold dialog to view the gcode file.
+> python behold.py Screw Holder_penultimate.gcode
+This brings up the behold viewer to view the gcode file.
 
 
 > python
@@ -53,8 +231,8 @@ Type "help", "copyright", "credits" or "license" for more information.
 This brings up the behold dialog.
 
 
->>> behold.beholdFile()
-This brings up the behold window to view the gcode file.
+>>> behold.analyzeFile( 'Screw Holder_penultimate.gcode' )
+This brings up the behold viewer to view the gcode file.
 
 """
 
@@ -62,12 +240,15 @@ from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
+from skeinforge_tools.analyze_plugins.analyze_utilities import display_line
 from skeinforge_tools.analyze_plugins.analyze_utilities import tableau
+from skeinforge_tools.analyze_plugins.analyze_utilities import view_move
+from skeinforge_tools.analyze_plugins.analyze_utilities import view_rotate
 from skeinforge_tools.skeinforge_utilities.vector3 import Vector3
 from skeinforge_tools.skeinforge_utilities import euclidean
 from skeinforge_tools.skeinforge_utilities import gcodec
-from skeinforge_tools.skeinforge_utilities import preferences
-from skeinforge_tools import polyfile
+from skeinforge_tools.skeinforge_utilities import settings
+from skeinforge_tools.meta_plugins import polyfile
 import math
 import sys
 
@@ -77,161 +258,107 @@ __date__ = "$Date: 2008/21/04 $"
 __license__ = "GPL 3.0"
 
 
-#bring up the preferences window, maybe make dragging more intuitive
-def beholdFile( fileName = '' ):
-	"Behold a gcode file.  If no fileName is specified, behold the first gcode file in this folder that is not modified."
+def analyzeFile( fileName ):
+	"Behold a gcode file."
 	gcodeText = gcodec.getFileText( fileName )
-	displayBeholdFileGivenText( fileName, gcodeText )
+	analyzeFileGivenText( fileName, gcodeText )
 
-def compareLayerSequence( first, second ):
-	"Get comparison in order to sort skein panes in ascending order of layer zone index then sequence index."
-	if first.layerZoneIndex > second.layerZoneIndex:
-		return 1
-	if first.layerZoneIndex < second.layerZoneIndex:
-		return - 1
-	if first.sequenceIndex > second.sequenceIndex:
-		return 1
-	if first.sequenceIndex < second.sequenceIndex:
-		return - 1
-	return 0
-
-def displayBeholdFileGivenText( fileName, gcodeText, beholdPreferences = None ):
+def analyzeFileGivenText( fileName, gcodeText, repository = None ):
 	"Display a beholded gcode file for a gcode file."
 	if gcodeText == '':
 		return ''
-	if beholdPreferences == None:
-		beholdPreferences = BeholdPreferences()
-		preferences.getReadPreferences( beholdPreferences )
-	displayBeholdFileGivenTextPreferences( fileName, gcodeText, beholdPreferences )
+	if repository == None:
+		repository = settings.getReadRepository( BeholdRepository() )
+	skeinWindow = getWindowGivenTextRepository( fileName, gcodeText, repository )
+	skeinWindow.updateDeiconify()
 
-def displayBeholdFileGivenTextPreferences( fileName, gcodeText, beholdPreferences ):
+def compareLayerSequence( first, second ):
+	"Get comparison in order to sort skein panes in ascending order of layer zone index then sequence index."
+	if first.layerZoneIndex < second.layerZoneIndex:
+		return - 1
+	if first.layerZoneIndex > second.layerZoneIndex:
+		return 1
+	if first.sequenceIndex < second.sequenceIndex:
+		return - 1
+	return int( first.sequenceIndex > second.sequenceIndex )
+
+def getNewRepository():
+	"Get the repository constructor."
+	return BeholdRepository()
+
+def getWindowGivenTextRepository( fileName, gcodeText, repository ):
 	"Display the gcode text in a behold viewer."
 	skein = BeholdSkein()
-	skein.parseGcode( fileName, gcodeText, beholdPreferences )
-	skeinWindow = SkeinWindow( beholdPreferences, skein )
-
-def getBoundedLatitude( latitude ):
-	"Get the bounded latitude.later get rounded"
-	return round( min( 179.9, max( 0.1, latitude ) ), 1 )
-
-def getPolygonComplexFromColoredLines( coloredLines ):
-	"Get a complex polygon from the colored lines."
-	polygonComplex = []
-	for coloredLine in coloredLines:
-		polygonComplex.append( coloredLine.begin.dropAxis( 2 ) )
-	return polygonComplex
-
-def getPreferencesConstructor():
-	"Get the preferences constructor."
-	return BeholdPreferences()
-
-def getTwoHex( number ):
-	"Get the first two hexadecimal digits."
-	return ( '%s00' % hex( number ) )[ 2 : 4 ]
+	skein.parseGcode( fileName, gcodeText, repository )
+	return SkeinWindow( repository, skein )
 
 def writeOutput( fileName, gcodeText = '' ):
 	"Write a beholded gcode file for a skeinforge gcode file, if 'Activate Behold' is selected."
-	beholdPreferences = BeholdPreferences()
-	preferences.getReadPreferences( beholdPreferences )
-	if beholdPreferences.activateBehold.value:
+	repository = settings.getReadRepository( BeholdRepository() )
+	if repository.activateBehold.value:
 		gcodeText = gcodec.getTextIfEmpty( fileName, gcodeText )
-		displayBeholdFileGivenText( fileName, gcodeText, beholdPreferences )
+		analyzeFileGivenText( fileName, gcodeText, repository )
 
 
-class BeholdPreferences( tableau.TableauPreferences ):
-	"A class to handle the behold preferences."
+class BeholdRepository( tableau.TableauRepository ):
+	"A class to handle the behold settings."
 	def __init__( self ):
-		"Set the default preferences, execute title & preferences fileName."
-		#Set the default preferences.
-		self.archive = []
-		self.phoenixPreferenceTable = {}
-		self.updatePreferences = []
-		self.activateBehold = preferences.BooleanPreference().getFromValue( 'Activate Behold', True )
-		self.archive.append( self.activateBehold )
-		self.bandHeight = preferences.IntPreference().getFromValue( 'Band Height (layers):', 5 )
-		self.addToArchivePhoenixUpdate( self.bandHeight )
-		self.bottomBandBrightness = preferences.FloatPreference().getFromValue( 'Bottom Band Brightness (ratio):', 0.7 )
-		self.addToArchivePhoenixUpdate( self.bottomBandBrightness )
-		self.bottomLayerBrightness = preferences.FloatPreference().getFromValue( 'Bottom Layer Brightness (ratio):', 1.0 )
-		self.addToArchivePhoenixUpdate( self.bottomLayerBrightness )
-		self.brightBandStart = preferences.MenuButtonDisplay().getFromName( 'Bright Band Start:' )
-		self.addToArchiveUpdate( self.brightBandStart )
-		self.fromTheBottom = preferences.MenuRadio().getFromMenuButtonDisplay( self.brightBandStart, 'From the Bottom', False )
-		self.addToArchivePhoenixUpdate( self.fromTheBottom )
-		self.fromTheTop = preferences.MenuRadio().getFromMenuButtonDisplay( self.brightBandStart, 'From the Top', True )
-		self.addToArchivePhoenixUpdate( self.fromTheTop )
-		self.displayLineTextWhenMouseMoves = preferences.BooleanPreference().getFromValue( 'Display Line Text when Mouse Moves', False )
-		self.addToArchivePhoenixUpdate( self.displayLineTextWhenMouseMoves )
-		self.drawArrows = preferences.BooleanPreference().getFromValue( 'Draw Arrows', False )
-		self.addToArchiveUpdate( self.drawArrows )
-		self.fileNameInput = preferences.Filename().getFromFilename( [ ( 'Gcode text files', '*.gcode' ) ], 'Open File to Behold', '' )
-		self.archive.append( self.fileNameInput )
-		self.exportFileExtension = preferences.StringPreference().getFromValue( 'Export File Extension:', '' )
-		self.addToArchiveUpdate( self.exportFileExtension )
-		self.exportPostscriptProgram = preferences.StringPreference().getFromValue( 'Export Postscript Program:', 'gimp' )
-		self.addToArchiveUpdate( self.exportPostscriptProgram )
-		self.goAroundExtruderOffTravel = preferences.BooleanPreference().getFromValue( 'Go Around Extruder Off Travel', False )
-		self.addToArchivePhoenixUpdate( self.goAroundExtruderOffTravel )
-		self.layersFrom = preferences.IntPreference().getFromValue( 'Layers From (index):', 0 )
-		self.addToArchiveUpdate( self.layersFrom )
-		self.layersTo = preferences.IntPreference().getFromValue( 'Layers To (index):', 999999999 )
-		self.addToArchiveUpdate( self.layersTo )
-		self.numberOfFillBottomLayers = preferences.IntPreference().getFromValue( 'Number of Fill Bottom Layers (integer):', 1 )
-		self.addToArchivePhoenixUpdate( self.numberOfFillBottomLayers )
-		self.numberOfFillTopLayers = preferences.IntPreference().getFromValue( 'Number of Fill Top Layers (integer):', 1 )
-		self.addToArchivePhoenixUpdate( self.numberOfFillTopLayers )
-		self.pixelsPerMillimeter = preferences.FloatPreference().getFromValue( 'Pixels per Millimeter (ratio):', 10.0 )
-		self.addToArchivePhoenixUpdate( self.pixelsPerMillimeter )
-		self.screenHorizontalInset = preferences.IntPreference().getFromValue( 'Screen Horizontal Inset (pixels):', 50 )
-		self.addToArchivePhoenixUpdate( self.screenHorizontalInset )
-		self.screenVerticalInset = preferences.IntPreference().getFromValue( 'Screen Vertical Inset (pixels):', 200 )
-		self.addToArchivePhoenixUpdate( self.screenVerticalInset )
-		self.viewpointLatitude = preferences.FloatPreference().getFromValue( 'Viewpoint Latitude (degrees):', 15.0 )
-		self.addToArchiveUpdate( self.viewpointLatitude )
-		self.viewpointLongitude = preferences.FloatPreference().getFromValue( 'Viewpoint Longitude (degrees):', 210.0 )
-		self.addToArchiveUpdate( self.viewpointLongitude )
-		self.widthOfExtrusionThread = preferences.IntPreference().getFromValue( 'Width of Extrusion Thread (pixels):', 1 )
-		self.addToArchiveUpdate( self.widthOfExtrusionThread )
-		self.widthOfFillBottomThread = preferences.IntPreference().getFromValue( 'Width of Fill Bottom Thread (pixels):', 3 )
-		self.addToArchiveUpdate( self.widthOfFillBottomThread )
-		self.widthOfFillTopThread = preferences.IntPreference().getFromValue( 'Width of Fill Top Thread (pixels):', 3 )
-		self.addToArchiveUpdate( self.widthOfFillTopThread )
-		self.widthOfLoopThread = preferences.IntPreference().getFromValue( 'Width of Loop Thread (pixels):', 3 )
-		self.addToArchiveUpdate( self.widthOfLoopThread )
-		self.widthOfPerimeterInsideThread = preferences.IntPreference().getFromValue( 'Width of Perimeter Inside Thread (pixels):', 4 )
-		self.addToArchiveUpdate( self.widthOfPerimeterInsideThread )
-		self.widthOfPerimeterOutsideThread = preferences.IntPreference().getFromValue( 'Width of Perimeter Outside Thread (pixels):', 4 )
-		self.addToArchiveUpdate( self.widthOfPerimeterOutsideThread )
-		self.raftThreadWidth = preferences.IntPreference().getFromValue( 'Width of Raft Thread (pixels):', 1 )
-		self.addToArchiveUpdate( self.raftThreadWidth )
-		self.travelThreadWidth = preferences.IntPreference().getFromValue( 'Width of Travel Thread (pixels):', 0 )
-		self.addToArchiveUpdate( self.travelThreadWidth )
-		self.widthOfXAxis = preferences.IntPreference().getFromValue( 'Width of X Axis (pixels):', 5 )
-		self.addToArchiveUpdate( self.widthOfXAxis )
-		self.widthOfYAxis = preferences.IntPreference().getFromValue( 'Width of Y Axis (pixels):', 5 )
-		self.addToArchiveUpdate( self.widthOfYAxis )
-		self.widthOfZAxis = preferences.IntPreference().getFromValue( 'Width of Z Axis (pixels):', 5 )
-		self.addToArchiveUpdate( self.widthOfZAxis )
-		#Create the archive, title of the execute button, title of the dialog & preferences fileName.
+		"Set the default settings, execute title & settings fileName."
+		settings.addListsToRepository( 'skeinforge_tools.analyze_plugins.behold.html', '', self )
+		self.fileNameInput = settings.FileNameInput().getFromFileName( [ ( 'Gcode text files', '*.gcode' ) ], 'Open File to Behold', self, '' )
+#		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute( 'http://www.bitsfrombytes.com/wiki/index.php?title=Skeinforge_Behold' )
+		self.activateBehold = settings.BooleanSetting().getFromValue( 'Activate Behold', self, True )
+		self.addAnimation()
+		self.axisRulings = settings.BooleanSetting().getFromValue( 'Axis Rulings', self, True )
+		self.bandHeight = settings.IntSpinUpdate().getFromValue( 0, 'Band Height (layers):', self, 10, 5 )
+		self.bottomBandBrightness = settings.FloatSpinUpdate().getFromValue( 0.0, 'Bottom Band Brightness (ratio):', self, 1.0, 0.7 )
+		self.bottomLayerBrightness = settings.FloatSpinUpdate().getFromValue( 0.0, 'Bottom Layer Brightness (ratio):', self, 1.0, 1.0 )
+		self.brightBandStart = settings.MenuButtonDisplay().getFromName( 'Bright Band Start:', self )
+		self.fromTheBottom = settings.MenuRadio().getFromMenuButtonDisplay( self.brightBandStart, 'From the Bottom', self, False )
+		self.fromTheTop = settings.MenuRadio().getFromMenuButtonDisplay( self.brightBandStart, 'From the Top', self, True )
+		self.drawArrows = settings.BooleanSetting().getFromValue( 'Draw Arrows', self, False )
+		self.goAroundExtruderOffTravel = settings.BooleanSetting().getFromValue( 'Go Around Extruder Off Travel', self, False )
+		self.layer = settings.IntSpinNotOnMenu().getSingleIncrementFromValue( 0, 'Layer (index):', self, 912345678, 0 )
+		self.layerExtraSpan = settings.IntSpinUpdate().getSingleIncrementFromValue( - 912345678, 'Layer Extra Span (integer):', self, 912345678, 912345678 )
+		self.line = settings.IntSpinNotOnMenu().getSingleIncrementFromValue( 0, 'Line (index):', self, 912345678, 0 )
+		self.mouseMode = settings.MenuButtonDisplay().getFromName( 'Mouse Mode:', self )
+		self.displayLine = settings.MenuRadio().getFromMenuButtonDisplay( self.mouseMode, 'Display Line', self, True )
+		self.viewMove = settings.MenuRadio().getFromMenuButtonDisplay( self.mouseMode, 'View Move', self, False )
+		self.viewRotate = settings.MenuRadio().getFromMenuButtonDisplay( self.mouseMode, 'View Rotate', self, False )
+		self.numberOfFillBottomLayers = settings.IntSpinUpdate().getFromValue( 0, 'Number of Fill Bottom Layers (integer):', self, 5, 1 )
+		self.numberOfFillTopLayers = settings.IntSpinUpdate().getFromValue( 0, 'Number of Fill Top Layers (integer):', self, 5, 1 )
+		self.addScaleScreenSlide()
+		self.viewpointLatitude = settings.FloatSpin().getFromValue( 0.0, 'Viewpoint Latitude (degrees):', self, 180.0, 15.0 )
+		self.viewpointLongitude = settings.FloatSpin().getFromValue( 0.0, 'Viewpoint Longitude (degrees):', self, 360.0, 210.0 )
+		self.widthOfAxisNegativeSide = settings.IntSpinUpdate().getFromValue( 0, 'Width of Axis Negative Side (pixels):', self, 10, 2 )
+		self.widthOfAxisPositiveSide = settings.IntSpinUpdate().getFromValue( 0, 'Width of Axis Positive Side (pixels):', self, 10, 6 )
+		self.widthOfFillBottomThread = settings.IntSpinUpdate().getFromValue( 0, 'Width of Fill Bottom Thread (pixels):', self, 10, 2 )
+		self.widthOfFillTopThread = settings.IntSpinUpdate().getFromValue( 0, 'Width of Fill Top Thread (pixels):', self, 10, 2 )
+		self.widthOfInfillThread = settings.IntSpinUpdate().getFromValue( 0, 'Width of Infill Thread (pixels):', self, 10, 1 )
+		self.widthOfLoopThread = settings.IntSpinUpdate().getFromValue( 0, 'Width of Loop Thread (pixels):', self, 10, 2 )
+		self.widthOfPerimeterInsideThread = settings.IntSpinUpdate().getFromValue( 0, 'Width of Perimeter Inside Thread (pixels):', self, 10, 8 )
+		self.widthOfPerimeterOutsideThread = settings.IntSpinUpdate().getFromValue( 0, 'Width of Perimeter Outside Thread (pixels):', self, 10, 8 )
+		self.widthOfRaftThread = settings.IntSpinUpdate().getFromValue( 0, 'Width of Raft Thread (pixels):', self, 10, 1 )
+		self.widthOfSelectionThread = settings.IntSpinUpdate().getFromValue( 0, 'Width of Selection Thread (pixels):', self, 10, 6 )
+		self.widthOfTravelThread = settings.IntSpinUpdate().getFromValue( 0, 'Width of Travel Thread (pixels):', self, 10, 0 )
 		self.executeTitle = 'Behold'
-		self.saveCloseTitle = 'Save and Close'
-		preferences.setHelpPreferencesFileNameTitleWindowPosition( self, 'skeinforge_tools.analyze_plugins.behold.html' )
-		self.updateFunction = None
 
 	def execute( self ):
 		"Write button has been clicked."
 		fileNames = polyfile.getFileOrGcodeDirectory( self.fileNameInput.value, self.fileNameInput.wasCancelled )
 		for fileName in fileNames:
-			beholdFile( fileName )
+			analyzeFile( fileName )
 
 
 class BeholdSkein:
 	"A class to write a get a scalable vector graphics text for a gcode skein."
 	def __init__( self ):
 		self.coloredThread = []
+		self.feedRateMinute = 960.1
 		self.hasASurroundingLoopBeenReached = False
 		self.isLoop = False
 		self.isPerimeter = False
+		self.isOuter = False
 		self.isThereALayerStartWord = False
 		self.layerTops = []
 		self.oldLayerZoneIndex = 0
@@ -246,9 +373,11 @@ class BeholdSkein:
 			return
 		begin = self.scale * self.oldLocation - self.scaleCenterBottom
 		end = self.scale * location - self.scaleCenterBottom
-		tagString = '%s %s' % ( self.lineIndex, line )
-		coloredLine = ColoredLine( begin, '', end, tagString )
+		displayString = '%s %s' % ( self.lineIndex + 1, line )
+		tagString = 'colored_line_index: %s %s' % ( len( self.skeinPane.coloredLines ), len( self.skeinPanes ) - 1 )
+		coloredLine = tableau.ColoredLine( begin, '', displayString, end, tagString )
 		coloredLine.z = location.z
+		self.skeinPane.coloredLines.append( coloredLine )
 		self.coloredThread.append( coloredLine )
 
 	def getLayerTop( self ):
@@ -297,13 +426,11 @@ class BeholdSkein:
 			self.cornerLow = euclidean.getPointMinimum( self.cornerLow, location )
 		self.oldLocation = location
 
-	def linearMove( self, line, splitLine ):
+	def linearMove( self, line, location ):
 		"Get statistics for a linear move."
 		if self.skeinPane == None:
 			return
-		location = gcodec.getLocationFromSplitLine( self.oldLocation, splitLine )
 		self.addToPath( line, location )
-		self.oldLocation = location
 
 	def moveColoredThreadToSkeinPane( self ):
 		'Move a colored thread to the skein pane.'
@@ -311,12 +438,11 @@ class BeholdSkein:
 			return
 		layerZoneIndex = self.getLayerZoneIndex( self.coloredThread[ 0 ].z )
 		if not self.extruderActive:
-			self.setColoredThread( ( 190.0, 190.0, 190.0 ), self.skeinPane.travelLines ) #gray
+			self.setColoredThread( ( 190.0, 190.0, 190.0 ), self.skeinPane.travelLines ) #grey
 			return
 		self.skeinPane.layerZoneIndex = layerZoneIndex
 		if self.isPerimeter:
-			perimeterComplex = getPolygonComplexFromColoredLines( self.coloredThread )
-			if euclidean.isWiddershins( perimeterComplex ):
+			if self.isOuter:
 				self.setColoredThread( ( 255.0, 0.0, 0.0 ), self.skeinPane.perimeterOutsideLines ) #red
 			else:
 				self.setColoredThread( ( 255.0, 165.0, 0.0 ), self.skeinPane.perimeterInsideLines ) #orange
@@ -327,17 +453,17 @@ class BeholdSkein:
 		if not self.hasASurroundingLoopBeenReached:
 			self.setColoredThread( ( 165.0, 42.0, 42.0 ), self.skeinPane.raftLines ) #brown
 			return
-		if layerZoneIndex < self.beholdPreferences.numberOfFillBottomLayers.value:
+		if layerZoneIndex < self.repository.numberOfFillBottomLayers.value:
 			self.setColoredThread( ( 128.0, 128.0, 0.0 ), self.skeinPane.fillBottomLines ) #olive
 			return
 		if layerZoneIndex >= self.firstTopLayer:
 			self.setColoredThread( ( 0.0, 0.0, 255.0 ), self.skeinPane.fillTopLines ) #blue
 			return
-		self.setColoredThread( ( 0.0, 255.0, 0.0 ), self.skeinPane.extrudeLines ) #green
+		self.setColoredThread( ( 0.0, 255.0, 0.0 ), self.skeinPane.infillLines ) #green
 
 	def parseCorner( self, line ):
 		"Parse a gcode line and use the location to update the bounding corners."
-		splitLine = line.split()
+		splitLine = gcodec.getSplitLineBeforeBracketSemicolon( line )
 		if len( splitLine ) < 1:
 			return
 		firstWord = splitLine[ 0 ]
@@ -355,27 +481,28 @@ class BeholdSkein:
 			if self.layerTopZ > self.getLayerTop():
 				self.layerTops.append( self.layerTopZ )
 
-	def parseGcode( self, fileName, gcodeText, beholdPreferences ):
+	def parseGcode( self, fileName, gcodeText, repository ):
 		"Parse gcode text and store the vector output."
-		self.beholdPreferences = beholdPreferences
+		self.repository = repository
 		self.fileName = fileName
 		self.gcodeText = gcodeText
 		self.initializeActiveLocation()
 		self.cornerHigh = Vector3( - 999999999.0, - 999999999.0, - 999999999.0 )
 		self.cornerLow = Vector3( 999999999.0, 999999999.0, 999999999.0 )
-		self.goAroundExtruderOffTravel = beholdPreferences.goAroundExtruderOffTravel.value
+		self.goAroundExtruderOffTravel = repository.goAroundExtruderOffTravel.value
 		self.lines = gcodec.getTextLines( gcodeText )
 		self.isThereALayerStartWord = gcodec.isThereAFirstWord( '(<layer>', self.lines, 1 )
-		for line in self.lines:
+		self.parseInitialization()
+		for line in self.lines[ self.lineIndex : ]:
 			self.parseCorner( line )
 		if len( self.layerTops ) > 0:
 			self.layerTops[ - 1 ] += 912345678.9
 		if len( self.layerTops ) > 1:
-			self.oneMinusBrightnessOverTopLayerIndex = ( 1.0 - beholdPreferences.bottomLayerBrightness.value ) / float( len( self.layerTops ) - 1 )
-		self.firstTopLayer = len( self.layerTops ) - self.beholdPreferences.numberOfFillTopLayers.value
+			self.oneMinusBrightnessOverTopLayerIndex = ( 1.0 - repository.bottomLayerBrightness.value ) / float( len( self.layerTops ) - 1 )
+		self.firstTopLayer = len( self.layerTops ) - self.repository.numberOfFillTopLayers.value
 		self.centerComplex = 0.5 * ( self.cornerHigh.dropAxis( 2 ) + self.cornerLow.dropAxis( 2 ) )
 		self.centerBottom = Vector3( self.centerComplex.real, self.centerComplex.imag, self.cornerLow.z )
-		self.scale = beholdPreferences.pixelsPerMillimeter.value
+		self.scale = repository.scale.value
 		self.scaleCenterBottom = self.scale * self.centerBottom
 		self.scaleCornerHigh = self.scale * self.cornerHigh.dropAxis( 2 )
 		self.scaleCornerLow = self.scale * self.cornerLow.dropAxis( 2 )
@@ -386,14 +513,24 @@ class BeholdSkein:
 		self.marginCornerLow = self.scaleCornerLow - margin
 		self.screenSize = margin + 2.0 * ( self.scaleCornerHigh - self.marginCornerLow )
 		self.initializeActiveLocation()
-		for self.lineIndex in xrange( len( self.lines ) ):
+		for self.lineIndex in xrange( self.lineIndex, len( self.lines ) ):
 			line = self.lines[ self.lineIndex ]
 			self.parseLine( line )
-		self.skeinPanes.sort( compareLayerSequence )
+
+	def parseInitialization( self ):
+		"Parse gcode initialization and store the parameters."
+		for self.lineIndex in xrange( len( self.lines ) ):
+			line = self.lines[ self.lineIndex ]
+			splitLine = gcodec.getSplitLineBeforeBracketSemicolon( line )
+			firstWord = gcodec.getFirstWord( splitLine )
+			if firstWord == '(</extruderInitialization>)':
+				return
+			elif firstWord == '(<operatingFeedRatePerSecond>':
+				self.feedRateMinute = 60.0 * float( splitLine[ 1 ] )
 
 	def parseLine( self, line ):
 		"Parse a gcode line and add it to the vector output."
-		splitLine = line.split()
+		splitLine = gcodec.getSplitLineBeforeBracketSemicolon( line )
 		if len( splitLine ) < 1:
 			return
 		firstWord = splitLine[ 0 ]
@@ -401,7 +538,9 @@ class BeholdSkein:
 			self.skeinPane = SkeinPane( len( self.skeinPanes ) )
 			self.skeinPanes.append( self.skeinPane )
 		if firstWord == 'G1':
-			self.linearMove( line, splitLine )
+			location = gcodec.getLocationFromSplitLine( self.oldLocation, splitLine )
+			self.linearMove( line, location )
+			self.oldLocation = location
 		elif firstWord == 'M101':
 			self.moveColoredThreadToSkeinPane()
 			self.extruderActive = True
@@ -410,28 +549,41 @@ class BeholdSkein:
 			self.extruderActive = False
 			self.isLoop = False
 			self.isPerimeter = False
-		elif firstWord == '(<loop>)':
+		elif firstWord == '(<loop>':
 			self.isLoop = True
-		elif firstWord == '(<perimeter>)':
+		elif firstWord == '(</loop>)':
+			self.moveColoredThreadToSkeinPane()
+			self.isLoop = False
+		elif firstWord == '(<perimeter>':
 			self.isPerimeter = True
+			self.isOuter = ( splitLine[ 1 ] == 'outer' )
+		elif firstWord == '(</perimeter>)':
+			self.moveColoredThreadToSkeinPane()
+			self.isPerimeter = False
 		elif firstWord == '(<surroundingLoop>)':
 			self.hasASurroundingLoopBeenReached = True
+		if firstWord == 'G2' or firstWord == 'G3':
+			relativeLocation = gcodec.getLocationFromSplitLine( self.oldLocation, splitLine )
+			relativeLocation.z = 0.0
+			location = self.oldLocation + relativeLocation
+			self.linearMove( line, location )
+			self.oldLocation = location
 
 	def setColoredLineColor( self, coloredLine, colorTuple ):
 		'Set the color and stipple of the colored line.'
 		layerZoneIndex = self.getLayerZoneIndex( coloredLine.z )
-		multiplier = self.beholdPreferences.bottomLayerBrightness.value
+		multiplier = self.repository.bottomLayerBrightness.value
 		if len( self.layerTops ) > 1:
 			multiplier += self.oneMinusBrightnessOverTopLayerIndex * float( layerZoneIndex )
-		bandIndex = layerZoneIndex / self.beholdPreferences.bandHeight.value
-		if self.beholdPreferences.fromTheTop.value:
+		bandIndex = layerZoneIndex / self.repository.bandHeight.value
+		if self.repository.fromTheTop.value:
 			brightZoneIndex = len( self.layerTops ) - 1 - layerZoneIndex
-			bandIndex = brightZoneIndex / self.beholdPreferences.bandHeight.value + 1
+			bandIndex = brightZoneIndex / self.repository.bandHeight.value + 1
 		if bandIndex % 2 == 0:
-			multiplier *= self.beholdPreferences.bottomBandBrightness.value
-		red = getTwoHex( int( colorTuple[ 0 ] * multiplier ) )
-		green = getTwoHex( int( colorTuple[ 1 ] * multiplier ) )
-		blue = getTwoHex( int( colorTuple[ 2 ] * multiplier ) )
+			multiplier *= self.repository.bottomBandBrightness.value
+		red = settings.getWidthHex( int( colorTuple[ 0 ] * multiplier ), 2 )
+		green = settings.getWidthHex( int( colorTuple[ 1 ] * multiplier ), 2 )
+		blue = settings.getWidthHex( int( colorTuple[ 2 ] * multiplier ), 2 )
 		coloredLine.colorName = '#%s%s%s' % ( red, green, blue )
 
 	def setColoredThread( self, colorTuple, lineList ):
@@ -442,51 +594,15 @@ class BeholdSkein:
 		self.coloredThread = []
 
 
-class ColoredLine:
-	"A colored line."
-	def __init__( self, begin, colorName, end, tagString ):
-		"Set the color name and corners."
-		self.begin = begin
-		self.colorName = colorName
-		self.end = end
-		self.tagString = tagString
-	
-	def __repr__( self ):
-		"Get the string representation of this colored line."
-		return '%s, %s, %s' % ( self.colorName, self.begin, self.end, self.tagString )
-
-
-class LatitudeLongitude:
-	"A latitude and longitude."
-	def __init__( self, newCoordinate, skeinWindow, shift ):
-		"Set the latitude and longitude."
-		buttonOnePressedCentered = skeinWindow.getCenteredScreened( skeinWindow.buttonOnePressedCoordinate )
-		buttonOnePressedRadius = abs( buttonOnePressedCentered )
-		buttonOnePressedComplexMirror = complex( buttonOnePressedCentered.real, - buttonOnePressedCentered.imag )
-		buttonOneReleasedCentered = skeinWindow.getCenteredScreened( newCoordinate )
-		buttonOneReleasedRadius = abs( buttonOneReleasedCentered )
-		pressedReleasedRotationComplex = buttonOneReleasedCentered * buttonOnePressedComplexMirror
-		self.deltaLatitude = math.degrees( buttonOneReleasedRadius - buttonOnePressedRadius )
-		self.originalDeltaLongitude = math.degrees( math.atan2( pressedReleasedRotationComplex.imag, pressedReleasedRotationComplex.real ) )
-		self.deltaLongitude = self.originalDeltaLongitude
-		if skeinWindow.tableauPreferences.viewpointLatitude.value > 90.0:
-			self.deltaLongitude = - self.deltaLongitude
-		if shift:
-			if abs( self.deltaLatitude ) > abs( self.deltaLongitude ):
-				self.deltaLongitude = 0.0
-			else:
-				self.deltaLatitude = 0.0
-		self.latitude = getBoundedLatitude( skeinWindow.tableauPreferences.viewpointLatitude.value + self.deltaLatitude )
-		self.longitude = round( ( skeinWindow.tableauPreferences.viewpointLongitude.value + self.deltaLongitude ) % 360.0, 1 )
-
-
 class SkeinPane:
 	"A class to hold the colored lines for a layer."
 	def __init__( self, sequenceIndex ):
 		"Create empty line lists."
-		self.extrudeLines = []
+		self.coloredLines = []
 		self.fillBottomLines = []
 		self.fillTopLines = []
+		self.index = 0
+		self.infillLines = []
 		self.layerZoneIndex = 0
 		self.loopLines = []
 		self.perimeterInsideLines = []
@@ -496,140 +612,122 @@ class SkeinPane:
 		self.travelLines = []
 
 
+class Ruling:
+	def __init__( self, modelDistance, roundedRulingText ):
+		"Initialize the ruling."
+		self.modelDistance = modelDistance
+		self.roundedRulingText = roundedRulingText
+
+
 class SkeinWindow( tableau.TableauWindow ):
-	def __init__( self, tableauPreferences, skein ):
+	def __init__( self, repository, skein ):
 		"Initialize the skein window."
-		title = 'Behold Viewer'
 		self.arrowshape = ( 24, 30, 9 )
-		self.buttonOnePressedCoordinate = None
-		self.screenSize = skein.screenSize
+		self.addCanvasMenuRootScrollSkein( repository, skein, '_behold', 'Behold Viewer' )
 		self.center = 0.5 * self.screenSize
-		self.index = 0
-		self.setMenuPanesPreferencesRootSkein( skein, '_behold.ps', tableauPreferences )
 		self.motionStippleName = 'gray75'
-		self.oldPixelsPerMillimeter = tableauPreferences.pixelsPerMillimeter.value
-		self.root.title( title )
-		self.preferencesMenu = preferences.Tkinter.Menu( self.fileHelpMenuBar.menuBar, tearoff = 0 )
-		self.fileHelpMenuBar.menuBar.add_cascade( label = "Preferences", menu = self.preferencesMenu )
-		self.fileHelpMenuBar.helpMenu.add_command( label = 'Behold', command = preferences.HelpPage().getOpenFromDocumentationSubName( 'skeinforge_tools.analyze_plugins.behold.html' ) )
-		self.fileHelpMenuBar.completeMenu( self.root.destroy, tableauPreferences.lowerName )
-		frame = preferences.Tkinter.Frame( self.root )
-		xScrollbar = preferences.Tkinter.Scrollbar( self.root, orient = preferences.Tkinter.HORIZONTAL )
-		yScrollbar = preferences.Tkinter.Scrollbar( self.root )
-		self.canvasHeight = min( int( self.screenSize.imag ), self.root.winfo_screenheight() - tableauPreferences.screenVerticalInset.value )
-		self.canvasWidth = min( int( self.screenSize.real ), self.root.winfo_screenwidth() - tableauPreferences.screenHorizontalInset.value )
-		self.canvas = preferences.Tkinter.Canvas( self.root, width = self.canvasWidth, height = self.canvasHeight, scrollregion = ( 0, 0, int( self.screenSize.real ), int( self.screenSize.imag ) ) )
-		self.canvas.grid( row = 0, rowspan = 98, column = 0, columnspan = 99, sticky = preferences.Tkinter.W )
-		xScrollbar.grid( row = 98, column = 0, columnspan = 99, sticky = preferences.Tkinter.E + preferences.Tkinter.W )
-		xScrollbar.config( command = self.relayXview )
-		yScrollbar.grid( row = 0, rowspan = 98, column = 99, sticky = preferences.Tkinter.N + preferences.Tkinter.S )
-		yScrollbar.config( command = self.relayYview )
-		self.canvas[ 'xscrollcommand' ] = xScrollbar.set
-		self.canvas[ 'yscrollcommand' ] = yScrollbar.set
-		preferences.CloseListener( title.lower(), self, self.destroyAllDialogWindows ).listenToWidget( self.canvas )
-		self.canvas.bind( '<Button-1>', self.buttonOneClicked )
-		self.canvas.bind( '<ButtonRelease-1>', self.buttonOneReleased )
-		self.canvas.bind( '<Shift-ButtonRelease-1>', self.buttonOneReleasedShift )
-		self.canvas.bind( '<Leave>', self.leave )
-		self.canvas.bind( '<Motion>', self.motion )
-		self.canvas.bind( '<Shift-Motion>', self.motionShift )
 		halfCenter = 0.5 * self.center.real
-		self.xAxisLine = ColoredLine( Vector3(), 'darkorange', Vector3( halfCenter ), 'X Axis' )
-		self.yAxisLine = ColoredLine( Vector3(), 'gold', Vector3( 0.0, halfCenter ), 'Y Axis' )
-		self.zAxisLine = ColoredLine( Vector3(), 'skyblue', Vector3( 0.0, 0.0, halfCenter ), 'Z Axis' )
-		self.centerUpdateSetWindowGeometryShowPreferences()
+		negativeHalfCenter = - halfCenter
+		self.halfCenterModel = halfCenter / skein.scale
+		negativeHalfCenterModel = - self.halfCenterModel
+		roundedHalfCenter = euclidean.getThreeSignificantFigures( self.halfCenterModel )
+		roundedNegativeHalfCenter = euclidean.getThreeSignificantFigures( negativeHalfCenterModel )
+		self.negativeAxisLineX = tableau.ColoredLine( Vector3(), 'darkorange', None, Vector3( negativeHalfCenter ), 'X Negative Axis: Origin -> %s,0,0' % roundedNegativeHalfCenter )
+		self.negativeAxisLineY = tableau.ColoredLine( Vector3(), 'gold', None, Vector3( 0.0, negativeHalfCenter ), 'Y Negative Axis: Origin -> 0,%s,0' % roundedNegativeHalfCenter )
+		self.negativeAxisLineZ = tableau.ColoredLine( Vector3(), 'skyblue', None, Vector3( 0.0, 0.0, negativeHalfCenter ), 'Z Negative Axis: Origin -> 0,0,%s' % roundedNegativeHalfCenter )
+		self.positiveAxisLineX = tableau.ColoredLine( Vector3(), 'darkorange', None, Vector3( halfCenter ), 'X Positive Axis: Origin -> %s,0,0' % roundedHalfCenter )
+		self.positiveAxisLineY = tableau.ColoredLine( Vector3(), 'gold', None, Vector3( 0.0, halfCenter ), 'Y Positive Axis: Origin -> 0,%s,0' % roundedHalfCenter )
+		self.positiveAxisLineZ = tableau.ColoredLine( Vector3(), 'skyblue', None, Vector3( 0.0, 0.0, halfCenter ), 'Z Positive Axis: Origin -> 0,0,%s' % roundedHalfCenter )
+		self.repository.axisRulings.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.repository.bandHeight.setUpdateFunction( self.setWindowToDisplaySavePhoenixUpdate )
+		self.repository.bottomBandBrightness.setUpdateFunction( self.setWindowToDisplaySavePhoenixUpdate )
+		self.repository.bottomLayerBrightness.setUpdateFunction( self.setWindowToDisplaySavePhoenixUpdate )
+		self.repository.fromTheBottom.setUpdateFunction( self.setWindowToDisplaySavePhoenixUpdate )
+		self.repository.fromTheTop.setUpdateFunction( self.setWindowToDisplaySavePhoenixUpdate )
+		self.setWindowNewMouseTool( display_line.getNewMouseTool, self.repository.displayLine )
+		self.setWindowNewMouseTool( view_move.getNewMouseTool, self.repository.viewMove )
+		self.setWindowNewMouseTool( view_rotate.getNewMouseTool, self.repository.viewRotate )
+		self.repository.numberOfFillBottomLayers.setUpdateFunction( self.setWindowToDisplaySavePhoenixUpdate )
+		self.repository.numberOfFillTopLayers.setUpdateFunction( self.setWindowToDisplaySavePhoenixUpdate )
+		self.repository.viewpointLatitude.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.repository.viewpointLongitude.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.repository.widthOfAxisNegativeSide.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.repository.widthOfAxisPositiveSide.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.repository.widthOfFillBottomThread.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.repository.widthOfFillTopThread.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.repository.widthOfInfillThread.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.repository.widthOfLoopThread.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.repository.widthOfPerimeterInsideThread.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.repository.widthOfPerimeterOutsideThread.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.repository.widthOfRaftThread.setUpdateFunction( self.setWindowToDisplaySaveUpdate )
+		self.addMouseToolsBind()
+		self.negativeRulings = []
+		self.positiveRulings = []
+		for rulingIndex in xrange( 1, int( math.ceil( self.halfCenterModel / self.rulingSeparationWidthMillimeters ) ) ):
+			modelDistance = rulingIndex * self.rulingSeparationWidthMillimeters
+			self.negativeRulings.append( Ruling( modelDistance, self.getRoundedRulingText( 1, - modelDistance ) ) )
+			self.positiveRulings.append( Ruling( modelDistance, self.getRoundedRulingText( 1, modelDistance ) ) )
+		self.rulingExtentHalf = 0.5 * self.rulingExtent
 
-	def buttonOneClicked( self, event ):
-		"Print the line clicked."
-		x = self.canvas.canvasx( event.x )
-		y = self.canvas.canvasy( event.y )
-		self.buttonOnePressedCoordinate = complex( x, y )
-		self.canvas.delete( 'motion' )
-		print( 'The line clicked is: ' + self.getTagsGivenXY( x, y ) )
-
-	def buttonOneReleased( self, event, shift = False ):
-		"Move the viewpoint if the mouse was released."
-		if self.buttonOnePressedCoordinate == None:
-			return
-		x = self.canvas.canvasx( event.x )
-		y = self.canvas.canvasy( event.y )
-		buttonOneReleasedCoordinate = complex( x, y )
-		if abs( self.buttonOnePressedCoordinate - buttonOneReleasedCoordinate ) < 3:
-			self.buttonOnePressedCoordinate = None
-			self.canvas.delete( 'motion' )
-			return
-		latitudeLongitude = LatitudeLongitude( buttonOneReleasedCoordinate, self, shift )
-		self.tableauPreferences.viewpointLatitude.value = latitudeLongitude.latitude
-		self.tableauPreferences.viewpointLatitude.setStateToValue()
-		self.tableauPreferences.viewpointLongitude.value = latitudeLongitude.longitude
-		self.tableauPreferences.viewpointLongitude.setStateToValue()
-		self.buttonOnePressedCoordinate = None
-		preferences.writePreferences( self.tableauPreferences )
-		self.update()
-
-	def buttonOneReleasedShift( self, event ):
-		"Move the viewpoint if the mouse was released and the shift key was pressed."
-		self.buttonOneReleased( event, True )
-
-	def drawColoredLine( self, arrowType, coloredLine, viewVectors, width ):
-		"Draw colored line."
-		complexBegin = self.getViewComplex( coloredLine.begin, viewVectors )
-		complexEnd = self.getViewComplex( coloredLine.end, viewVectors )
+	def drawRuling( self, relativeRulingEnd, ruling, tags, viewBegin, viewEnd, viewVectors ):
+		"Draw ruling."
+		alongWay = ruling.modelDistance / self.halfCenterModel
+		oneMinusAlongWay = 1.0 - alongWay
+		alongScreen = alongWay * viewEnd + oneMinusAlongWay * viewBegin
+		alongScreenEnd = alongScreen + relativeRulingEnd
 		self.canvas.create_line(
-			complexBegin.real,
-			complexBegin.imag,
-			complexEnd.real,
-			complexEnd.imag,
-			fill = coloredLine.colorName,
-			arrow = arrowType,
-			tags = coloredLine.tagString,
-			width = width )
+			alongScreen.real,
+			alongScreen.imag,
+			alongScreenEnd.real,
+			alongScreenEnd.imag,
+			fill = 'black',
+			tags = tags,
+			width = 2 )
+		self.canvas.create_text( int( alongScreenEnd.real ) + 3, alongScreenEnd.imag, anchor = settings.Tkinter.W, text = ruling.roundedRulingText )
 
-	def drawColoredLineMotion( self, coloredLine, viewVectors, width ):
-		"Draw colored line with motion stipple and tag."
-		complexBegin = self.getViewComplex( coloredLine.begin, viewVectors )
-		complexEnd = self.getViewComplex( coloredLine.end, viewVectors )
-		self.canvas.create_line(
-			complexBegin.real,
-			complexBegin.imag,
-			complexEnd.real,
-			complexEnd.imag,
-			fill = coloredLine.colorName,
-			arrow = 'last',
-			arrowshape = self.arrowshape,
-			stipple = self.motionStippleName,
-			tags = 'motion',
-			width = width + 4 )
-
-	def drawColoredLines( self, coloredLines, viewVectors, width ):
-		"Draw colored lines."
-		if width <= 0:
+	def drawRulings( self, axisLine, rulings, viewVectors ):
+		"Draw rulings for the axis line."
+		if not self.repository.axisRulings.value:
 			return
-		for coloredLine in coloredLines:
-			self.drawColoredLine( self.arrowType, coloredLine, viewVectors, width )
+		viewBegin = self.getViewComplex( axisLine.begin, viewVectors )
+		viewEnd = self.getViewComplex( axisLine.end, viewVectors )
+		viewSegment = viewEnd - viewBegin
+		viewSegmentLength = abs( viewSegment )
+		if viewSegmentLength < self.rulingExtent:
+			return
+		normalizedViewSegment = viewSegment / viewSegmentLength
+		relativeRulingEnd = complex( - normalizedViewSegment.imag, normalizedViewSegment.real )
+		if normalizedViewSegment.imag > 0.0:
+			relativeRulingEnd = complex( normalizedViewSegment.imag, - normalizedViewSegment.real )
+		for ruling in rulings:
+			self.drawRuling( relativeRulingEnd * self.rulingExtentHalf, ruling, axisLine.tagString, viewBegin, viewEnd, viewVectors )
 
 	def drawSkeinPane( self, skeinPane, viewVectors ):
 		"Draw colored lines."
-		self.drawColoredLines( skeinPane.raftLines, viewVectors, self.tableauPreferences.raftThreadWidth.value )
-		self.drawColoredLines( skeinPane.travelLines, viewVectors, self.tableauPreferences.travelThreadWidth.value )
-		self.drawColoredLines( skeinPane.fillBottomLines, viewVectors, self.tableauPreferences.widthOfFillBottomThread.value )
-		self.drawColoredLines( skeinPane.extrudeLines, viewVectors, self.tableauPreferences.widthOfExtrusionThread.value )
-		self.drawColoredLines( skeinPane.fillTopLines, viewVectors, self.tableauPreferences.widthOfFillTopThread.value )
-		self.drawColoredLines( skeinPane.loopLines, viewVectors, self.tableauPreferences.widthOfLoopThread.value )
-		self.drawColoredLines( skeinPane.perimeterInsideLines, viewVectors, self.tableauPreferences.widthOfPerimeterInsideThread.value )
-		self.drawColoredLines( skeinPane.perimeterOutsideLines, viewVectors, self.tableauPreferences.widthOfPerimeterOutsideThread.value )
+		self.getDrawnColoredLines( skeinPane.raftLines, viewVectors, self.repository.widthOfRaftThread.value )
+		self.getDrawnColoredLines( skeinPane.travelLines, viewVectors, self.repository.widthOfTravelThread.value )
+		self.getDrawnColoredLines( skeinPane.fillBottomLines, viewVectors, self.repository.widthOfFillBottomThread.value )
+		self.getDrawnColoredLines( skeinPane.fillTopLines, viewVectors, self.repository.widthOfFillTopThread.value )
+		self.getDrawnColoredLines( skeinPane.infillLines, viewVectors, self.repository.widthOfInfillThread.value )
+		self.getDrawnColoredLines( skeinPane.loopLines, viewVectors, self.repository.widthOfLoopThread.value )
+		self.getDrawnColoredLines( skeinPane.perimeterInsideLines, viewVectors, self.repository.widthOfPerimeterInsideThread.value )
+		self.getDrawnColoredLines( skeinPane.perimeterOutsideLines, viewVectors, self.repository.widthOfPerimeterOutsideThread.value )
 
 	def drawXYAxisLines( self, viewVectors ):
 		"Draw the x and y axis lines."
-		if self.tableauPreferences.widthOfXAxis.value > 0:
-			self.drawColoredLine( 'last', self.xAxisLine, viewVectors, self.tableauPreferences.widthOfXAxis.value )
-		if self.tableauPreferences.widthOfYAxis.value > 0:
-			self.drawColoredLine( 'last', self.yAxisLine, viewVectors, self.tableauPreferences.widthOfYAxis.value )
+		if self.repository.widthOfAxisNegativeSide.value > 0:
+			self.getDrawnColoredLineWithoutArrow( self.negativeAxisLineX, self.negativeAxisLineX.tagString, viewVectors, self.repository.widthOfAxisNegativeSide.value )
+			self.getDrawnColoredLineWithoutArrow( self.negativeAxisLineY, self.negativeAxisLineY.tagString, viewVectors, self.repository.widthOfAxisNegativeSide.value )
+		if self.repository.widthOfAxisPositiveSide.value > 0:
+			self.getDrawnColoredLine( 'last', self.positiveAxisLineX, self.positiveAxisLineX.tagString, viewVectors, self.repository.widthOfAxisPositiveSide.value )
+			self.getDrawnColoredLine( 'last', self.positiveAxisLineY, self.positiveAxisLineY.tagString, viewVectors, self.repository.widthOfAxisPositiveSide.value )
 
 	def drawZAxisLine( self, viewVectors ):
 		"Draw the z axis line."
-		if self.tableauPreferences.widthOfZAxis.value > 0:
-			self.drawColoredLine( 'last', self.zAxisLine, viewVectors, self.tableauPreferences.widthOfZAxis.value )
+		if self.repository.widthOfAxisNegativeSide.value > 0:
+			self.getDrawnColoredLineWithoutArrow( self.negativeAxisLineZ, self.negativeAxisLineZ.tagString, viewVectors, self.repository.widthOfAxisNegativeSide.value )
+		if self.repository.widthOfAxisPositiveSide.value > 0:
+			self.getDrawnColoredLine( 'last', self.positiveAxisLineZ, self.positiveAxisLineZ.tagString, viewVectors, self.repository.widthOfAxisPositiveSide.value )
 
 	def getCentered( self, coordinate ):
 		"Get the centered coordinate."
@@ -638,11 +736,82 @@ class SkeinWindow( tableau.TableauWindow ):
 			relativeToCenter = complex( 0.0, 1.0 )
 		return relativeToCenter
 
+	def getCanvasRadius( self ):
+		"Get half of the minimum of the canvas height and width."
+		return 0.5 * min( float( self.canvasHeight ), float( self.canvasWidth ) )
+
 	def getCenteredScreened( self, coordinate ):
 		"Get the normalized centered coordinate."
-		relativeToCenter = self.getCentered( coordinate )
-		smallestHalfSize = 0.5 * min( float( self.canvasHeight ), float( self.canvasWidth ) )
-		return relativeToCenter / smallestHalfSize
+		return self.getCentered( coordinate ) / self.getCanvasRadius()
+
+	def getColoredLines( self ):
+		"Get the colored lines from the skein pane."
+		return self.skeinPanes[ self.repository.layer.value ].coloredLines
+
+	def getCopy( self ):
+		"Get a copy of this window."
+		return SkeinWindow( self.repository, self.skein )
+
+	def getCopyWithNewSkein( self ):
+		"Get a copy of this window with a new skein."
+		return getWindowGivenTextRepository( self.skein.fileName, self.skein.gcodeText, self.repository )
+
+	def getDrawnColoredLine( self, arrowType, coloredLine, tags, viewVectors, width ):
+		"Draw colored line."
+		viewBegin = self.getViewComplex( coloredLine.begin, viewVectors )
+		viewEnd = self.getViewComplex( coloredLine.end, viewVectors )
+		return self.canvas.create_line(
+			viewBegin.real,
+			viewBegin.imag,
+			viewEnd.real,
+			viewEnd.imag,
+			fill = coloredLine.colorName,
+			arrow = arrowType,
+			tags = tags,
+			width = width )
+
+	def getDrawnColoredLineMotion( self, coloredLine, viewVectors, width ):
+		"Draw colored line with motion stipple and tag."
+		viewBegin = self.getViewComplex( coloredLine.begin, viewVectors )
+		viewEnd = self.getViewComplex( coloredLine.end, viewVectors )
+		return self.canvas.create_line(
+			viewBegin.real,
+			viewBegin.imag,
+			viewEnd.real,
+			viewEnd.imag,
+			fill = coloredLine.colorName,
+			arrow = 'last',
+			arrowshape = self.arrowshape,
+			stipple = self.motionStippleName,
+			tags = 'mouse_item',
+			width = width + 4 )
+
+	def getDrawnColoredLines( self, coloredLines, viewVectors, width ):
+		"Draw colored lines."
+		if width <= 0:
+			return
+		drawnColoredLines = []
+		for coloredLine in coloredLines:
+			drawnColoredLines.append( self.getDrawnColoredLine( self.arrowType, coloredLine, coloredLine.tagString, viewVectors, width ) )
+		return drawnColoredLines
+
+	def getDrawnColoredLineWithoutArrow( self, coloredLine, tags, viewVectors, width ):
+		"Draw colored line without an arrow."
+		viewBegin = self.getViewComplex( coloredLine.begin, viewVectors )
+		viewEnd = self.getViewComplex( coloredLine.end, viewVectors )
+		return self.canvas.create_line(
+			viewBegin.real,
+			viewBegin.imag,
+			viewEnd.real,
+			viewEnd.imag,
+			fill = coloredLine.colorName,
+			tags = tags,
+			width = width )
+
+	def getDrawnSelectedColoredLine( self, coloredLine ):
+		"Get the drawn selected colored line."
+		viewVectors = view_rotate.ViewVectors( self.repository.viewpointLatitude.value, self.repository.viewpointLongitude.value )
+		return self.getDrawnColoredLine( self.arrowType, coloredLine, 'mouse_item', viewVectors, self.repository.widthOfSelectionThread.value )
 
 	def getScreenComplex( self, pointComplex ):
 		"Get the point in screen perspective."
@@ -654,99 +823,21 @@ class SkeinWindow( tableau.TableauWindow ):
 		screenComplexY = point.dot( viewVectors.viewYVector3 )
 		return self.getScreenComplex( complex( screenComplexX, screenComplexY ) )
 
-	def leave( self, event ):
-		"Null the button one pressed coordinate because the mouse has left the canvas."
-		self.buttonOnePressedCoordinate = None
-		self.canvas.delete( 'motion' )
-		self.destroyMovementText()
-
-	def motion( self, event, shift = False ):
-		"Move the viewpoint if the mouse was moved."
-		if self.buttonOnePressedCoordinate == None:
-			if not self.tableauPreferences.displayLineTextWhenMouseMoves.value:
-				return
-			x = self.canvas.canvasx( event.x )
-			y = self.canvas.canvasy( event.y )
-			tags = self.getTagsGivenXY( x, y )
-			if tags != '':
-				self.movementTextID = self.canvas.create_text ( x, y, anchor = preferences.Tkinter.SW, text = 'The line is: ' + tags )
-			return
-		x = self.canvas.canvasx( event.x )
-		y = self.canvas.canvasy( event.y )
-		motionCoordinate = complex( x, y )
-		latitudeLongitude = LatitudeLongitude( motionCoordinate, self, shift )
-		viewVectors = ViewVectors( latitudeLongitude.latitude, latitudeLongitude.longitude )
-		motionCentered = self.getCentered( motionCoordinate )
-		motionCenteredNormalized = motionCentered / abs( motionCentered )
-		buttonOnePressedCentered = self.getCentered( self.buttonOnePressedCoordinate )
-		buttonOnePressedAngle = math.degrees( math.atan2( buttonOnePressedCentered.imag, buttonOnePressedCentered.real ) )
-		buttonOnePressedLength = abs( buttonOnePressedCentered )
-		buttonOnePressedCorner = complex( buttonOnePressedLength, buttonOnePressedLength )
-		buttonOnePressedCornerBottomLeft = self.getScreenComplex( - buttonOnePressedCorner )
-		buttonOnePressedCornerUpperRight = self.getScreenComplex( buttonOnePressedCorner )
-		motionPressedStart = buttonOnePressedLength * motionCenteredNormalized
-		motionPressedScreen = self.getScreenComplex( motionPressedStart )
-		motionColorName = '#4B0082'
-		motionWidth = 9
-		self.canvas.delete( 'motion' )
-		if abs( latitudeLongitude.deltaLongitude ) > 0.0:
-			self.canvas.create_arc(
-				buttonOnePressedCornerBottomLeft.real,
-				buttonOnePressedCornerBottomLeft.imag,
-				buttonOnePressedCornerUpperRight.real,
-				buttonOnePressedCornerUpperRight.imag,
-				extent = latitudeLongitude.originalDeltaLongitude,
-				start = buttonOnePressedAngle,
-				outline = motionColorName,
-				outlinestipple = self.motionStippleName,
-				style = preferences.Tkinter.ARC,
-				tags = 'motion',
-				width = motionWidth )
-		if abs( latitudeLongitude.deltaLatitude ) > 0.0:
-			self.canvas.create_line(
-				motionPressedScreen.real,
-				motionPressedScreen.imag,
-				x,
-				y,
-				fill = motionColorName,
-				arrow = 'last',
-				arrowshape = self.arrowshape,
-				stipple = self.motionStippleName,
-				tags = 'motion',
-				width = motionWidth )
-		if self.tableauPreferences.widthOfXAxis.value > 0:
-			self.drawColoredLineMotion( self.xAxisLine, viewVectors, self.tableauPreferences.widthOfXAxis.value )
-		if self.tableauPreferences.widthOfYAxis.value > 0:
-			self.drawColoredLineMotion( self.yAxisLine, viewVectors, self.tableauPreferences.widthOfYAxis.value )
-		if self.tableauPreferences.widthOfZAxis.value > 0:
-			self.drawColoredLineMotion( self.zAxisLine, viewVectors, self.tableauPreferences.widthOfZAxis.value )
-
-	def motionShift( self, event ):
-		"Move the viewpoint if the mouse was moved and the shift key was pressed."
-		self.motion( event, True )
-
 	def printHexadecimalColorName( self, name ):
 		"Print the color name in hexadecimal."
 		colorTuple = self.canvas.winfo_rgb( name )
-		print( '#%s%s%s' % ( getTwoHex( colorTuple[ 0 ] ), getTwoHex( colorTuple[ 1 ] ), getTwoHex( colorTuple[ 2 ] ) ) )
+		print( '#%s%s%s' % ( settings.getWidthHex( colorTuple[ 0 ], 2 ), settings.getWidthHex( colorTuple[ 1 ], 2 ), settings.getWidthHex( colorTuple[ 2 ], 2 ) ) )
 
 	def update( self ):
 		"Update the screen."
 		if len( self.skeinPanes ) < 1:
 			return
-		for phoenixPreferenceTableKey in self.tableauPreferences.phoenixPreferenceTable.keys():
-			if self.tableauPreferences.phoenixPreferenceTable[ phoenixPreferenceTableKey ] != phoenixPreferenceTableKey.value:
-				self.root.destroy()
-				displayBeholdFileGivenTextPreferences( self.skein.fileName, self.skein.gcodeText, self.tableauPreferences )
-				return
-		self.arrowType = None
-		if self.tableauPreferences.drawArrows.value:
-			self.arrowType = 'last'
-		self.canvas.delete( preferences.Tkinter.ALL )
-		self.tableauPreferences.viewpointLatitude.value = getBoundedLatitude( self.tableauPreferences.viewpointLatitude.value )
-		self.tableauPreferences.viewpointLongitude.value = round( self.tableauPreferences.viewpointLongitude.value, 1 )
-		viewVectors = ViewVectors( self.tableauPreferences.viewpointLatitude.value, self.tableauPreferences.viewpointLongitude.value )
-		skeinPanesCopy = self.skeinPanes[ self.tableauPreferences.layersFrom.value : self.tableauPreferences.layersTo.value ]
+		self.limitIndexSetArrowMouseDeleteCanvas()
+		self.repository.viewpointLatitude.value = view_rotate.getBoundedLatitude( self.repository.viewpointLatitude.value )
+		self.repository.viewpointLongitude.value = round( self.repository.viewpointLongitude.value, 1 )
+		viewVectors = view_rotate.ViewVectors( self.repository.viewpointLatitude.value, self.repository.viewpointLongitude.value )
+		skeinPanesCopy = self.getUpdateSkeinPanes()[ : ]
+		skeinPanesCopy.sort( compareLayerSequence )
 		if viewVectors.viewpointLatitudeRatio.real > 0.0:
 			self.drawXYAxisLines( viewVectors )
 		else:
@@ -758,26 +849,23 @@ class SkeinWindow( tableau.TableauWindow ):
 			self.drawZAxisLine( viewVectors )
 		else:
 			self.drawXYAxisLines( viewVectors )
-
-
-class ViewVectors:
-	def __init__( self, viewpointLatitude, viewpointLongitude ):
-		"Initialize the view vectors."
-		longitudeComplex = euclidean.getPolar( math.radians( 90.0 - viewpointLongitude ) )
-		self.viewpointLatitudeRatio = euclidean.getPolar( math.radians( viewpointLatitude ) )
-		self.viewpointVector3 = Vector3( self.viewpointLatitudeRatio.imag * longitudeComplex.real, self.viewpointLatitudeRatio.imag * longitudeComplex.imag, self.viewpointLatitudeRatio.real )
-		self.viewXVector3 = Vector3( - longitudeComplex.imag, longitudeComplex.real, 0.0 )
-		self.viewXVector3.normalize()
-		self.viewYVector3 = self.viewpointVector3.cross( self.viewXVector3 )
-		self.viewYVector3.normalize()
+		if self.repository.widthOfAxisNegativeSide.value > 0:
+			self.drawRulings( self.negativeAxisLineX, self.negativeRulings, viewVectors )
+			self.drawRulings( self.negativeAxisLineY, self.negativeRulings, viewVectors )
+			self.drawRulings( self.negativeAxisLineZ, self.negativeRulings, viewVectors )
+		if self.repository.widthOfAxisPositiveSide.value > 0:
+			self.drawRulings( self.positiveAxisLineX, self.positiveRulings, viewVectors )
+			self.drawRulings( self.positiveAxisLineY, self.positiveRulings, viewVectors )
+			self.drawRulings( self.positiveAxisLineZ, self.positiveRulings, viewVectors )
+		self.setDisplayLayerIndex()
 
 
 def main():
 	"Display the behold dialog."
 	if len( sys.argv ) > 1:
-		beholdFile( ' '.join( sys.argv[ 1 : ] ) )
+		analyzeFile( ' '.join( sys.argv[ 1 : ] ) )
 	else:
-		preferences.startMainLoopFromConstructor( getPreferencesConstructor() )
+		settings.startMainLoopFromConstructor( getNewRepository() )
 
 if __name__ == "__main__":
 	main()

@@ -1,13 +1,30 @@
 """
+This page is in the table of contents.
 Lash is a script to partially compensate for the backlash of the tool head.
+
+The lash manual page is at:
+http://www.bitsfrombytes.com/wiki/index.php?title=Skeinforge_Lash
 
 The lash tool is ported from Erik de Bruijn's 3D-to-5D-Gcode php GPL'd script at:
 http://objects.reprap.org/wiki/3D-to-5D-Gcode.php
 
+The default values are from the settings in Erik's 3D-to-5D-Gcode, I believe the settings are used on his Darwin reprap.
+
+==Operation==
 The default 'Activate Lash' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
 
-The 'X Backlash' is the distance the tool head will be lashed in the X direction, the default is 0.2 mm.  The 'Y Backlash' is the distance the tool head will be lashed in the Y direction, the default is 0.2 mm.  These default values are from the settings in Erik's 3D-to-5D-Gcode, I believe the settings are used on his Darwin reprap.
+==Settings==
+===X Backlash===
+Default is 0.2 millimeters.
 
+Defines the distance the tool head will be lashed in the X direction.
+
+===Y Backlash===
+Default is 0.2 millimeters.
+
+Defines the distance the tool head will be lashed in the Y direction.
+
+==Examples==
 The following examples lash the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and lash.py.
 
 
@@ -32,7 +49,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 This brings up the lash dialog.
 
 
->>> lash.writeOutput()
+>>> lash.writeOutput( 'Screw Holder Bottom.stl' )
 The lash tool is parsing the file:
 Screw Holder Bottom.stl
 ..
@@ -46,11 +63,12 @@ from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
+from skeinforge_tools import profile
+from skeinforge_tools.meta_plugins import polyfile
 from skeinforge_tools.skeinforge_utilities import consecution
 from skeinforge_tools.skeinforge_utilities import gcodec
 from skeinforge_tools.skeinforge_utilities import interpret
-from skeinforge_tools.skeinforge_utilities import preferences
-from skeinforge_tools import polyfile
+from skeinforge_tools.skeinforge_utilities import settings
 import sys
 
 
@@ -59,23 +77,23 @@ __date__ = "$Date: 2008/21/04 $"
 __license__ = "GPL 3.0"
 
 
-def getCraftedText( fileName, text, lashPreferences = None ):
+def getCraftedText( fileName, text, lashRepository = None ):
 	"Get a lashed gcode linear move text."
-	return getCraftedTextFromText( gcodec.getTextIfEmpty( fileName, text ), lashPreferences )
+	return getCraftedTextFromText( gcodec.getTextIfEmpty( fileName, text ), lashRepository )
 
-def getCraftedTextFromText( gcodeText, lashPreferences = None ):
+def getCraftedTextFromText( gcodeText, lashRepository = None ):
 	"Get a lashed gcode linear move text from text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'lash' ):
 		return gcodeText
-	if lashPreferences == None:
-		lashPreferences = preferences.getReadPreferences( LashPreferences() )
-	if not lashPreferences.activateLash.value:
+	if lashRepository == None:
+		lashRepository = settings.getReadRepository( LashRepository() )
+	if not lashRepository.activateLash.value:
 		return gcodeText
-	return LashSkein().getCraftedGcode( gcodeText, lashPreferences )
+	return LashSkein().getCraftedGcode( gcodeText, lashRepository )
 
-def getPreferencesConstructor():
-	"Get the preferences constructor."
-	return LashPreferences()
+def getNewRepository():
+	"Get the repository constructor."
+	return LashRepository()
 
 def writeOutput( fileName = '' ):
 	"Lash a gcode linear move file."
@@ -84,28 +102,21 @@ def writeOutput( fileName = '' ):
 		consecution.writeChainTextWithNounMessage( fileName, 'lash' )
 
 
-class LashPreferences:
-	"A class to handle the lash preferences."
+class LashRepository:
+	"A class to handle the lash settings."
 	def __init__( self ):
-		"Set the default preferences, execute title & preferences fileName."
-		#Set the default preferences.
-		self.archive = []
-		self.activateLash = preferences.BooleanPreference().getFromValue( 'Activate Lash', False )
-		self.archive.append( self.activateLash )
-		self.xBacklash = preferences.FloatPreference().getFromValue( 'X Backlash (mm):', 0.2 )
-		self.archive.append( self.xBacklash )
-		self.yBacklash = preferences.FloatPreference().getFromValue( 'Y Backlash (mm):', 0.3 )
-		self.archive.append( self.yBacklash )
-		self.fileNameInput = preferences.Filename().getFromFilename( interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File to be Lashed', '' )
-		self.archive.append( self.fileNameInput )
-		#Create the archive, title of the execute button, title of the dialog & preferences fileName.
+		"Set the default settings, execute title & settings fileName."
+		settings.addListsToRepository( 'skeinforge_tools.craft_plugins.lash.html', '', self )
+		self.fileNameInput = settings.FileNameInput().getFromFileName( interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Lash', self, '' )
+		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute( 'http://www.bitsfrombytes.com/wiki/index.php?title=Skeinforge_Lash' )
+		self.activateLash = settings.BooleanSetting().getFromValue( 'Activate Lash', self, False )
+		self.xBacklash = settings.FloatSpin().getFromValue( 0.1, 'X Backlash (mm):', self, 0.5, 0.2 )
+		self.yBacklash = settings.FloatSpin().getFromValue( 0.1, 'Y Backlash (mm):', self, 0.5, 0.3 )
 		self.executeTitle = 'Lash'
-		self.saveCloseTitle = 'Save and Close'
-		preferences.setHelpPreferencesFileNameTitleWindowPosition( self, 'skeinforge_tools.craft_plugins.lash.html' )
 
 	def execute( self ):
 		"Lash button has been clicked."
-		fileNames = polyfile.getFileOrDirectoryTypesUnmodifiedGcode( self.fileNameInput.value, interpret.getImportPluginFilenames(), self.fileNameInput.wasCancelled )
+		fileNames = polyfile.getFileOrDirectoryTypesUnmodifiedGcode( self.fileNameInput.value, interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled )
 		for fileName in fileNames:
 			writeOutput( fileName )
 
@@ -119,12 +130,12 @@ class LashSkein:
 		self.lines = None
 		self.oldLocation = None
 
-	def getCraftedGcode( self, gcodeText, lashPreferences ):
+	def getCraftedGcode( self, gcodeText, lashRepository ):
 		"Parse gcode text and store the lash gcode."
 		self.lines = gcodec.getTextLines( gcodeText )
-		self.lashPreferences = lashPreferences
-		self.xBacklash = lashPreferences.xBacklash.value
-		self.yBacklash = lashPreferences.yBacklash.value
+		self.lashRepository = lashRepository
+		self.xBacklash = lashRepository.xBacklash.value
+		self.yBacklash = lashRepository.yBacklash.value
 		self.parseInitialization()
 		for self.lineIndex in xrange( self.lineIndex, len( self.lines ) ):
 			line = self.lines[ self.lineIndex ]
@@ -149,7 +160,7 @@ class LashSkein:
 		"Parse gcode initialization and store the parameters."
 		for self.lineIndex in xrange( len( self.lines ) ):
 			line = self.lines[ self.lineIndex ]
-			splitLine = line.split()
+			splitLine = gcodec.getSplitLineBeforeBracketSemicolon( line )
 			firstWord = gcodec.getFirstWord( splitLine )
 			self.distanceFeedRate.parseSplitLine( firstWord, splitLine )
 			if firstWord == '(</extruderInitialization>)':
@@ -159,7 +170,7 @@ class LashSkein:
 
 	def parseLash( self, line ):
 		"Parse a gcode line and add it to the lash skein."
-		splitLine = line.split()
+		splitLine = gcodec.getSplitLineBeforeBracketSemicolon( line )
 		if len( splitLine ) < 1:
 			return
 		firstWord = splitLine[ 0 ]
@@ -175,7 +186,7 @@ def main():
 	if len( sys.argv ) > 1:
 		writeOutput( ' '.join( sys.argv[ 1 : ] ) )
 	else:
-		preferences.startMainLoopFromConstructor( getPreferencesConstructor() )
+		settings.startMainLoopFromConstructor( getNewRepository() )
 
 if __name__ == "__main__":
 	main()

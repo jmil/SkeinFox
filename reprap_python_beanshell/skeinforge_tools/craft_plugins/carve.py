@@ -1,16 +1,67 @@
 """
-Carve shape is a script to carve a list of slice layers.
+This page is in the table of contents.
+Carve is a script to carve a shape into svg slice layers.
 
-Carve carves a list of slices into svg slice layers.  The 'Layer Thickness' is the thickness the extrusion layer at default extruder speed, this is the most important carve preference.  The 'Perimeter Width over Thickness' is the ratio of the extrusion perimeter width to the layer thickness.  The higher the value the more the perimeter will be inset, the default is 1.8.  A ratio of one means the extrusion is a circle, a typical ratio of 1.8 means the extrusion is a wide oval.  These values should be measured from a test extrusion line.
+The carve manual page is at:
+http://www.bitsfrombytes.com/wiki/index.php?title=Skeinforge_Carve
 
-When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the perimeter width.  When the Mesh Type preference is Correct Mesh, the mesh will be accurately carved, and if a hole is found, carve will switch over to the algorithm that spans gaps.  If the Mesh Type preference is Unproven Mesh, carve will use the gap spanning algorithm from the start.  The problem with the gap spanning algothm is that it will span gaps, even if there is not actually a gap in the model.
+On the Arcol Blog a method of deriving the layer thickness is posted.  That article "Machine Calibrating" is at:
+http://blog.arcol.hu/?p=157
 
-If 'Infill in Direction of Bridges'  is selected, the infill will be in the direction of bridges across gaps, so that the fill will be able to span a bridge easier.
+==Settings==
+===Bridge Thickness Multiplier===
+Default is one.
 
-The 'Extra Decimal Places' is the number of extra decimal places export will output compared to the number of decimal places in the layer thickness.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have, the default is one.
+Defines the the ratio of the thickness on the bridge layers over the thickness of the typical non bridge layers.
 
-Carve slices from bottom to top.  The output will go from the "Layers From" index to the "Layers To" index.  The default for the "Layers From" index is zero and the default for the "Layers To" is a really big number.  To get a single layer, set the "Layers From" to zero and the "Layers To" to one.
+===Extra Decimal Places===
+Default is one.
 
+Defines the number of extra decimal places export will output compared to the number of decimal places in the layer thickness.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.
+
+===Import Coarseness===
+Default is one.
+
+When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the perimeter width.
+
+===Infill in Direction of Bridges===
+Default is on.
+
+When selected, the infill will be in the direction of bridges across gaps, so that the fill will be able to span a bridge easier.
+
+===Layer Thickness===
+Default is 0.4 mm.
+
+Defines the thickness of the extrusion layer at default extruder speed, this is the most important carve setting.
+
+===Layers===
+Carve slices from bottom to top.  To get a single layer, set the "Layers From" to zero and the "Layers To" to one.  The 'Layers From' until 'Layers To' range is a python slice.
+
+====Layers From====
+Default is zero.
+
+Defines the index of the bottom layer that will be carved.  If the 'Layers From' is the default zero, the carving will start from the lowest layer.  If the 'Layers From' index is negative, then the carving will start from the 'Layers From' index below the top layer.
+
+====Layers To====
+Default is a huge number, which will be limited to the highest index layer.
+
+Defines the index of the top layer that will be carved.  If the 'Layers To' index is a huge number like the default, the carving will go to the top of the model.  If the 'Layers To' index is negative, then the carving will go to the 'Layers To' index below the top layer.
+
+===Mesh Type===
+Default is 'Correct Mesh'.
+
+====Correct Mesh====
+When selected, the mesh will be accurately carved, and if a hole is found, carve will switch over to the algorithm that spans gaps.
+
+====Unproven Mesh====
+When selected, carve will use the gap spanning algorithm from the start.  The problem with the gap spanning algothm is that it will span gaps, even if there is not actually a gap in the model.
+
+===Perimeter Width over Thickness===
+Default is 1.8.
+
+Defines the ratio of the extrusion perimeter width to the layer thickness.  The higher the value the more the perimeter will be inset, the default is 1.8.  A ratio of one means the extrusion is a circle, a typical ratio of 1.8 means the extrusion is a wide oval.  These values should be measured from a test extrusion line.
+
+==Examples==
 The following examples carve the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and carve.py.
 
 
@@ -35,7 +86,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 This brings up the carve dialog.
 
 
->>> carve.writeOutput()
+>>> carve.writeOutput( 'Screw Holder Bottom.stl' )
 The carve tool is parsing the file:
 Screw Holder Bottom.stl
 ..
@@ -53,13 +104,14 @@ except:
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
+from skeinforge_tools import profile
+from skeinforge_tools.meta_plugins import polyfile
 from skeinforge_tools.skeinforge_utilities import euclidean
 from skeinforge_tools.skeinforge_utilities import gcodec
 from skeinforge_tools.skeinforge_utilities import interpret
-from skeinforge_tools.skeinforge_utilities import preferences
+from skeinforge_tools.skeinforge_utilities import settings
 from skeinforge_tools.skeinforge_utilities import svg_codec
 from skeinforge_tools.skeinforge_utilities import triangle_mesh
-from skeinforge_tools import polyfile
 import math
 import os
 import sys
@@ -71,140 +123,104 @@ __date__ = "$Date: 2008/02/05 $"
 __license__ = "GPL 3.0"
 
 
-def getCraftedText( fileName, text = '', carvePreferences = None ):
+def getCraftedText( fileName, text = '', repository = None ):
 	"Get carved text."
 	if gcodec.getHasSuffix( fileName, '.svg' ):
 		text = gcodec.getTextIfEmpty( fileName, text )
 		return text
-	return getCraftedTextFromFileName( fileName, carvePreferences = None )
+	return getCraftedTextFromFileName( fileName, repository = None )
 
-def getCraftedTextFromFileName( fileName, carvePreferences = None ):
+def getCraftedTextFromFileName( fileName, repository = None ):
 	"Carve a shape file."
 	carving = svg_codec.getCarving( fileName )
 	if carving == None:
 		return ''
-	if carvePreferences == None:
-		carvePreferences = CarvePreferences()
-		preferences.getReadPreferences( carvePreferences )
-	return CarveSkein().getCarvedSVG( carvePreferences, carving, fileName )
+	if repository == None:
+		repository = CarveRepository()
+		settings.getReadRepository( repository )
+	return CarveSkein().getCarvedSVG( carving, fileName, repository )
 
-def getPreferencesConstructor():
-	"Get the preferences constructor."
-	return CarvePreferences()
+def getNewRepository():
+	"Get the repository constructor."
+	return CarveRepository()
 
 def writeOutput( fileName = '' ):
 	"Carve a GNU Triangulated Surface file."
 	startTime = time.time()
-	print( 'File ' + gcodec.getSummarizedFilename( fileName ) + ' is being carved.' )
+	print( 'File ' + gcodec.getSummarizedFileName( fileName ) + ' is being carved.' )
 	carveGcode = getCraftedText( fileName )
 	if carveGcode == '':
 		return
-	suffixFilename = gcodec.getFilePathWithUnderscoredBasename( fileName, '_carve.svg' )
-	gcodec.writeFileText( suffixFilename, carveGcode )
-	print( 'The carved file is saved as ' + gcodec.getSummarizedFilename( suffixFilename ) )
+	suffixFileName = gcodec.getFilePathWithUnderscoredBasename( fileName, '_carve.svg' )
+	gcodec.writeFileText( suffixFileName, carveGcode )
+	print( 'The carved file is saved as ' + gcodec.getSummarizedFileName( suffixFileName ) )
 	print( 'It took ' + str( int( round( time.time() - startTime ) ) ) + ' seconds to carve the file.' )
-	preferences.openWebPage( suffixFilename )
+	settings.openWebPage( suffixFileName )
 
 
-class CarvePreferences:
-	"A class to handle the carve preferences."
+class CarveRepository:
+	"A class to handle the carve settings."
 	def __init__( self ):
-		"Set the default preferences, execute title & preferences fileName."
-		#Set the default preferences.
-		self.archive = []
-		self.fileNameInput = preferences.Filename().getFromFilename( interpret.getTranslatorFileTypeTuples(), 'Open File to be Carved', '' )
-		self.archive.append( self.fileNameInput )
-		self.extraDecimalPlaces = preferences.IntPreference().getFromValue( 'Extra Decimal Places (integer):', 1 )
-		self.archive.append( self.extraDecimalPlaces )
-		self.importCoarseness = preferences.FloatPreference().getFromValue( 'Import Coarseness (ratio):', 1.0 )
-		self.archive.append( self.importCoarseness )
-		self.meshTypeLabel = preferences.LabelDisplay().getFromName( 'Mesh Type: ' )
-		self.archive.append( self.meshTypeLabel )
-		importRadio = []
-		self.correctMesh = preferences.Radio().getFromRadio( 'Correct Mesh', importRadio, True )
-		self.archive.append( self.correctMesh )
-		self.unprovenMesh = preferences.Radio().getFromRadio( 'Unproven Mesh', importRadio, False )
-		self.archive.append( self.unprovenMesh )
-		self.infillBridgeThicknessOverLayerThickness = preferences.FloatPreference().getFromValue( 'Infill Bridge Thickness over Layer Thickness (ratio):', 1.0 )
-		self.archive.append( self.infillBridgeThicknessOverLayerThickness )
-		self.infillDirectionBridge = preferences.BooleanPreference().getFromValue( 'Infill in Direction of Bridges', True )
-		self.archive.append( self.infillDirectionBridge )
-		self.layerThickness = preferences.FloatPreference().getFromValue( 'Layer Thickness (mm):', 0.4 )
-		self.archive.append( self.layerThickness )
-		self.layersFrom = preferences.IntPreference().getFromValue( 'Layers From (index):', 0 )
-		self.archive.append( self.layersFrom )
-		self.layersTo = preferences.IntPreference().getFromValue( 'Layers To (index):', 999999999 )
-		self.archive.append( self.layersTo )
-		self.perimeterWidthOverThickness = preferences.FloatPreference().getFromValue( 'Perimeter Width over Thickness (ratio):', 1.8 )
-		self.archive.append( self.perimeterWidthOverThickness )
-		#Create the archive, title of the execute button, title of the dialog & preferences fileName.
+		"Set the default settings, execute title & settings fileName."
+		profile.addListsToCraftTypeRepository( 'skeinforge_tools.craft_plugins.carve.html', self )
+		self.fileNameInput = settings.FileNameInput().getFromFileName( interpret.getTranslatorFileTypeTuples(), 'Open File for Carve', self, '' )
+		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute( 'http://www.bitsfrombytes.com/wiki/index.php?title=Skeinforge_Carve' )
+		self.bridgeThicknessMultiplier = settings.FloatSpin().getFromValue( 0.8, 'Bridge Thickness Multiplier (ratio):', self, 1.2, 1.0 )
+		self.extraDecimalPlaces = settings.IntSpin().getFromValue( 0, 'Extra Decimal Places (integer):', self, 2, 1 )
+		self.importCoarseness = settings.FloatSpin().getFromValue( 0.5, 'Import Coarseness (ratio):', self, 2.0, 1.0 )
+		self.infillDirectionBridge = settings.BooleanSetting().getFromValue( 'Infill in Direction of Bridges', self, True )
+		self.layerThickness = settings.FloatSpin().getFromValue( 0.1, 'Layer Thickness (mm):', self, 1.0, 0.4 )
+		self.layersFrom = settings.IntSpin().getFromValue( 0, 'Layers From (index):', self, 20, 0 )
+		self.layersTo = settings.IntSpin().getSingleIncrementFromValue( 0, 'Layers To (index):', self, 912345678, 912345678 )
+		self.meshTypeLabel = settings.LabelDisplay().getFromName( 'Mesh Type: ', self )
+		importLatentStringVar = settings.LatentStringVar()
+		self.correctMesh = settings.Radio().getFromRadio( importLatentStringVar, 'Correct Mesh', self, True )
+		self.unprovenMesh = settings.Radio().getFromRadio( importLatentStringVar, 'Unproven Mesh', self, False )
+		self.perimeterWidthOverThickness = settings.FloatSpin().getFromValue( 1.4, 'Perimeter Width over Thickness (ratio):', self, 2.2, 1.8 )
 		self.executeTitle = 'Carve'
-		self.saveCloseTitle = 'Save and Close'
-		preferences.setHelpPreferencesFileNameTitleWindowPosition( self, 'skeinforge_tools.craft_plugins.carve.html' )
 
 	def execute( self ):
 		"Carve button has been clicked."
-		fileNames = polyfile.getFileOrDirectoryTypes( self.fileNameInput.value, interpret.getImportPluginFilenames(), self.fileNameInput.wasCancelled )
+		fileNames = polyfile.getFileOrDirectoryTypes( self.fileNameInput.value, interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled )
 		for fileName in fileNames:
 			writeOutput( fileName )
 
 
 class CarveSkein( svg_codec.SVGCodecSkein ):
 	"A class to carve a carving."
-	def addRotatedLoopLayersToOutput( self, rotatedBoundaryLayers ):
-		"Add rotated boundary layers to the output."
-		truncatedRotatedBoundaryLayers = rotatedBoundaryLayers[ self.carvePreferences.layersFrom.value : self.carvePreferences.layersTo.value ]
-		for truncatedRotatedBoundaryLayerIndex in xrange( len( truncatedRotatedBoundaryLayers ) ):
-			truncatedRotatedBoundaryLayer = truncatedRotatedBoundaryLayers[ truncatedRotatedBoundaryLayerIndex ]
-			self.addRotatedLoopLayerToOutput( truncatedRotatedBoundaryLayerIndex, truncatedRotatedBoundaryLayer )
-
 	def addRotatedLoopLayerToOutput( self, layerIndex, rotatedBoundaryLayer ):
 		"Add rotated boundary layer to the output."
-		self.addLayerStart( layerIndex, rotatedBoundaryLayer.z )
+		self.addLayerBegin( layerIndex, rotatedBoundaryLayer.z )
 		if rotatedBoundaryLayer.rotation != None:
 			self.addLine('\t\t\t<!--bridgeRotation--> %s' % rotatedBoundaryLayer.rotation ) # Indicate the bridge rotation.
-#			<path transform="scale(3.7, -3.7) translate(0, 5)" d="M 0 -5 L 50 0 L60 50 L 5 50 z M 5 3 L5 15 L15 15 L15 5 z"/>
-#		transform = 'scale(' + unitScale + ' ' + (unitScale * -1) + ') translate(' + (sliceMinX * -1) + ' ' + (sliceMinY * -1) + ')'
-		pathString = '\t\t\t<path transform="scale(%s, %s) translate(%s, %s)" d="' % ( self.unitScale, - self.unitScale, self.getRounded( - self.cornerMinimum.x ), self.getRounded( - self.cornerMinimum.y ) )
-		if len( rotatedBoundaryLayer.loops ) > 0:
-			pathString += self.getSVGLoopString( rotatedBoundaryLayer.loops[ 0 ] )
-		for loop in rotatedBoundaryLayer.loops[ 1 : ]:
-			pathString += ' ' + self.getSVGLoopString( loop )
-		pathString += '"/>'
-		self.addLine( pathString )
-		self.addLine( '\t\t</g>' )
+		self.addLayerEnd( rotatedBoundaryLayer )
 
-	def getCarvedSVG( self, carvePreferences, carving, fileName ):
+	def getCarvedSVG( self, carving, fileName, repository ):
 		"Parse gnu triangulated surface text and store the carved gcode."
-		self.carvePreferences = carvePreferences
-		self.layerThickness = carvePreferences.layerThickness.value
-		self.setExtrusionDiameterWidth( carvePreferences )
-		if carvePreferences.infillDirectionBridge.value:
+		self.carving = carving
+		self.repository = repository
+		self.layerThickness = repository.layerThickness.value
+		self.setExtrusionDiameterWidth( repository )
+		if repository.infillDirectionBridge.value:
 			carving.setCarveBridgeLayerThickness( self.bridgeLayerThickness )
 		carving.setCarveLayerThickness( self.layerThickness )
-		importRadius = 0.5 * carvePreferences.importCoarseness.value * abs( self.perimeterWidth )
+		importRadius = 0.5 * repository.importCoarseness.value * abs( self.perimeterWidth )
 		carving.setCarveImportRadius( max( importRadius, 0.01 * self.layerThickness ) )
-		carving.setCarveIsCorrectMesh( carvePreferences.correctMesh.value )
+		carving.setCarveIsCorrectMesh( repository.correctMesh.value )
 		rotatedBoundaryLayers = carving.getCarveRotatedBoundaryLayers()
 		if len( rotatedBoundaryLayers ) < 1:
 			return ''
 		self.cornerMaximum = carving.getCarveCornerMaximum()
 		self.cornerMinimum = carving.getCarveCornerMinimum()
-		#reset from slicable
-		self.layerThickness = carving.getCarveLayerThickness()
-		self.setExtrusionDiameterWidth( carvePreferences )
-		self.decimalPlacesCarried = max( 0, 1 + carvePreferences.extraDecimalPlaces.value - int( math.floor( math.log10( self.layerThickness ) ) ) )
-		self.extent = self.cornerMaximum - self.cornerMinimum
-		self.svgTemplateLines = self.getReplacedSVGTemplateLines( fileName, rotatedBoundaryLayers )
-		self.addInitializationToOutputSVG( 'carve' )
-		self.addRotatedLoopLayersToOutput( rotatedBoundaryLayers )
-		self.addShutdownToOutput()
-		return self.output.getvalue()
+		self.layerThickness = self.carving.layerThickness
+		self.decimalPlacesCarried = max( 0, 1 + self.repository.extraDecimalPlaces.value - int( math.floor( math.log10( self.layerThickness ) ) ) )
+		self.setExtrusionDiameterWidth( repository )
+		return self.getReplacedSVGTemplate( fileName, 'carve', rotatedBoundaryLayers )
 
-	def setExtrusionDiameterWidth( self, carvePreferences ):
+	def setExtrusionDiameterWidth( self, repository ):
 		"Set the extrusion diameter & width and the bridge thickness & width."
-		self.bridgeLayerThickness = self.layerThickness * carvePreferences.infillBridgeThicknessOverLayerThickness.value
-		self.perimeterWidth = carvePreferences.perimeterWidthOverThickness.value * self.layerThickness
+		self.bridgeLayerThickness = self.layerThickness * repository.bridgeThicknessMultiplier.value
+		self.perimeterWidth = repository.perimeterWidthOverThickness.value * self.layerThickness
 
 
 def main():
@@ -212,7 +228,7 @@ def main():
 	if len( sys.argv ) > 1:
 		writeOutput( ' '.join( sys.argv[ 1 : ] ) )
 	else:
-		preferences.startMainLoopFromConstructor( getPreferencesConstructor() )
+		settings.startMainLoopFromConstructor( getNewRepository() )
 
 if __name__ == "__main__":
 	main()

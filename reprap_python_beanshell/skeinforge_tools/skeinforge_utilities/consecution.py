@@ -8,8 +8,9 @@ from __future__ import absolute_import
 import __init__
 
 from skeinforge_tools.skeinforge_utilities import gcodec
-from skeinforge_tools.skeinforge_utilities import preferences
+from skeinforge_tools.skeinforge_utilities import settings
 from skeinforge_tools import analyze
+from skeinforge_tools import profile
 import os
 import sys
 import time
@@ -36,10 +37,11 @@ def getChainTextFromProcedures( fileName, procedures, text ):
 	lastProcedureTime = time.time()
 	for procedure in procedures:
 		craftModule = getCraftModule( procedure )
-		text = craftModule.getCraftedText( fileName, text )
-		if gcodec.isProcedureDone( text, procedure ):
-			print( '%s procedure took %s seconds.' % ( procedure.capitalize(), int( round( time.time() - lastProcedureTime ) ) ) )
-			lastProcedureTime = time.time()
+		if craftModule != None:
+			text = craftModule.getCraftedText( fileName, text )
+			if gcodec.isProcedureDone( text, procedure ):
+				print( '%s procedure took %s seconds.' % ( procedure.capitalize(), int( round( time.time() - lastProcedureTime ) ) ) )
+				lastProcedureTime = time.time()
 	return text
 
 def getLastModule():
@@ -58,7 +60,7 @@ def getProcedures( procedure, text ):
 
 def getReadCraftSequence():
 	"Get profile sequence."
-	return preferences.getCraftTypePluginModule().getCraftSequence()
+	return profile.getCraftTypePluginModule().getCraftSequence()
 
 def getSequenceIndexPlusOneFromText( fileText ):
 	"Get the profile sequence index of the file plus one.  Return zero if the procedure is not in the file"
@@ -83,14 +85,14 @@ def writeChainTextWithNounMessage( fileName, procedure ):
 	print( os.path.basename( fileName ) )
 	print( '' )
 	startTime = time.time()
-	suffixFilename = fileName[ : fileName.rfind( '.' ) ] + '_' + procedure + '.gcode'
+	suffixFileName = fileName[ : fileName.rfind( '.' ) ] + '_' + procedure + '.gcode'
 	craftText = getChainText( fileName, procedure )
 	if craftText == '':
 		return
-	gcodec.writeFileText( suffixFilename, craftText )
+	gcodec.writeFileText( suffixFileName, craftText )
 	print( '' )
 	print( 'The %s tool has created the file:' % procedure )
-	print( suffixFilename )
+	print( suffixFileName )
 	print( '' )
 	print( 'It took ' + str( int( round( time.time() - startTime ) ) ) + ' seconds to craft the file.' )
-	analyze.writeOutput( suffixFilename, craftText )
+	analyze.writeOutput( suffixFileName, craftText )

@@ -27,7 +27,7 @@ The carved file is saved as Screw Holder Bottom_carve.gcode<br>
 It took 3 seconds to carve the file.<br>
  <br>
  <br>
-&gt;&gt;&gt; carve.writeOutput()<br>
+&gt;&gt;&gt; carve.writeOutput( 'Screw Holder Bottom.stl' )<br>
 File Screw Holder Bottom.gcode is being carved.<br>
 The carved file is saved as Screw Holder Bottom_carve.gcode<br>
 It took 3 seconds to carve the file.<br>
@@ -187,6 +187,7 @@ many lines of GNU Triangulated Surface vertices, edges and faces<br>
  <dl><dt><a name="-addPointsAtZ"><strong>addPointsAtZ</strong></a>(edgePair, points, radius, vertices, z)</dt><dd><tt>Add&nbsp;point&nbsp;complexes&nbsp;on&nbsp;the&nbsp;segment&nbsp;between&nbsp;the&nbsp;edge&nbsp;intersections&nbsp;with&nbsp;z.</tt></dd></dl>
  <dl><dt><a name="-addToZoneArray"><strong>addToZoneArray</strong></a>(point, z, zoneArray, zZoneInterval)</dt><dd><tt>Add&nbsp;a&nbsp;height&nbsp;to&nbsp;the&nbsp;zone&nbsp;array.</tt></dd></dl>
  <dl><dt><a name="-addWithLeastLength"><strong>addWithLeastLength</strong></a>(loops, point, shortestAdditionalLength)</dt><dd><tt>Insert&nbsp;a&nbsp;point&nbsp;into&nbsp;a&nbsp;loop,&nbsp;at&nbsp;the&nbsp;index&nbsp;at&nbsp;which&nbsp;the&nbsp;loop&nbsp;would&nbsp;be&nbsp;shortest.</tt></dd></dl>
+ <dl><dt><a name="-compareAreaAscending"><strong>compareAreaAscending</strong></a>(loopArea, otherLoopArea)</dt><dd><tt>Get&nbsp;comparison&nbsp;in&nbsp;order&nbsp;to&nbsp;sort&nbsp;loop&nbsp;areas&nbsp;in&nbsp;ascending&nbsp;order&nbsp;of&nbsp;area.</tt></dd></dl>
  <dl><dt><a name="-compareAreaDescending"><strong>compareAreaDescending</strong></a>(loopArea, otherLoopArea)</dt><dd><tt>Get&nbsp;comparison&nbsp;in&nbsp;order&nbsp;to&nbsp;sort&nbsp;loop&nbsp;areas&nbsp;in&nbsp;descending&nbsp;order&nbsp;of&nbsp;area.</tt></dd></dl>
  <dl><dt><a name="-getAdditionalLoopLength"><strong>getAdditionalLoopLength</strong></a>(loop, point, pointIndex)</dt><dd><tt>Get&nbsp;the&nbsp;additional&nbsp;length&nbsp;added&nbsp;by&nbsp;inserting&nbsp;a&nbsp;point&nbsp;into&nbsp;a&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-getBridgeDirection"><strong>getBridgeDirection</strong></a>(belowLoops, layerLoops, layerThickness)</dt><dd><tt>Get&nbsp;span&nbsp;direction&nbsp;for&nbsp;the&nbsp;majority&nbsp;of&nbsp;the&nbsp;overhanging&nbsp;extrusion&nbsp;perimeter,&nbsp;if&nbsp;any.</tt></dd></dl>
@@ -194,23 +195,25 @@ many lines of GNU Triangulated Surface vertices, edges and faces<br>
  <dl><dt><a name="-getCarveIntersectionFromEdge"><strong>getCarveIntersectionFromEdge</strong></a>(edge, vertices, z)</dt><dd><tt>Get&nbsp;the&nbsp;complex&nbsp;where&nbsp;the&nbsp;carve&nbsp;intersects&nbsp;the&nbsp;edge.</tt></dd></dl>
  <dl><dt><a name="-getCommonVertexIndex"><strong>getCommonVertexIndex</strong></a>(edgeFirst, edgeSecond)</dt><dd><tt>Get&nbsp;the&nbsp;vertex&nbsp;index&nbsp;that&nbsp;both&nbsp;edges&nbsp;have&nbsp;in&nbsp;common.</tt></dd></dl>
  <dl><dt><a name="-getDoubledRoundZ"><strong>getDoubledRoundZ</strong></a>(overhangingSegment, segmentRoundZ)</dt><dd><tt>Get&nbsp;doubled&nbsp;plane&nbsp;angle&nbsp;around&nbsp;z&nbsp;of&nbsp;the&nbsp;overhanging&nbsp;segment.</tt></dd></dl>
- <dl><dt><a name="-getInclusiveLoops"><strong>getInclusiveLoops</strong></a>(allPoints, corners, importRadius, isInteriorWanted)</dt><dd><tt>Get&nbsp;loops&nbsp;which&nbsp;include&nbsp;most&nbsp;of&nbsp;the&nbsp;points.</tt></dd></dl>
+ <dl><dt><a name="-getInclusiveLoops"><strong>getInclusiveLoops</strong></a>(allPoints, corners, importRadius, isInteriorWanted<font color="#909090">=True</font>)</dt><dd><tt>Get&nbsp;loops&nbsp;which&nbsp;include&nbsp;most&nbsp;of&nbsp;the&nbsp;points.</tt></dd></dl>
+ <dl><dt><a name="-getInsetPoint"><strong>getInsetPoint</strong></a>(loop, tinyRadius)</dt><dd><tt>Get&nbsp;the&nbsp;inset&nbsp;vertex.</tt></dd></dl>
  <dl><dt><a name="-getLoopsFromCorrectMesh"><strong>getLoopsFromCorrectMesh</strong></a>(edges, faces, vertices, z)</dt><dd><tt>Get&nbsp;loops&nbsp;from&nbsp;a&nbsp;carve&nbsp;of&nbsp;a&nbsp;correct&nbsp;mesh.</tt></dd></dl>
  <dl><dt><a name="-getLoopsFromUnprovenMesh"><strong>getLoopsFromUnprovenMesh</strong></a>(edges, faces, importRadius, vertices, z)</dt><dd><tt>Get&nbsp;loops&nbsp;from&nbsp;a&nbsp;carve&nbsp;of&nbsp;an&nbsp;unproven&nbsp;mesh.</tt></dd></dl>
  <dl><dt><a name="-getLoopsInOrderOfArea"><strong>getLoopsInOrderOfArea</strong></a>(compareAreaFunction, loops)</dt><dd><tt>Get&nbsp;the&nbsp;loops&nbsp;in&nbsp;the&nbsp;order&nbsp;of&nbsp;area&nbsp;according&nbsp;to&nbsp;the&nbsp;compare&nbsp;function.</tt></dd></dl>
  <dl><dt><a name="-getLoopsWithCorners"><strong>getLoopsWithCorners</strong></a>(corners, importRadius, loops, pointTable)</dt><dd><tt>Add&nbsp;corners&nbsp;to&nbsp;the&nbsp;loops.</tt></dd></dl>
  <dl><dt><a name="-getLowestZoneIndex"><strong>getLowestZoneIndex</strong></a>(zoneArray, z)</dt><dd><tt>Get&nbsp;the&nbsp;lowest&nbsp;zone&nbsp;index.</tt></dd></dl>
  <dl><dt><a name="-getNextEdgeIndexAroundZ"><strong>getNextEdgeIndexAroundZ</strong></a>(edge, faces, remainingEdgeTable)</dt><dd><tt>Get&nbsp;the&nbsp;next&nbsp;edge&nbsp;index&nbsp;in&nbsp;the&nbsp;mesh&nbsp;carve.</tt></dd></dl>
+ <dl><dt><a name="-getNumberOfOddIntersectionsFromLoops"><strong>getNumberOfOddIntersectionsFromLoops</strong></a>(leftPoint, loops)</dt><dd><tt>Get&nbsp;the&nbsp;number&nbsp;of&nbsp;odd&nbsp;intersections&nbsp;with&nbsp;the&nbsp;loops.</tt></dd></dl>
  <dl><dt><a name="-getOverhangDirection"><strong>getOverhangDirection</strong></a>(belowOutsetLoops, segmentBegin, segmentEnd)</dt><dd><tt>Add&nbsp;to&nbsp;span&nbsp;direction&nbsp;from&nbsp;the&nbsp;endpoint&nbsp;segments&nbsp;which&nbsp;overhang&nbsp;the&nbsp;layer&nbsp;below.</tt></dd></dl>
  <dl><dt><a name="-getOverlapRatio"><strong>getOverlapRatio</strong></a>(loop, pointTable)</dt><dd><tt>Get&nbsp;the&nbsp;overlap&nbsp;ratio&nbsp;between&nbsp;the&nbsp;loop&nbsp;and&nbsp;the&nbsp;point&nbsp;table.</tt></dd></dl>
  <dl><dt><a name="-getPath"><strong>getPath</strong></a>(edges, pathIndexes, loop, z)</dt><dd><tt>Get&nbsp;the&nbsp;path&nbsp;from&nbsp;the&nbsp;edge&nbsp;intersections.</tt></dd></dl>
  <dl><dt><a name="-getRemainingEdgeTable"><strong>getRemainingEdgeTable</strong></a>(edges, vertices, z)</dt><dd><tt>Get&nbsp;the&nbsp;remaining&nbsp;edge&nbsp;hashtable.</tt></dd></dl>
  <dl><dt><a name="-getSharedFace"><strong>getSharedFace</strong></a>(firstEdge, faces, secondEdge)</dt><dd><tt>Get&nbsp;the&nbsp;face&nbsp;which&nbsp;is&nbsp;shared&nbsp;by&nbsp;two&nbsp;edges.</tt></dd></dl>
  <dl><dt><a name="-getTriangleMesh"><strong>getTriangleMesh</strong></a>(fileName<font color="#909090">=''</font>)</dt><dd><tt>Carve&nbsp;a&nbsp;GNU&nbsp;Triangulated&nbsp;Surface&nbsp;file.&nbsp;&nbsp;If&nbsp;no&nbsp;fileName&nbsp;is&nbsp;specified,&nbsp;carve&nbsp;the&nbsp;first&nbsp;GNU&nbsp;Triangulated&nbsp;Surface&nbsp;file&nbsp;in&nbsp;this&nbsp;folder.</tt></dd></dl>
+ <dl><dt><a name="-getWideAnglePointIndex"><strong>getWideAnglePointIndex</strong></a>(loop)</dt><dd><tt>Get&nbsp;a&nbsp;point&nbsp;index&nbsp;which&nbsp;has&nbsp;a&nbsp;wide&nbsp;enough&nbsp;angle,&nbsp;most&nbsp;point&nbsp;indexes&nbsp;have&nbsp;a&nbsp;wide&nbsp;enough&nbsp;angle,&nbsp;this&nbsp;is&nbsp;just&nbsp;to&nbsp;make&nbsp;sure.</tt></dd></dl>
  <dl><dt><a name="-getZoneInterval"><strong>getZoneInterval</strong></a>(layerThickness)</dt><dd><tt>Get&nbsp;the&nbsp;zone&nbsp;interval&nbsp;around&nbsp;the&nbsp;slice&nbsp;height.</tt></dd></dl>
  <dl><dt><a name="-isInline"><strong>isInline</strong></a>(beginComplex, centerComplex, endComplex)</dt><dd><tt>Determine&nbsp;if&nbsp;the&nbsp;three&nbsp;complex&nbsp;points&nbsp;form&nbsp;a&nbsp;line.</tt></dd></dl>
  <dl><dt><a name="-isPathAdded"><strong>isPathAdded</strong></a>(edges, faces, loops, remainingEdgeTable, vertices, z)</dt><dd><tt>Get&nbsp;the&nbsp;path&nbsp;indexes&nbsp;around&nbsp;a&nbsp;triangle&nbsp;mesh&nbsp;carve&nbsp;and&nbsp;add&nbsp;the&nbsp;path&nbsp;to&nbsp;the&nbsp;flat&nbsp;loops.</tt></dd></dl>
- <dl><dt><a name="-isZInEdge"><strong>isZInEdge</strong></a>(edge, vertices, z)</dt><dd><tt>Determine&nbsp;if&nbsp;z&nbsp;is&nbsp;inside&nbsp;the&nbsp;edge.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

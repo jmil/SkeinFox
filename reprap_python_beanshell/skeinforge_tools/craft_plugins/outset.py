@@ -1,10 +1,11 @@
 """
-Outset is a script to outset the perimeters of a gcode file.
-
+This page is in the table of contents.
 Outset outsets the perimeters of the slices of a gcode file.  The outside perimeters will be outset by half the perimeter width, and the inside perimeters will be inset by half the perimeter width.  Outset is needed for subtractive machining, like cutting or milling.
 
+==Operation==
 The default 'Activate Outset' checkbox is on.  When it is on, the gcode will be outset, when it is off, the gcode will not be changed.
 
+==Examples==
 The following examples outset the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and outset.py.
 
 
@@ -29,7 +30,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 This brings up the outset dialog.
 
 
->>> outset.writeOutput()
+>>> outset.writeOutput( 'Screw Holder Bottom.stl' )
 The outset tool is parsing the file:
 Screw Holder Bottom.stl
 ..
@@ -47,14 +48,15 @@ except:
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
+from skeinforge_tools import profile
+from skeinforge_tools.meta_plugins import polyfile
 from skeinforge_tools.skeinforge_utilities import consecution
 from skeinforge_tools.skeinforge_utilities import euclidean
 from skeinforge_tools.skeinforge_utilities import gcodec
 from skeinforge_tools.skeinforge_utilities import intercircle
 from skeinforge_tools.skeinforge_utilities import interpret
-from skeinforge_tools.skeinforge_utilities import preferences
+from skeinforge_tools.skeinforge_utilities import settings
 from skeinforge_tools.skeinforge_utilities import triangle_mesh
-from skeinforge_tools import polyfile
 import sys
 
 
@@ -63,31 +65,23 @@ __date__ = "$Date: 2008/28/04 $"
 __license__ = "GPL 3.0"
 
 
-def compareAreaAscending( loopArea, otherLoopArea ):
-	"Get comparison in order to sort loop areas in ascending order of area."
-	if loopArea.area > otherLoopArea.area:
-		return 1
-	if loopArea.area < otherLoopArea.area:
-		return - 1
-	return 0
-
-def getCraftedText( fileName, text = '', outsetPreferences = None ):
+def getCraftedText( fileName, text = '', repository = None ):
 	"Outset the preface file or text."
-	return getCraftedTextFromText( gcodec.getTextIfEmpty( fileName, text ), outsetPreferences )
+	return getCraftedTextFromText( gcodec.getTextIfEmpty( fileName, text ), repository )
 
-def getCraftedTextFromText( gcodeText, outsetPreferences = None ):
+def getCraftedTextFromText( gcodeText, repository = None ):
 	"Outset the preface gcode text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'outset' ):
 		return gcodeText
-	if outsetPreferences == None:
-		outsetPreferences = preferences.getReadPreferences( OutsetPreferences() )
-	if not outsetPreferences.activateOutset.value:
+	if repository == None:
+		repository = settings.getReadRepository( OutsetRepository() )
+	if not repository.activateOutset.value:
 		return gcodeText
-	return OutsetSkein().getCraftedGcode( outsetPreferences, gcodeText )
+	return OutsetSkein().getCraftedGcode( gcodeText, repository )
 
-def getPreferencesConstructor():
-	"Get the preferences constructor."
-	return OutsetPreferences()
+def getNewRepository():
+	"Get the repository constructor."
+	return OutsetRepository()
 
 def writeOutput( fileName = '' ):
 	"Outset the carving of a gcode file.  If no fileName is specified, outset the first unmodified gcode file in this folder."
@@ -96,24 +90,18 @@ def writeOutput( fileName = '' ):
 		consecution.writeChainTextWithNounMessage( fileName, 'outset' )
 
 
-class OutsetPreferences:
-	"A class to handle the outset preferences."
+class OutsetRepository:
+	"A class to handle the outset settings."
 	def __init__( self ):
-		"Set the default preferences, execute title & preferences fileName."
-		#Set the default preferences.
-		self.archive = []
-		#Create the archive, title of the execute button, title of the dialog & preferences fileName.
-		self.activateOutset = preferences.BooleanPreference().getFromValue( 'Activate Outset:', True )
-		self.archive.append( self.activateOutset )
-		self.fileNameInput = preferences.Filename().getFromFilename( interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File to be Outsetted', '' )
-		self.archive.append( self.fileNameInput )
+		"Set the default settings, execute title & settings fileName."
+		profile.addListsToCraftTypeRepository( 'skeinforge_tools.craft_plugins.outset.html', self )
+		self.fileNameInput = settings.FileNameInput().getFromFileName( interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Outset', self, '' )
+		self.activateOutset = settings.BooleanSetting().getFromValue( 'Activate Outset:', self, True )
 		self.executeTitle = 'Outset'
-		self.saveCloseTitle = 'Save and Close'
-		preferences.setHelpPreferencesFileNameTitleWindowPosition( self, 'skeinforge_tools.craft_plugins.outset.html' )
 
 	def execute( self ):
 		"Outset button has been clicked."
-		fileNames = polyfile.getFileOrDirectoryTypesUnmodifiedGcode( self.fileNameInput.value, interpret.getImportPluginFilenames(), self.fileNameInput.wasCancelled )
+		fileNames = polyfile.getFileOrDirectoryTypesUnmodifiedGcode( self.fileNameInput.value, interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled )
 		for fileName in fileNames:
 			writeOutput( fileName )
 
@@ -124,51 +112,37 @@ class OutsetSkein:
 		self.boundary = None
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.lineIndex = 0
-		self.rotatedBoundaryLayers = []
-		self.shutdownLines = None
+		self.rotatedBoundaryLayer = None
 
 	def addGcodeFromRemainingLoop( self, loop, radius, z ):
-		"Add the remainder of the loop which does not overlap the alreadyFilledArounds loops."
+		"Add the remainder of the loop."
 		boundary = intercircle.getLargestInsetLoopFromLoopNoMatterWhat( loop, radius )
-		euclidean.addSurroundingLoopBeginning( boundary, self, z )
+		euclidean.addSurroundingLoopBeginning( self.distanceFeedRate, boundary, z )
 		self.distanceFeedRate.addPerimeterBlock( loop, z )
+		self.distanceFeedRate.addLine( '(</boundaryPerimeter>)' )
 		self.distanceFeedRate.addLine( '(</surroundingLoop>)' )
 
 	def addOutset( self, rotatedBoundaryLayer ):
 		"Add outset to the layer."
-		self.distanceFeedRate.addLine( '(<layer> %s )' % rotatedBoundaryLayer.z ) # Indicate that a new layer is starting.
 		extrudateLoops = intercircle.getInsetLoopsFromLoops( - self.absoluteHalfPerimeterWidth, rotatedBoundaryLayer.loops )
-		sortedLoops = triangle_mesh.getLoopsInOrderOfArea( compareAreaAscending, extrudateLoops )
+		sortedLoops = triangle_mesh.getLoopsInOrderOfArea( triangle_mesh.compareAreaAscending, extrudateLoops )
 		for sortedLoop in sortedLoops:
 			self.addGcodeFromRemainingLoop( sortedLoop, self.absoluteHalfPerimeterWidth, rotatedBoundaryLayer.z )
-		self.distanceFeedRate.addLine( '(</layer>)' )
 
-	def addRotatedLoopLayer( self, z ):
-		"Add rotated loop layer."
-		self.rotatedBoundaryLayer = euclidean.RotatedLoopLayer( z )
-		self.rotatedBoundaryLayers.append( self.rotatedBoundaryLayer )
-
-	def addShutdownToOutput( self ):
-		"Add shutdown gcode to the output."
-		self.distanceFeedRate.addLines( self.shutdownLines )
-
-	def getCraftedGcode( self, outsetPreferences, gcodeText ):
+	def getCraftedGcode( self, gcodeText, repository ):
 		"Parse gcode text and store the bevel gcode."
-		self.outsetPreferences = outsetPreferences
+		self.repository = repository
 		self.lines = gcodec.getTextLines( gcodeText )
 		self.parseInitialization()
 		for lineIndex in xrange( self.lineIndex, len( self.lines ) ):
 			self.parseLine( lineIndex )
-		for rotatedBoundaryLayer in self.rotatedBoundaryLayers:
-			self.addOutset( rotatedBoundaryLayer )
-		self.addShutdownToOutput()
 		return self.distanceFeedRate.output.getvalue()
 
 	def parseInitialization( self ):
 		"Parse gcode initialization and store the parameters."
 		for self.lineIndex in xrange( len( self.lines ) ):
 			line = self.lines[ self.lineIndex ].lstrip()
-			splitLine = line.split()
+			splitLine = gcodec.getSplitLineBeforeBracketSemicolon( line )
 			firstWord = gcodec.getFirstWord( splitLine )
 			self.distanceFeedRate.parseSplitLine( firstWord, splitLine )
 			if firstWord == '(</extruderInitialization>)':
@@ -183,7 +157,7 @@ class OutsetSkein:
 	def parseLine( self, lineIndex ):
 		"Parse a gcode line and add it to the outset skein."
 		line = self.lines[ lineIndex ].lstrip()
-		splitLine = line.split()
+		splitLine = gcodec.getSplitLineBeforeBracketSemicolon( line )
 		if len( splitLine ) < 1:
 			return
 		firstWord = splitLine[ 0 ]
@@ -191,14 +165,16 @@ class OutsetSkein:
 			location = gcodec.getLocationFromSplitLine( None, splitLine )
 			self.boundary.append( location.dropAxis( 2 ) )
 		elif firstWord == '(<layer>':
-			self.addRotatedLoopLayer( float( splitLine[ 1 ] ) )
+			self.rotatedBoundaryLayer = euclidean.RotatedLoopLayer( float( splitLine[ 1 ] ) )
+			self.distanceFeedRate.addLine( line )
+		elif firstWord == '(</layer>)':
+			self.addOutset( self.rotatedBoundaryLayer )
+			self.rotatedBoundaryLayer = None
 		elif firstWord == '(<surroundingLoop>)':
 			self.boundary = []
 			self.rotatedBoundaryLayer.loops.append( self.boundary )
-		elif firstWord == '(</extrusion>)':
-			self.shutdownLines = []
-		if self.shutdownLines != None:
-			self.shutdownLines.append( line )
+		if self.rotatedBoundaryLayer == None:
+			self.distanceFeedRate.addLine( line )
 
 
 def main():
@@ -206,7 +182,7 @@ def main():
 	if len( sys.argv ) > 1:
 		writeOutput( ' '.join( sys.argv[ 1 : ] ) )
 	else:
-		preferences.startMainLoopFromConstructor( getPreferencesConstructor() )
+		settings.startMainLoopFromConstructor( getNewRepository() )
 
 if __name__ == "__main__":
 	main()

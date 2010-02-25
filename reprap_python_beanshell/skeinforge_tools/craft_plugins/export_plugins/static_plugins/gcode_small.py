@@ -1,9 +1,10 @@
 """
-Gcode_small is an export plugin to remove the comments and the redundant z and feedRate parameters from a gcode file.
+This page is in the table of contents.
+Gcode_small is an export plugin to remove the comments and the redundant z and feed rate parameters from a gcode file.
 
-An export plugin is a script in the export_plugins folder which has the functions getOuput, and writeOutput.  It is meant to be run from the export tool.  To ensure that the plugin works on platforms which do not handle file capitalization properly, give the plugin a lower case name.
+An export plugin is a script in the export_plugins folder which has the functions getOutput, isReplaceable and if it's output is not replaceable, writeOutput.  It is meant to be run from the export tool.  To ensure that the plugin works on platforms which do not handle file capitalization properly, give the plugin a lower case name.
 
-The getOuput function of this script takes a gcode text and returns that text without comments and redundant z and feed rate parameters.  The writeOutput function of this script takes a gcode text and writes that text without comments and redundant z and feedRate parameterscomments to a file.
+The getOutput function of this script takes a gcode text and returns that text without comments and redundant z and feed rate parameters.  The writeOutput function of this script takes a gcode text and writes that text without comments and redundant z and feed rate parameters to a file.
 
 Many of the functions in this script are copied from gcodec in skeinforge_utilities.  They are copied rather than imported so developers making new plugins do not have to learn about gcodec, the code here is all they need to learn.
 
@@ -23,6 +24,13 @@ def getOutput( gcodeText ):
 	If this plugin writes an output than should not be printed, an empty string should be returned."""
 	return GcodeSmallSkein().getCraftedGcode( gcodeText )
 
+def getSplitLineBeforeBracketSemicolon( line ):
+	"Get the split line before a bracket or semicolon."
+	bracketSemicolonIndex = min( line.find( ';' ), line.find( '(' ) )
+	if bracketSemicolonIndex < 0:
+		return line.split()
+	return line[ : bracketSemicolonIndex ].split()
+
 def getStringFromCharacterSplitLine( character, splitLine ):
 	"Get the string after the first occurence of the character in the split line."
 	indexOfCharacter = indexOfStartingWithSecond( character, splitLine )
@@ -30,7 +38,7 @@ def getStringFromCharacterSplitLine( character, splitLine ):
 		return None
 	return splitLine[ indexOfCharacter ][ 1 : ]
 
-def getSummarizedFilename( fileName ):
+def getSummarizedFileName( fileName ):
 	"Get the fileName basename if the file is in the current working directory, otherwise return the original full name."
 	if os.getcwd() == os.path.dirname( fileName ):
 		return os.path.basename( fileName )
@@ -49,13 +57,13 @@ def indexOfStartingWithSecond( letter, splitLine ):
 			return wordIndex
 	return - 1
 
-def isReplacable():
-	"Return whether or not the output from this plugin is replacable.  This should be true if the output is text and false if it is binary."
+def isReplaceable():
+	"Return whether or not the output from this plugin is replaceable.  This should be true if the output is text and false if it is binary."
 	return True
 
 
 class GcodeSmallSkein:
-	"A class to remove redundant z and feedRate parameters from a skein of extrusions."
+	"A class to remove redundant z and feed rate parameters from a skein of extrusions."
 	def __init__( self ):
 		self.lastFeedRateString = None
 		self.lastZString = None
@@ -70,7 +78,7 @@ class GcodeSmallSkein:
 
 	def parseLine( self, line ):
 		"Parse a gcode line."
-		splitLine = line.split()
+		splitLine = getSplitLineBeforeBracketSemicolon( line )
 		if len( splitLine ) < 1:
 			return
 		firstWord = splitLine[ 0 ]
@@ -81,6 +89,7 @@ class GcodeSmallSkein:
 		if firstWord != 'G1':
 			self.output.write( line + "\n" )
 			return
+		eString = getStringFromCharacterSplitLine( 'E', splitLine )
 		xString = getStringFromCharacterSplitLine( 'X', splitLine )
 		yString = getStringFromCharacterSplitLine( 'Y', splitLine )
 		zString = getStringFromCharacterSplitLine( 'Z', splitLine )
@@ -94,6 +103,8 @@ class GcodeSmallSkein:
 			self.output.write( ' Z' + zString )
 		if feedRateString != None and feedRateString != self.lastFeedRateString:
 			self.output.write( ' F' + feedRateString )
+		if eString != None:
+			self.output.write( ' E' + eString )
 		self.lastFeedRateString = feedRateString
 		self.lastZString = zString
 		self.output.write( '\n' )

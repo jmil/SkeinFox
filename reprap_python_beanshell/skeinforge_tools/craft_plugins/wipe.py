@@ -1,14 +1,70 @@
 """
-Wipe is a script to wipe the nozzle.
+This page is in the table of contents.
+At the beginning of a layer, depending on the settings, wipe will move the nozzle with the extruder off to the arrival point, then to the wipe point, then to the departure point, then back to the layer.
 
-At the beginning of a layer, depending on the preferences, wipe will move the nozzle with the extruder off to the arrival point, then to the wipe point, then to the departure point, then back to the layer.
+The wipe path is machine specific, so you'll probably have to change all the default locations.
 
-The default 'Activate Wipe' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The wipe manual page is at:
+http://www.bitsfrombytes.com/wiki/index.php?title=Skeinforge_Wipe
 
-The "Location Arrival X" preference, is the x coordinate of the arrival location.  The "Location Arrival Y" and "Location Arrival Z" preferences are the y & z coordinates of the location.  The equivalent "Location Wipe.." and "Location Departure.." preferences are for the wipe and departure locations.
+==Operation==
+The default 'Activate Wipe' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
 
-The "Wipe Period (layers)" preference is the number of layers between wipes.  Wipe will always wipe just before the first layer, afterwards it will wipe every "Wipe Period" layers.  With the default of three, wipe will wipe just before the zeroth layer, the third layer, sixth layer and so on.
+==Settings==
+===Location Arrival===
+====Location Arrival X====
+Default is minus seventy millimeters.
 
+Defines the x coordinate of the arrival location.
+
+====Location Arrival Y====
+Default is minus fifty millimeters.
+
+Defines the y coordinate of the arrival location.
+
+====Location Arrival Z====
+Default is fifty millimeters.
+
+Defines the z coordinate of the arrival location.
+
+===Location Departure===
+====Location Departure X====
+Default is minus seventy millimeters.
+
+Defines the x coordinate of the departure location.
+
+====Location Departure Y====
+Default is minus forty millimeters.
+
+Defines the y coordinate of the departure location.
+
+====Location Departure Z====
+Default is fifty millimeters.
+
+Defines the z coordinate of the departure location.
+
+===Location Wipe===
+====Location Wipe X====
+Default is minus seventy millimeters.
+
+Defines the x coordinate of the wipe location.
+
+====Location Wipe Y====
+Default is minus seventy millimeters.
+
+Defines the y coordinate of the wipe location.
+
+====Location Wipe Z====
+Default is fifty millimeters.
+
+Defines the z coordinate of the wipe location.
+
+===Wipe Period===
+Default is three.
+
+Defines the number of layers between wipes.  Wipe will always wipe just before layer zero, afterwards it will wipe every "Wipe Period" layers.  With the default of three, wipe will wipe just before layer zero, layer three, layer six and so on.
+
+==Examples==
 The following examples wipe the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and wipe.py.
 
 
@@ -33,7 +89,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 This brings up the wipe dialog.
 
 
->>> wipe.writeOutput()
+>>> wipe.writeOutput( 'Screw Holder Bottom.stl' )
 The wipe tool is parsing the file:
 Screw Holder Bottom.stl
 ..
@@ -46,12 +102,13 @@ from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
-from skeinforge_tools import polyfile
+from skeinforge_tools import profile
+from skeinforge_tools.meta_plugins import polyfile
 from skeinforge_tools.skeinforge_utilities import consecution
 from skeinforge_tools.skeinforge_utilities import euclidean
 from skeinforge_tools.skeinforge_utilities import gcodec
 from skeinforge_tools.skeinforge_utilities import interpret
-from skeinforge_tools.skeinforge_utilities import preferences
+from skeinforge_tools.skeinforge_utilities import settings
 from skeinforge_tools.skeinforge_utilities.vector3 import Vector3
 import math
 import sys
@@ -62,23 +119,23 @@ __date__ = "$Date: 2008/21/04 $"
 __license__ = "GPL 3.0"
 
 
-def getCraftedText( fileName, text, wipePreferences = None ):
+def getCraftedText( fileName, text, wipeRepository = None ):
 	"Wipe a gcode linear move text."
-	return getCraftedTextFromText( gcodec.getTextIfEmpty( fileName, text ), wipePreferences )
+	return getCraftedTextFromText( gcodec.getTextIfEmpty( fileName, text ), wipeRepository )
 
-def getCraftedTextFromText( gcodeText, wipePreferences = None ):
+def getCraftedTextFromText( gcodeText, wipeRepository = None ):
 	"Wipe a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'wipe' ):
 		return gcodeText
-	if wipePreferences == None:
-		wipePreferences = preferences.getReadPreferences( WipePreferences() )
-	if not wipePreferences.activateWipe.value:
+	if wipeRepository == None:
+		wipeRepository = settings.getReadRepository( WipeRepository() )
+	if not wipeRepository.activateWipe.value:
 		return gcodeText
-	return WipeSkein().getCraftedGcode( gcodeText, wipePreferences )
+	return WipeSkein().getCraftedGcode( gcodeText, wipeRepository )
 
-def getPreferencesConstructor():
-	"Get the preferences constructor."
-	return WipePreferences()
+def getNewRepository():
+	"Get the repository constructor."
+	return WipeRepository()
 
 def writeOutput( fileName = '' ):
 	"Wipe a gcode linear move file."
@@ -87,44 +144,32 @@ def writeOutput( fileName = '' ):
 		consecution.writeChainTextWithNounMessage( fileName, 'wipe' )
 
 
-class WipePreferences:
-	"A class to handle the wipe preferences."
+class WipeRepository:
+	"A class to handle the wipe settings."
 	def __init__( self ):
-		"Set the default preferences, execute title & preferences fileName."
-		#Set the default preferences.
-		self.archive = []
-		self.activateWipe = preferences.BooleanPreference().getFromValue( 'Activate Wipe', False )
-		self.archive.append( self.activateWipe )
-		self.fileNameInput = preferences.Filename().getFromFilename( interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File to be Wiped', '' )
-		self.archive.append( self.fileNameInput )
-		self.locationArrivalX = preferences.FloatPreference().getFromValue( 'Location Arrival X (mm):', - 70.0 )
-		self.archive.append( self.locationArrivalX )
-		self.locationArrivalY = preferences.FloatPreference().getFromValue( 'Location Arrival Y (mm):', - 50.0 )
-		self.archive.append( self.locationArrivalY )
-		self.locationArrivalZ = preferences.FloatPreference().getFromValue( 'Location Arrival Z (mm):', 50.0 )
-		self.archive.append( self.locationArrivalZ )
-		self.locationDepartureX = preferences.FloatPreference().getFromValue( 'Location Departure X (mm):', - 70.0 )
-		self.archive.append( self.locationDepartureX )
-		self.locationDepartureY = preferences.FloatPreference().getFromValue( 'Location Departure Y (mm):', - 40.0 )
-		self.archive.append( self.locationDepartureY )
-		self.locationDepartureZ = preferences.FloatPreference().getFromValue( 'Location Departure Z (mm):', 50.0 )
-		self.archive.append( self.locationDepartureZ )
-		self.locationWipeX = preferences.FloatPreference().getFromValue( 'Location Wipe X (mm):', - 70.0 )
-		self.archive.append( self.locationWipeX )
-		self.locationWipeY = preferences.FloatPreference().getFromValue( 'Location Wipe Y (mm):', - 70.0 )
-		self.archive.append( self.locationWipeY )
-		self.locationWipeZ = preferences.FloatPreference().getFromValue( 'Location Wipe Z (mm):', 50.0 )
-		self.archive.append( self.locationWipeZ )
-		self.wipePeriod = preferences.IntPreference().getFromValue( 'Wipe Period (layers):', 3 )
-		self.archive.append( self.wipePeriod )
-		#Create the archive, title of the execute button, title of the dialog & preferences fileName.
+		"Set the default settings, execute title & settings fileName."
+		profile.addListsToCraftTypeRepository( 'skeinforge_tools.craft_plugins.wipe.html', self )
+		self.fileNameInput = settings.FileNameInput().getFromFileName( interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Wipe', self, '' )
+		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute( 'http://www.bitsfrombytes.com/wiki/index.php?title=Skeinforge_Wipe' )
+		self.activateWipe = settings.BooleanSetting().getFromValue( 'Activate Wipe', self, False )
+		settings.LabelDisplay().getFromName( '- Location Arrival -', self )
+		self.locationArrivalX = settings.FloatSpin().getFromValue( - 100.0, 'Location Arrival X (mm):', self, 100.0, - 70.0 )
+		self.locationArrivalY = settings.FloatSpin().getFromValue( - 100.0, 'Location Arrival Y (mm):', self, 100.0, - 50.0 )
+		self.locationArrivalZ = settings.FloatSpin().getFromValue( - 100.0, 'Location Arrival Z (mm):', self, 100.0, 50.0 )
+		settings.LabelDisplay().getFromName( '- Location Departure -', self )
+		self.locationDepartureX = settings.FloatSpin().getFromValue( - 100.0, 'Location Departure X (mm):', self, 100.0, - 70.0 )
+		self.locationDepartureY = settings.FloatSpin().getFromValue( - 100.0, 'Location Departure Y (mm):', self, 100.0, - 40.0 )
+		self.locationDepartureZ = settings.FloatSpin().getFromValue( - 100.0, 'Location Departure Z (mm):', self, 100.0, 50.0 )
+		settings.LabelDisplay().getFromName( '- Location Wipe -', self )
+		self.locationWipeX = settings.FloatSpin().getFromValue( - 100.0, 'Location Wipe X (mm):', self, 100.0, - 70.0 )
+		self.locationWipeY = settings.FloatSpin().getFromValue( - 100.0, 'Location Wipe Y (mm):', self, 100.0, - 70.0 )
+		self.locationWipeZ = settings.FloatSpin().getFromValue( - 100.0, 'Location Wipe Z (mm):', self, 100.0, 50.0 )
+		self.wipePeriod = settings.IntSpin().getFromValue( 1, 'Wipe Period (layers):', self, 5, 3 )
 		self.executeTitle = 'Wipe'
-		self.saveCloseTitle = 'Save and Close'
-		preferences.setHelpPreferencesFileNameTitleWindowPosition( self, 'skeinforge_tools.craft_plugins.wipe.html' )
 
 	def execute( self ):
 		"Wipe button has been clicked."
-		fileNames = polyfile.getFileOrDirectoryTypesUnmodifiedGcode( self.fileNameInput.value, interpret.getImportPluginFilenames(), self.fileNameInput.wasCancelled )
+		fileNames = polyfile.getFileOrDirectoryTypesUnmodifiedGcode( self.fileNameInput.value, interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled )
 		for fileName in fileNames:
 			writeOutput( fileName )
 
@@ -173,14 +218,14 @@ class WipeSkein:
 		if self.extruderActive:
 			self.distanceFeedRate.addLine( 'M101' )
 
-	def getCraftedGcode( self, gcodeText, wipePreferences ):
+	def getCraftedGcode( self, gcodeText, wipeRepository ):
 		"Parse gcode text and store the wipe gcode."
 		self.lines = gcodec.getTextLines( gcodeText )
-		self.wipePeriod = wipePreferences.wipePeriod.value
-		self.parseInitialization( wipePreferences )
-		self.locationArrival = Vector3( wipePreferences.locationArrivalX.value, wipePreferences.locationArrivalY.value, wipePreferences.locationArrivalZ.value )
-		self.locationDeparture = Vector3( wipePreferences.locationDepartureX.value, wipePreferences.locationDepartureY.value, wipePreferences.locationDepartureZ.value )
-		self.locationWipe = Vector3( wipePreferences.locationWipeX.value, wipePreferences.locationWipeY.value, wipePreferences.locationWipeZ.value )
+		self.wipePeriod = wipeRepository.wipePeriod.value
+		self.parseInitialization( wipeRepository )
+		self.locationArrival = Vector3( wipeRepository.locationArrivalX.value, wipeRepository.locationArrivalY.value, wipeRepository.locationArrivalZ.value )
+		self.locationDeparture = Vector3( wipeRepository.locationDepartureX.value, wipeRepository.locationDepartureY.value, wipeRepository.locationDepartureZ.value )
+		self.locationWipe = Vector3( wipeRepository.locationWipeX.value, wipeRepository.locationWipeY.value, wipeRepository.locationWipeZ.value )
 		for self.lineIndex in xrange( self.lineIndex, len( self.lines ) ):
 			line = self.lines[ self.lineIndex ]
 			self.parseLine( line )
@@ -190,11 +235,11 @@ class WipeSkein:
 		"Get a linear move line with the feedRate."
 		return self.distanceFeedRate.getLinearGcodeMovementWithFeedRate( feedRate, location.dropAxis( 2 ), location.z )
 
-	def parseInitialization( self, wipePreferences ):
+	def parseInitialization( self, wipeRepository ):
 		"Parse gcode initialization and store the parameters."
 		for self.lineIndex in xrange( len( self.lines ) ):
 			line = self.lines[ self.lineIndex ]
-			splitLine = line.split()
+			splitLine = gcodec.getSplitLineBeforeBracketSemicolon( line )
 			firstWord = gcodec.getFirstWord( splitLine )
 			self.distanceFeedRate.parseSplitLine( firstWord, splitLine )
 			if firstWord == '(</extruderInitialization>)':
@@ -208,7 +253,7 @@ class WipeSkein:
 
 	def parseLine( self, line ):
 		"Parse a gcode line and add it to the bevel gcode."
-		splitLine = line.split()
+		splitLine = gcodec.getSplitLineBeforeBracketSemicolon( line )
 		if len( splitLine ) < 1:
 			return
 		firstWord = splitLine[ 0 ]
@@ -231,7 +276,7 @@ def main():
 	if len( sys.argv ) > 1:
 		writeOutput( ' '.join( sys.argv[ 1 : ] ) )
 	else:
-		preferences.startMainLoopFromConstructor( getPreferencesConstructor() )
+		settings.startMainLoopFromConstructor( getNewRepository() )
 
 if __name__ == "__main__":
 	main()
