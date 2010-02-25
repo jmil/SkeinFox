@@ -990,26 +990,26 @@
 
 
 - (IBAction) launchSkeinforge:(id)sender {
-    //NSLog(@"A request to launch SkeinForge was received");
+    NSLog(@"A request to launch SkeinForge was received");
     
     // Use the Skeinforge that is contained within this application package!!
     //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
-    NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0006" ofType:nil];
-    //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"reprap_python_beanshell" ofType:nil];
-    //NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
+    //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0006" ofType:nil];
+    NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"2010-02-25_skeinforge_withRaftless" ofType:nil];
+    NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
     NSString *skeinforgePy = @"/skeinforge.py";
     NSString *prefix = @"\"";
     NSString *suffix = prefix;
-    //NSLog(@"'%@'", prefix);
-    //NSLog(@"'%@'", suffix);
+    NSLog(@"'%@'", prefix);
+    NSLog(@"'%@'", suffix);
     
     
     // EXECUTE WITH QUOTES SO THAT SPACES (AND SPECIAL CHARACTERS LIKE 'µ') IN POSIX PATHS WILL BE HONORED
     NSString *commandToExecuteWithoutQuotes = [pathToSkeinforge stringByAppendingString:skeinforgePy];
     NSString *commandToExecuteWithQuotes = [[prefix stringByAppendingString:commandToExecuteWithoutQuotes] stringByAppendingString:suffix];
-    //NSLog(@"'%@'", commandToExecuteWithQuotes);
+    NSLog(@"'%@'", commandToExecuteWithQuotes);
     [ShellTask executeShellCommandAsynchronously:commandToExecuteWithQuotes];
-    //NSLog(@"yep, skeinforge was launched asynchronously");
+    NSLog(@"yep, skeinforge was launched asynchronously");
     
     
 }
@@ -1023,8 +1023,8 @@
     if (nil != self.stlFileToGCode) {
         // Use the Skeinforge that is contained within this application package!!
         //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0005" ofType:nil];
-        NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0006" ofType:nil];
-        //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"reprap_python_beanshell" ofType:nil];
+        //NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"skeinforge-0006" ofType:nil];
+        NSString *pathToSkeinforge = [[NSBundle mainBundle] pathForResource:@"2010-02-25_skeinforge_withRaftless" ofType:nil];
         //NSLog(@"the path to skeinforge is: '%@'", pathToSkeinforge);
         NSString *skeinforgePy = @"/skeinforge.py";
         NSString *prefix = @"\"";
