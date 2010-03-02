@@ -463,6 +463,7 @@
     NSLog(@"Git version '%@' detected", gitVersionDotNumberRaw);
 
     NSArray *gitVersionArrayNoDots = [gitVersionDotNumberRaw componentsSeparatedByString:@"."];
+    //NSArray *gitVersionArrayNoDots = [@"2.7.0.0" componentsSeparatedByString:@"."];
     
     //NSLog(@"%@", gitVersionArrayNoDots);
     
@@ -470,52 +471,91 @@
     NSArray *gitVersionRequired = [NSArray arrayWithObjects:@"1", @"6", @"4", nil];
     
     
-    if ([gitVersionArrayNoDots count] >= 1) {
-        NSString *gVno1 = [gitVersionArrayNoDots objectAtIndex:0];
-        //NSLog(@"%@", gVno1);
-        if ([gVno1 intValue] >= [[gitVersionRequired objectAtIndex:0] intValue]) {
-            //NSLog(@"we are at least at version %@", [gitVersionRequired objectAtIndex:0]);
+    NSUInteger counter = 0;    
+    for (NSString *element in gitVersionArrayNoDots) {
+        //NSLog(@"Element at index %u is: %@", counter, element);
+        
+        
+        // If we're greater than the required version, break!
+        if ([[gitVersionArrayNoDots objectAtIndex:counter] intValue] > [[gitVersionRequired objectAtIndex:counter] intValue]) {
+            // We are already a git version ahead of that required, so break!
+            //NSLog(@"You're ahead of the game of version %@ with the current %@", [gitVersionRequired objectAtIndex:counter], [gitVersionArrayNoDots objectAtIndex:counter]);
+            break;
+        } else if ([[gitVersionArrayNoDots objectAtIndex:counter] intValue] < [[gitVersionRequired objectAtIndex:counter] intValue]) {
+            NSLog(@"GIT FAIL AT version %@ required with the current %@", [gitVersionRequired objectAtIndex:counter], [gitVersionArrayNoDots objectAtIndex:counter]);
             
-            // so we are at least at version 1
-            if ([gitVersionArrayNoDots count] >= 2) {
-                NSString *gVno2 = [gitVersionArrayNoDots objectAtIndex:1];
-                //NSLog(@"%@", gVno2);
-                
-                if ([gVno2 intValue] >= [[gitVersionRequired objectAtIndex:1] intValue]) {
-                    //NSLog(@"we are at least at version %@", [gitVersionRequired objectAtIndex:1]);
-                    
-                    
-                    if ([gitVersionArrayNoDots count] >= 3) {
-                        NSString *gVno3 = [gitVersionArrayNoDots objectAtIndex:2];
-                        //NSLog(@"%@", gVno3);
-                        if ([gVno3 intValue] >= [[gitVersionRequired objectAtIndex:2] intValue]) {
-                            //NSLog(@"we are at least at version %@", [gitVersionRequired objectAtIndex:2]);
-                        } else {
-                            [self notifyUserImproperGitVersion:gitVersionDotNumberRaw gitVersionRequiredArray:gitVersionRequired];
-                        }                
-                    }
-                } else {
-                    [self notifyUserImproperGitVersion:gitVersionDotNumberRaw gitVersionRequiredArray:gitVersionRequired];
-                }                
-                    
-            }
-        } else {
             [self notifyUserImproperGitVersion:gitVersionDotNumberRaw gitVersionRequiredArray:gitVersionRequired];
+            
+        } else {
+            // If we're equal, Continue comparing...
+            // So we do nothing here!    
+            NSLog(@"Yep, we're at least at version %@ required with the current %@", [gitVersionRequired objectAtIndex:counter], [gitVersionArrayNoDots objectAtIndex:counter]);
         }
+        
+        counter++;
+        
+        
     }
     
-//    NSString *gVno2 = [gitVersionArrayNoDots objectAtIndex:1];
-//    NSString *gVno3 = [gitVersionArrayNoDots objectAtIndex:2];
-//    NSString *gVno4 = [gitVersionArrayNoDots objectAtIndex:3];
-//    NSString *gVno5 = [gitVersionArrayNoDots objectAtIndex:4];
-//    NSLog(@"%@ %@ %@ %@ %@", gVno1, gVno2, gVno3, gVno4, gVno5);
+    
+//    if ([gitVersionArrayNoDots count] >= 1) {
+//        NSString *gVno1 = [gitVersionArrayNoDots objectAtIndex:0];
+//        NSLog(@"%@", gVno1);
+//        if ([gVno1 intValue] >= [[gitVersionRequired objectAtIndex:0] intValue]) {
+//            NSLog(@"we are at least at version %@", [gitVersionRequired objectAtIndex:0]);
+//            // so we are at least at version 1
+//            
+//            if ([gVno1 intValue] > [[gitVersionRequired objectAtIndex:1] intValue]) {
+//                // We are already at git version 2 or later, so break!
+//                break;
+//            }
+//            
+//            if ([gitVersionArrayNoDots count] >= 2) {
+//                NSString *gVno2 = [gitVersionArrayNoDots objectAtIndex:1];
+//                NSLog(@"%@", gVno2);
+//                
+//                if ([gVno2 intValue] >= [[gitVersionRequired objectAtIndex:1] intValue]) {
+//                    NSLog(@"we are at least at version %@", [gitVersionRequired objectAtIndex:1]);
+//                    // so we are at least at version 1.6
+//                    
+//                    if ([gVno2 intValue] > [[gitVersionRequired objectAtIndex:1] intValue]) {
+//                        // We are already at git version 1.7 or later, so break!
+//                        break;
+//                    }
+//                    
+//                    if ([gitVersionArrayNoDots count] >= 3) {
+//                        NSString *gVno3 = [gitVersionArrayNoDots objectAtIndex:2];
+//                        NSLog(@"%@", gVno3);
+//                        if ([gVno3 intValue] >= [[gitVersionRequired objectAtIndex:2] intValue]) {
+//                            NSLog(@"we are at least at version %@", [gitVersionRequired objectAtIndex:2]);
+//                        } else {
+//                            [self notifyUserImproperGitVersion:gitVersionDotNumberRaw gitVersionRequiredArray:gitVersionRequired];
+//                        }                
+//                    }
+//                } else {
+//                    [self notifyUserImproperGitVersion:gitVersionDotNumberRaw gitVersionRequiredArray:gitVersionRequired];
+//                }                
+//                    
+//            }
+//        } else {
+//            [self notifyUserImproperGitVersion:gitVersionDotNumberRaw gitVersionRequiredArray:gitVersionRequired];
+//        }
+//        
+//        
+////        NSString *gVno2 = [gitVersionArrayNoDots objectAtIndex:1];
+////        NSString *gVno3 = [gitVersionArrayNoDots objectAtIndex:2];
+////        NSString *gVno4 = [gitVersionArrayNoDots objectAtIndex:3];
+////        NSString *gVno5 = [gitVersionArrayNoDots objectAtIndex:4];
+////        NSLog(@"%@ %@ %@ %@ %@", gVno1, gVno2, gVno3, gVno4, gVno5);
+//    }
+    
 
     
     
     // Actually have to remove the trailing return in the array!
-//    NSString *gVnoDots = [[[gitVersionArrayNoDots componentsJoinedByString:@""] componentsSeparatedByString:@"/n"] objectAtIndex:0];
+    NSString *gVnoDots = [[[gitVersionArrayNoDots componentsJoinedByString:@""] componentsSeparatedByString:@"/n"] objectAtIndex:0];
 //    
-//    NSLog(@"The git version is '%@'", gVnoDots);
+    NSLog(@"The git version is '%@'", gVnoDots);
     
     
     
