@@ -482,14 +482,14 @@
             //NSLog(@"You're ahead of the game of version %@ with the current %@", [gitVersionRequired objectAtIndex:counter], [gitVersionArrayNoDots objectAtIndex:counter]);
             break;
         } else if ([[gitVersionArrayNoDots objectAtIndex:counter] intValue] < [[gitVersionRequired objectAtIndex:counter] intValue]) {
-            NSLog(@"GIT FAIL AT version %@ required with the current %@", [gitVersionRequired objectAtIndex:counter], [gitVersionArrayNoDots objectAtIndex:counter]);
+            //NSLog(@"GIT FAIL AT version %@ required with the current %@", [gitVersionRequired objectAtIndex:counter], [gitVersionArrayNoDots objectAtIndex:counter]);
             
             [self notifyUserImproperGitVersion:gitVersionDotNumberRaw gitVersionRequiredArray:gitVersionRequired];
             
         } else {
             // If we're equal, Continue comparing...
             // So we do nothing here!    
-            NSLog(@"Yep, we're at least at version %@ required with the current %@", [gitVersionRequired objectAtIndex:counter], [gitVersionArrayNoDots objectAtIndex:counter]);
+            //NSLog(@"Yep, we're at least at version %@ required with the current %@", [gitVersionRequired objectAtIndex:counter], [gitVersionArrayNoDots objectAtIndex:counter]);
         }
         
         counter++;
