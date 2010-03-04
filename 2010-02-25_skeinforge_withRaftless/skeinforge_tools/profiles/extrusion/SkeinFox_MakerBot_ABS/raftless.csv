@@ -1,0 +1,11 @@
+Format is tab separated raftless settings.
+Name                          	Value
+WindowPosition	600+0
+WindowVisibilities
+Open File for Raftless	
+Activate Raftless	True
+1st Perimeter Feed Rate over Feed Rate (ratio):	0.7
+1st Perimeter Flow Rate over Flow Rate (ratio):	1.0
+Add Extrusion Intro:	True
+Extrusion Intro Max X Absolute (mm):	20.0
+Extrusion Intro Max Y Absolute (mm):	20.0
