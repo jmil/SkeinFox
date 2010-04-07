@@ -1,6 +1,7 @@
 (***************FIRST SET Z TO 20*********************)
 (homing routing)
 M104 S200 T0 (Temperature to 200 celsius)
+M106 (fan on)
 G21 (Metric FTW)
 G90 (Absolute Positioning)
 G92 X0 Y0 Z20 (You are now at 0,0,20)
