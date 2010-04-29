@@ -121,7 +121,7 @@ Abstract: Granite Exhibit
 	
 	glBindTexture(GL_TEXTURE_3D, noise_texture);
 	
-	teapot(16, 0.5, GL_FILL);
+	jmilBracket(16, 0.5, GL_FILL);
 	
 	glUseProgramObjectARB(NULL);
 }

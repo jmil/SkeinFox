@@ -142,7 +142,7 @@ SUCH DAMAGE.
 		teapots per frame in this shell-based approach) */
 		teapotList = glGenLists(1);
 		glNewList(teapotList, GL_COMPILE);
-		teapot(8, 0.5, GL_FILL);
+		jmilBracket(8, 0.5, GL_FILL);
 		glEndList();
 	}
 }

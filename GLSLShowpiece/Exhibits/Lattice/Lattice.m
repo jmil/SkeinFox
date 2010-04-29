@@ -117,7 +117,7 @@ Abstract: Lattice Exhibit
 	
 	glUseProgramObjectARB(program_object);
 
-	teapot(16, 0.5, GL_FILL);
+	jmilBracket(16, 0.5, GL_FILL);
 	//gluSphere(quadric, 0.5, 30, 30);
 	
 	glUseProgramObjectARB(NULL);

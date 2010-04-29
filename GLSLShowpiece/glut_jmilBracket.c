@@ -56,7 +56,7 @@
 
 #define NumTeapotPoints 135
 
-int patchdata[NumTeapotPoints][16] =
+int jmilPatchdata[NumTeapotPoints][16] =
 {
 	// rim
 	{102, 103, 104, 105, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
@@ -81,7 +81,7 @@ int patchdata[NumTeapotPoints][16] =
 	{80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95}
 };
 
-float cpdata[][3] =
+float jmilcpdata[][3] =
 {
 	{0.2f, 0, 2.7f},
 	{0.2f, -0.112f, 2.7f},
@@ -240,14 +240,14 @@ float cpdata[][3] =
 	{2.8f, 0, 2.4f},
 };
 
-static float tex[2][2][2] =
+static float jmiltex[2][2][2] =
 {
   { {0, 0}, {1, 0}},
   { {0, 1}, {1, 1}},
 };
 
 // Returns the number of vertices sent to GL.
-int teapot(GLint grid, GLdouble scale, GLenum type)
+int jmilBracket(GLint grid, GLdouble scale, GLenum type)
 {
 	float p[4][4][3], q[4][4][3], r[4][4][3], s[4][4][3];
 	long i, j, k, l;
@@ -274,16 +274,16 @@ int teapot(GLint grid, GLdouble scale, GLenum type)
 			{
 				for (l = 0; l < 3; l++)
 				{
-					p[j][k][l] = cpdata[patchdata[i][j * 4 + k]][l];
-					q[j][k][l] = cpdata[patchdata[i][j * 4 + (3 - k)]][l];
+					p[j][k][l] = jmilcpdata[jmilPatchdata[i][j * 4 + k]][l];
+					q[j][k][l] = jmilcpdata[jmilPatchdata[i][j * 4 + (3 - k)]][l];
 					if (l == 1)
 						q[j][k][l] *= -1.0;
 					if (i < 6)
 					{
-						r[j][k][l] = cpdata[patchdata[i][j * 4 + (3 - k)]][l];
+						r[j][k][l] = jmilcpdata[jmilPatchdata[i][j * 4 + (3 - k)]][l];
 						if (l == 0)
 							r[j][k][l] *= -1.0;
-						s[j][k][l] = cpdata[patchdata[i][j * 4 + k]][l];
+						s[j][k][l] = jmilcpdata[jmilPatchdata[i][j * 4 + k]][l];
 						if (l == 0)
 							s[j][k][l] *= -1.0;
 						if (l == 1)
@@ -292,7 +292,7 @@ int teapot(GLint grid, GLdouble scale, GLenum type)
 				}
 			}
 		}
-		glMap2f(GL_MAP2_TEXTURE_COORD_2, 0, 1, 2, 2, 1, 0, 4, 2, &tex[0][0][0]);
+		glMap2f(GL_MAP2_TEXTURE_COORD_2, 0, 1, 2, 2, 1, 0, 4, 2, &jmiltex[0][0][0]);
 		glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &p[0][0][0]);
 		glMapGrid2f(grid, 0.0, 1.0, grid, 0.0, 1.0);
 		glEvalMesh2(type, 0, grid, 0, grid);
@@ -316,22 +316,22 @@ int teapot(GLint grid, GLdouble scale, GLenum type)
 	glTexCoord2f(.025f,.025f);
 
 	glNormal3f(0, 0, 1);
-	glVertex3f(0,.03f,cpdata[127][2]);
-	glVertex3f(.03f,0,cpdata[127][2]);
-	glVertex3f(0,-.03f,cpdata[127][2]);
-	glVertex3f(-.03f,0,cpdata[127][2]);
+	glVertex3f(0,.03f,jmilcpdata[127][2]);
+	glVertex3f(.03f,0,jmilcpdata[127][2]);
+	glVertex3f(0,-.03f,jmilcpdata[127][2]);
+	glVertex3f(-.03f,0,jmilcpdata[127][2]);
 
 	glNormal3f(0, 0, -1);
-	glVertex3f(-.03f,0,cpdata[131][2]);
-	glVertex3f(0,-.03f,cpdata[131][2]);
-	glVertex3f(.03f,0,cpdata[131][2]);
-	glVertex3f(0,.03f,cpdata[131][2]);
+	glVertex3f(-.03f,0,jmilcpdata[131][2]);
+	glVertex3f(0,-.03f,jmilcpdata[131][2]);
+	glVertex3f(.03f,0,jmilcpdata[131][2]);
+	glVertex3f(0,.03f,jmilcpdata[131][2]);
 
 #if 0
 	// Close off the spout.
 	glNormal3f(0, 0, 1);
 	for (int i = 135; i < 143; ++i)
-		glVertex3fv(cpdata[i]);
+		glVertex3fv(jmilcpdata[i]);
 #endif
 
 	glEnd();

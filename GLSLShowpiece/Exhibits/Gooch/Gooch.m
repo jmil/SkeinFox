@@ -161,7 +161,7 @@ static const GLfloat gooch_cool_colors[3][3] = {
 		glUniform3fvARB(glGetUniformLocationARB(program_object, "CoolColor"), 1, cool);
 	}
 
-	teapot(16, 0.5, GL_FILL);
+	jmilBracket(16, 0.5, GL_FILL);
 	
 	glUseProgramObjectARB(NULL);
 
@@ -176,7 +176,7 @@ static const GLfloat gooch_cool_colors[3][3] = {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	teapot(16, 0.5, GL_FILL);
+	jmilBracket(16, 0.5, GL_FILL);
 
 	glPopAttrib();
 }

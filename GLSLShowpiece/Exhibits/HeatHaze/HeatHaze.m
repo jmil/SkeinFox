@@ -137,7 +137,7 @@ Abstract: HeatHaze Exhibit
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHT1);
 	glColor4f(1, 1, 1, 1);
-	teapot(8, 0.4, GL_FILL);
+	jmilBracket(8, 0.4, GL_FILL);
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

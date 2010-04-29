@@ -174,7 +174,7 @@ Abstract: Plasma Exhibit
 	offset = offset + (1.0/256.0);
 	if (offset > 1.0)
 		offset = 0;
-	teapot(16, 0.5, GL_FILL);
+	jmilBracket(16, 0.5, GL_FILL);
 
 	glUseProgramObjectARB(NULL);
 }

@@ -133,7 +133,7 @@ Abstract: EnvMap Exhibit
 
 	glBindTexture(GL_TEXTURE_2D, house_texture);
 	
-	teapot(16, 0.5, GL_FILL);
+	jmilBracket(16, 0.5, GL_FILL);
 	
 	glUseProgramObjectARB(NULL);
 }

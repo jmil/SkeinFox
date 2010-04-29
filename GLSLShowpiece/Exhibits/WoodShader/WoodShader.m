@@ -141,7 +141,7 @@ Abstract: Wood Shader Exhibit
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, noise_texture);
 	
-	teapot(16, 0.5, GL_FILL);
+	jmilBracket(16, 0.5, GL_FILL);
 /*
 	glBegin(GL_QUADS);
 	glNormal3f(0.0, 0.0, 1.0);

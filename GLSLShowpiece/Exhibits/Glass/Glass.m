@@ -151,7 +151,7 @@ Abstract: Glass Exhibit
 	glEnable(GL_LIGHT1);
 	glColor4f(1, 1, 1, 1);
 	glTranslatef(0, 0, 1);
-	teapot(8, 0.24, GL_FILL);
+	jmilBracket(8, 0.24, GL_FILL);
 	glTranslatef(0, 0, -1);
 	
 	glEnable(GL_BLEND);
@@ -175,7 +175,7 @@ Abstract: Glass Exhibit
 	CopyFramebufferToTexture(frameBuffer_texture);
 	glActiveTexture(GL_TEXTURE0);
 	
-	teapot(8, 0.5, GL_FILL);
+	jmilBracket(8, 0.5, GL_FILL);
 	
 	glUseProgramObjectARB(NULL);
 	

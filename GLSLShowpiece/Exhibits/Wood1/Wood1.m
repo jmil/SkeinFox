@@ -114,7 +114,7 @@ Abstract: Wood1 Exhibit
 	
 	glUseProgramObjectARB(program_object);
 	
-	teapot(16, 0.5, GL_FILL);
+	jmilBracket(16, 0.5, GL_FILL);
 	
 	glUseProgramObjectARB(NULL);
 }

@@ -132,7 +132,7 @@ Abstract: VertexNoise Exhibit
 	PARAMETER_ANIMATE(offset);
 	glUniform3fvARB(glGetUniformLocationARB(program_object, "offset"), 1, PARAMETER_CURRENT(offset));
 
-	teapot(8, 0.5, GL_FILL);
+	jmilBracket(8, 0.5, GL_FILL);
 	
 	glUseProgramObjectARB(NULL);
 }
