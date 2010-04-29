@@ -56,6 +56,7 @@ Abstract: Exhibit base class.  Subclass this to create
 #import <OpenGL/OpenGL.h>
 #import <GLUT/glut.h>
 #include "glut_teapot.h"
+#include "glut_jmilBracket.h"
 #include "mat4.h"
 
 /* Parameter */

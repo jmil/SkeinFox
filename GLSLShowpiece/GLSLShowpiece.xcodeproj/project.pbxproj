@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2DD9CC461189FDB800F62282 /* glut_jmilBracket.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DD9CC441189FDB800F62282 /* glut_jmilBracket.c */; };
+		2DD9CC471189FDB800F62282 /* glut_jmilBracket.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DD9CC451189FDB800F62282 /* glut_jmilBracket.h */; };
 		4E0E44D709EE178900BB12D2 /* Abstract.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4E0E44CD09EE178900BB12D2 /* Abstract.jpg */; };
 		4E0E44D809EE178900BB12D2 /* Clouds.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4E0E44CE09EE178900BB12D2 /* Clouds.jpg */; };
 		4E0E44D909EE178900BB12D2 /* Day.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4E0E44CF09EE178900BB12D2 /* Day.jpg */; };
@@ -266,6 +268,8 @@
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		2DD9CC441189FDB800F62282 /* glut_jmilBracket.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = glut_jmilBracket.c; sourceTree = "<group>"; };
+		2DD9CC451189FDB800F62282 /* glut_jmilBracket.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = glut_jmilBracket.h; sourceTree = "<group>"; };
 		4E0E44CD09EE178900BB12D2 /* Abstract.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Abstract.jpg; path = Textures/Abstract.jpg; sourceTree = "<group>"; };
 		4E0E44CE09EE178900BB12D2 /* Clouds.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Clouds.jpg; path = Textures/Clouds.jpg; sourceTree = "<group>"; };
 		4E0E44CF09EE178900BB12D2 /* Day.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Day.jpg; path = Textures/Day.jpg; sourceTree = "<group>"; };
@@ -1060,6 +1064,8 @@
 				4E93B86D09EE265A001E70A1 /* Noise3DTexture.h */,
 				4E93B87209EE2661001E70A1 /* glut_teapot.c */,
 				4E93B87309EE2661001E70A1 /* glut_teapot.h */,
+				2DD9CC441189FDB800F62282 /* glut_jmilBracket.c */,
+				2DD9CC451189FDB800F62282 /* glut_jmilBracket.h */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -1312,6 +1318,7 @@
 				4E5EADB009F0A23B001D2FC3 /* Vector.h in Headers */,
 				F006116509F87FFF00768753 /* Plasma.h in Headers */,
 				76F07E6909F8EA28000EA447 /* Toyball.h in Headers */,
+				2DD9CC471189FDB800F62282 /* glut_jmilBracket.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1563,6 +1570,7 @@
 				4E5EADAF09F0A23B001D2FC3 /* Vector.cpp in Sources */,
 				F006116609F87FFF00768753 /* Plasma.m in Sources */,
 				76F07E6A09F8EA28000EA447 /* Toyball.m in Sources */,
+				2DD9CC461189FDB800F62282 /* glut_jmilBracket.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
